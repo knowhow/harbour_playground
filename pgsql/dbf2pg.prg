@@ -58,6 +58,7 @@ PROCEDURE Main( ... )
 
    LOCAL cTok
    LOCAL cHostName := "localhost"
+   LOCAL nPort := 5432
    LOCAL cUser := "postgres"
    LOCAL cPassWord := ""
    LOCAL cDataBase, cTable, cFile
@@ -116,6 +117,9 @@ PROCEDURE Main( ... )
       CASE cTok == "-h"
          cHostName := hb_PValue( i++ )
          ? "hostname=", cHostName
+      CASE cTok == "-x"
+         nPort := Val( hb_PValue( i++ ) )
+         ? "port=", nPort
       CASE cTok == "-d"
          cDataBase := hb_PValue( i++ )
          ? "database=", cDatabase
@@ -131,10 +135,10 @@ PROCEDURE Main( ... )
       CASE cTok == "-p"
          cPassWord := hb_PValue( i++ )
          ? "password=", cPassword
+      
       CASE cTok == "-c"
          lCreateTable := .T.
        
-
       CASE cTok == "-x"
          lTruncate := .T.
 
@@ -170,7 +174,7 @@ PROCEDURE Main( ... )
    USE (cFile) SHARED 
    aDbfStruct := DBStruct()
 
-   oServer := TPQServer():New( cHostName, cDatabase, cUser, cPassWord, 5433, cPath )
+   oServer := TPQServer():New( cHostName, cDatabase, cUser, cPassWord, nPort, cPath )
    IF oServer:NetErr()
       ? oServer:ErrorMsg()
       QUIT
