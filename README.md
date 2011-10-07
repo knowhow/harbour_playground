@@ -34,19 +34,32 @@ iz ovog repozitorija uzeti hbp i hbc:
 cp pgsql/hbpgsql.hb?  ~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/
 </pre>
 
-onda u ~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/ uraditi make:
+onda u ~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/ uraditi hbmk2:
 
-make i install u lib dir:
+<pre>
+~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/$ /opt/harbour/bin/hbmk2 hbpgsql
+</pre>
+
+install u lib dir:
+
 <pre>
 cp libhbpgsql.a /opt/harbour/lib/harbour/
 </pre>
 
 dbf2pg
 -------
-
 Kada imamo libhbpgsql.a možemo praviti harbour postgresql podržane aplikacije 
 
-originalni fajl uzet sa ove lokacije harbour source repozitorija
+Prvo je potrebno kompajlirati dbf2pg.prg na sljedeći način:
+
+<pre>
+~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/tests/$ /opt/harbour/bin/hbmk2 dbf2pg.prg
+</pre>
+
+te u istom direktoriju dobijamo izvršni fajl koji naknadno koristimo.
+
+Originalni fajl uzet sa ove lokacije harbour source repozitorija
+
 <pre>
  cp ~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/tests/dbf2pg.prg
 </pre>
