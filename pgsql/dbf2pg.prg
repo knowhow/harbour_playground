@@ -117,7 +117,7 @@ PROCEDURE Main( ... )
       CASE cTok == "-h"
          cHostName := hb_PValue( i++ )
          ? "hostname=", cHostName
-      CASE cTok == "-x"
+      CASE cTok == "-y"
          nPort := Val( hb_PValue( i++ ) )
          ? "port=", nPort
       CASE cTok == "-d"
