@@ -3,7 +3,7 @@ harbour
 
 
 build na mac os x
-=================
+------------------
 
 http://redmine.bring.out.ba/issues/24717
 
@@ -24,9 +24,27 @@ nakon toga u /opt/harbour imamo:
  #  include/harbour
 
 
+/opt/harbour/lib/harbour/libhbpgsql.a
+-------------------------------------
+out-of-box se ovaj drajver ne kreira. 
 
-pgsql
------
+iz ovog repozitorija uzeti hbp i hbc:
+
+<pre>
+cp pgsql/hbpgsql.hb?  ~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/
+</pre>
+
+onda u ~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/ uraditi make:
+
+make i install u lib dir:
+<pre>
+cp libhbpgsql.a /opt/harbour/lib/harbour/
+</pre>
+
+dbf2pg
+-------
+
+Kada imamo libhbpgsql.a možemo praviti harbour postgresql podržane aplikacije 
 
 originalni fajl uzet sa ove lokacije harbour source repozitorija
 # cp ~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/tests/dbf2pg.prg
@@ -41,6 +59,3 @@ fin_suban na osnovu fmk/SUBAN.DBF
 ./dbf2pg -h localhost -y 5433 -d fin1 -u admin -p admin -e public -f fmk/SUBAN  -t fin_suban -c
 ./dbf2pg -h localhost -y 5433 -d fin1 -u admin -p admin -e public -f fmk/ANAL  -t fin_suban -c
 </pre>
-
-
-
