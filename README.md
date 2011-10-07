@@ -47,7 +47,9 @@ dbf2pg
 Kada imamo libhbpgsql.a možemo praviti harbour postgresql podržane aplikacije 
 
 originalni fajl uzet sa ove lokacije harbour source repozitorija
-# cp ~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/tests/dbf2pg.prg
+<pre>
+ cp ~/devel/harbour/harbour-3.0.0/contrib/hbpgsql/tests/dbf2pg.prg
+</pre>
 
 a onda dodata podrška za DBFCDX:
 
