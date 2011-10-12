@@ -81,7 +81,7 @@ build na linux-u
 prerequisites 
 <pre>
 sudo apt-get install   rcs build-essential ncurses-dev libslang2-dev  unixodbc-dev libncurses-dev libx11-dev libgpm-dev  libfreeimage-dev  libpq-dev libqt3-mt-dev liballegro4.2-dev  zlib1g-dev libpcre3-dev libncurses-dev libslang2-dev libx11-dev libgpmg1-dev unixodbc-dev libcurl4-gnutls-dev 
-<\pre>
+</pre>
 
 ostatak builda je isti kao i za OSX, koristimo lin_set_envars.sh
 
