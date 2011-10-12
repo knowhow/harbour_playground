@@ -74,3 +74,14 @@ fin_suban na osnovu fmk/SUBAN.DBF
 ./dbf2pg -h localhost -y 5433 -d fin1 -u admin -p admin -e public -f fmk/SUBAN  -t fin_suban -c
 ./dbf2pg -h localhost -y 5433 -d fin1 -u admin -p admin -e public -f fmk/ANAL  -t fin_suban -c
 </pre>
+
+build na linux-u 
+-------------------
+
+prerequisites 
+<pre>
+sudo apt-get install   rcs build-essential ncurses-dev libslang2-dev  unixodbc-dev libncurses-dev libx11-dev libgpm-dev  libfreeimage-dev  libpq-dev libqt3-mt-dev liballegro4.2-dev  zlib1g-dev libpcre3-dev libncurses-dev libslang2-dev libx11-dev libgpmg1-dev unixodbc-dev libcurl4-gnutls-dev 
+<\pre>
+
+ostatak builda je isti kao i za OSX, koristimo lin_set_envars.sh
+
