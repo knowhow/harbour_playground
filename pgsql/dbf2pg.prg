@@ -464,8 +464,10 @@ elseif cIz == "W"
 endif
 
 for i := 1 to LEN( aUtf )
-	cRet := STRTRAN( cInput, aTmp[i], aUtf[i] )
+	cInput := STRTRAN( cInput, aTmp[i], aUtf[i] )
 next
+
+cRet := cInput
 
 return cRet
 
