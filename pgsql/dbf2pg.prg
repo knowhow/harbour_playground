@@ -238,7 +238,9 @@ PROCEDURE Main( ... )
 
       FOR i := 1 TO oTable:FCount()
          cField := Lower( oTable:FieldName( i ) )
+         // field type
          sType := FieldType( FieldPos( cField ) )
+         // data type
          dType := oRecord:Fieldtype( i )
          cValue := FieldGet( FieldPos( cField ) )
 
@@ -279,7 +281,7 @@ PROCEDURE Main( ... )
 
             IF cValue != NIL
                IF oRecord:Fieldtype( i ) == "C" .OR. oRecord:Fieldtype( i ) == "M"
-                  oRecord:FieldPut( i, hb_oemtoansi( cValue ) )
+                  oRecord:FieldPut( i, hb_oemtoansi( strkznutf8( cValue, "8" ) )  )
                ELSE
                   oRecord:FieldPut( i, cValue )
                ENDIF
@@ -348,4 +350,122 @@ PROCEDURE Help()
 
    ? ""
 
-   RETURN
+RETURN
+
+
+// ---------------------------------------------------
+// convert and return string in utf-8
+// ---------------------------------------------------
+FUNCTION strkznutf8( cInput, cIz )
+local aWin := {} 
+local aUTF := {}
+local a852 := {}
+local aTmp := {}
+local cRet
+local i
+
+// windows codes...
+AADD( aWin, "&" ) 
+AADD( aWin, "Š" )
+AADD( aWin, "Ð" )
+AADD( aWin, "Æ" )
+AADD( aWin, "È" )
+AADD( aWin, "Ž" )
+AADD( aWin, "š" )
+AADD( aWin, "ð" )
+AADD( aWin, "æ" )
+AADD( aWin, "è" )
+AADD( aWin, "ž" )
+AADD( aWin, "!" ) 
+AADD( aWin, '"' ) 
+AADD( aWin, "'" ) 
+AADD( aWin, "," ) 
+AADD( aWin, "-" ) 
+AADD( aWin, "." ) 
+AADD( aWin, "\" ) 
+AADD( aWin, "/" ) 
+AADD( aWin, "=" ) 
+AADD( aWin, "(" ) 
+AADD( aWin, ")" ) 
+AADD( aWin, "[" ) 
+AADD( aWin, "]" ) 
+AADD( aWin, "{" ) 
+AADD( aWin, "}" ) 
+AADD( aWin, "<" ) 
+AADD( aWin, ">" ) 
+
+// 852 codes...
+AADD( a852, "&" ) // feature
+AADD( a852, "æ" ) // SS
+AADD( a852, "Ñ" ) // DJ
+AADD( a852, "¬" ) // CC
+AADD( a852, "" ) // CH
+AADD( a852, "¦" ) // ZZ
+AADD( a852, "ç" ) // ss
+AADD( a852, "Ð" ) // dj
+AADD( a852, "Ÿ" ) // cc
+AADD( a852, "†" ) // ch
+AADD( a852, "§" ) // zz
+AADD( a852, "!" ) // uzvicnik
+AADD( a852, '"' ) // navodnici
+AADD( a852, "'" ) // jedan navodnik
+AADD( a852, "," ) // zarez
+AADD( a852, "-" ) // minus
+AADD( a852, "." ) // tacka
+AADD( a852, "\" ) // b.slash
+AADD( a852, "/" ) // slash
+AADD( a852, "=" ) // jedanko
+AADD( a852, "(" ) // otv.zagrada
+AADD( a852, ")" ) // zatv.zagrada
+AADD( a852, "[" ) // otv.ugl.zagrada
+AADD( a852, "]" ) // zatv.ugl.zagrada
+AADD( a852, "{" ) // otv.vit.zagrada
+AADD( a852, "}" ) // zatv.vit.zagrada
+AADD( a852, "<" ) // manje
+AADD( a852, ">" ) // vece
+// etc...
+
+// UTF codes...
+AADD( aUTF, "&#38;" ) 
+AADD( aUTF, "&#352;" )
+AADD( aUTF, "&#272;" )
+AADD( aUTF, "&#268;" )
+AADD( aUTF, "&#262;" )
+AADD( aUTF, "&#381;" )
+AADD( aUTF, "&#353;" )
+AADD( aUTF, "&#273;" )
+AADD( aUTF, "&#269;" )
+AADD( aUTF, "&#263;" )
+AADD( aUTF, "&#382;" )
+AADD( aUTF, "&#33;" ) 
+AADD( aUTF, "&#34;" ) 
+AADD( aUTF, "&#39;" ) 
+AADD( aUTF, "&#44;" ) 
+AADD( aUTF, "&#45;" ) 
+AADD( aUTF, "&#46;" ) 
+//AADD( aUTF, "&#92;" ) 
+AADD( aUTF, "\" ) 
+//AADD( aUTF, "&#97;" ) 
+AADD( aUTF, "/" ) 
+AADD( aUTF, "&#8215;" ) 
+AADD( aUTF, "&#40;" ) 
+AADD( aUTF, "&#41;" ) 
+AADD( aUTF, "&#91;" ) 
+AADD( aUTF, "&#93;" ) 
+AADD( aUTF, "&#123;" ) 
+AADD( aUTF, "&#125;" ) 
+AADD( aUTF, "&#60;" ) 
+AADD( aUTF, "&#62;" ) 
+
+if cIz == "8"
+	aTmp := a852
+elseif cIz == "W"
+	aTmp := aWin
+endif
+
+for i := 1 to LEN( aUtf )
+	cRet := STRTRAN( cInput, aTmp[i], aUtf[i] )
+next
+
+return cRet
+
