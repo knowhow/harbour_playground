@@ -284,7 +284,9 @@ PROCEDURE Main( ... )
 
             IF cValue != NIL
                IF oRecord:Fieldtype( i ) == "C"
-                  oRecord:FieldPut( i, strkznutf8(hb_oemtoansi(cValue), "h8") )
+                  //? cValue, hb_oemtoansi(cValue)
+                  //oRecord:FieldPut( i, strkznutf8(hb_oemtoansi(cValue), "h8") )
+                  oRecord:FieldPut( i,  hb_strtoutf8(cValue) )
                ELSEIF oRecord:Fieldtype( i ) == "M"
                   oRecord:FieldPut( i, hb_oemtoansi( cValue ) )
                ELSE
