@@ -235,7 +235,7 @@ PROCEDURE Main( ... )
 
    DO WHILE ! Eof() .AND. Inkey() != K_ESC .AND. ( Empty( nRecno ) .OR. nRecno == RecNo() )
       oRecord := oTable:GetBlankRow()
-
+      
       FOR i := 1 TO oTable:FCount()
          cField := Lower( oTable:FieldName( i ) )
          // field type
@@ -243,45 +243,42 @@ PROCEDURE Main( ... )
          // data type
          dType := oRecord:Fieldtype( i )
          cValue := FieldGet( FieldPos( cField ) )
+        
+         IF UPPER(cField) == "SIFRA"       
+            loop
+         ENDIF
 
          IF cValue != NIL
             IF dType != sType
                IF dType == "C" .AND. sType == "N"
                  cValue := Str( cValue )
-
                ELSEIF dType == "C" .AND. sType == "D"
                  cValue := DToC( cValue )
-
                ELSEIF dType == "C" .AND. sType == "L"
                  cValue := iif( cValue, "S", "N" )
-
                ELSEIF dType == "N" .AND. sType == "C"
                  cValue := Val( cValue )
-
                ELSEIF dType == "N" .AND. sType == "D"
                  cValue := Val( DToS( cValue ) )
-
                ELSEIF dType == "N" .AND. sType == "L"
                  cValue := iif( cValue, 1, 0 )
-
                ELSEIF dType == "D" .AND. sType == "C"
                  cValue := CToD( cValue )
-
                ELSEIF dType == "D" .AND. sType == "N"
                  cValue := SToD( Str( cValue ) )
-
                ELSEIF dType == "L" .AND. sType == "N"
                  cValue := ! Empty( cValue )
-
                ELSEIF dType == "L" .AND. sType == "C"
                  cValue := iif( AllTrim( cValue ) $ "YySs1", .T., .F. )
-
                ENDIF
             ENDIF
+			
 
             IF cValue != NIL
-               IF oRecord:Fieldtype( i ) == "C" .OR. oRecord:Fieldtype( i ) == "M"
-                  oRecord:FieldPut( i, hb_oemtoansi( strkznutf8( cValue, "8" ) )  )
+               IF oRecord:Fieldtype( i ) == "C"
+                  oRecord:FieldPut( i, strkznutf8(hb_oemtoansi(cValue), "h8") )
+               ELSEIF oRecord:Fieldtype( i ) == "M"
+                  oRecord:FieldPut( i, hb_oemtoansi( cValue ) )
                ELSE
                   oRecord:FieldPut( i, cValue )
                ENDIF
@@ -292,6 +289,8 @@ PROCEDURE Main( ... )
       oTable:Append(oRecord)
 
       IF oTable:NetErr()
+  	     ? "LANG:", hb_langName()
+         ? "CP:", hb_cdpInfo()
          ?
          ? "Error Record: ", RecNo(), Left( oTable:ErrorMsg(), 70 )
          ?
@@ -360,6 +359,7 @@ FUNCTION strkznutf8( cInput, cIz )
 local aWin := {} 
 local aUTF := {}
 local a852 := {}
+local ahb852 := {}
 local aTmp := {}
 local cRet
 local i
@@ -380,26 +380,13 @@ AADD( aWin, "!" )
 AADD( aWin, '"' ) 
 AADD( aWin, "'" ) 
 AADD( aWin, "," ) 
-AADD( aWin, "-" ) 
-AADD( aWin, "." ) 
-AADD( aWin, "\" ) 
-AADD( aWin, "/" ) 
-AADD( aWin, "=" ) 
-AADD( aWin, "(" ) 
-AADD( aWin, ")" ) 
-AADD( aWin, "[" ) 
-AADD( aWin, "]" ) 
-AADD( aWin, "{" ) 
-AADD( aWin, "}" ) 
-AADD( aWin, "<" ) 
-AADD( aWin, ">" ) 
 
 // 852 codes...
 AADD( a852, "&" ) // feature
 AADD( a852, "æ" ) // SS
 AADD( a852, "Ñ" ) // DJ
 AADD( a852, "¬" ) // CC
-AADD( a852, "" ) // CH
+AADD( a852, "¬" ) // CH
 AADD( a852, "¦" ) // ZZ
 AADD( a852, "ç" ) // ss
 AADD( a852, "Ð" ) // dj
@@ -410,20 +397,26 @@ AADD( a852, "!" ) // uzvicnik
 AADD( a852, '"' ) // navodnici
 AADD( a852, "'" ) // jedan navodnik
 AADD( a852, "," ) // zarez
-AADD( a852, "-" ) // minus
-AADD( a852, "." ) // tacka
-AADD( a852, "\" ) // b.slash
-AADD( a852, "/" ) // slash
-AADD( a852, "=" ) // jedanko
-AADD( a852, "(" ) // otv.zagrada
-AADD( a852, ")" ) // zatv.zagrada
-AADD( a852, "[" ) // otv.ugl.zagrada
-AADD( a852, "]" ) // zatv.ugl.zagrada
-AADD( a852, "{" ) // otv.vit.zagrada
-AADD( a852, "}" ) // zatv.vit.zagrada
-AADD( a852, "<" ) // manje
-AADD( a852, ">" ) // vece
-// etc...
+
+//  ƒ å º τ ╨ - ¼ Å ª µ ╤
+//  č ć ž š đ - Č Ć Ž Š Đ
+
+// hb852 codes (harbour)...
+AADD( ahb852, "&" ) // feature
+AADD( ahb852, "µ" ) // SS
+AADD( ahb852, "╤" ) // DJ
+AADD( ahb852, "Å" ) // CC
+AADD( ahb852, "¼" ) // CH
+AADD( ahb852, "ª" ) // ZZ
+AADD( ahb852, "τ" ) // ss
+AADD( ahb852, "╨" ) // dj
+AADD( ahb852, "å" ) // cc
+AADD( ahb852, "ƒ" ) // ch
+AADD( ahb852, "º" ) // zz
+AADD( ahb852, "!" ) // uzvicnik
+AADD( ahb852, '"' ) // navodnici
+AADD( ahb852, "'" ) // jedan navodnik
+AADD( ahb852, "," ) // zarez
 
 // UTF codes...
 AADD( aUTF, "&#38;" ) 
@@ -441,30 +434,18 @@ AADD( aUTF, "&#33;" )
 AADD( aUTF, "&#34;" ) 
 AADD( aUTF, "&#39;" ) 
 AADD( aUTF, "&#44;" ) 
-AADD( aUTF, "&#45;" ) 
-AADD( aUTF, "&#46;" ) 
-//AADD( aUTF, "&#92;" ) 
-AADD( aUTF, "\" ) 
-//AADD( aUTF, "&#97;" ) 
-AADD( aUTF, "/" ) 
-AADD( aUTF, "&#8215;" ) 
-AADD( aUTF, "&#40;" ) 
-AADD( aUTF, "&#41;" ) 
-AADD( aUTF, "&#91;" ) 
-AADD( aUTF, "&#93;" ) 
-AADD( aUTF, "&#123;" ) 
-AADD( aUTF, "&#125;" ) 
-AADD( aUTF, "&#60;" ) 
-AADD( aUTF, "&#62;" ) 
+
 
 if cIz == "8"
 	aTmp := a852
+elseif cIz == "h8"
+    aTmp := ahb852
 elseif cIz == "W"
 	aTmp := aWin
 endif
 
 for i := 1 to LEN( aUtf )
-	cInput := STRTRAN( cInput, aTmp[i], aUtf[i] )
+    cInput := STRTRAN( cInput, aTmp[i], aUtf[i] )
 next
 
 cRet := cInput
