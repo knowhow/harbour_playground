@@ -89,6 +89,14 @@ PROCEDURE Main( ... )
  ? "setujem default engine ..." + RDDENGINE
   RDDSETDEFAULT( RDDENGINE )
 
+
+   REQUEST HB_CODEPAGE_SL852 
+   REQUEST HB_CODEPAGE_SLISO
+
+   HB_CDPSELECT("SL852")
+
+   //hb_setCodePage( "SL852" )
+   //hb_setTermCP("SLISO")
    
    // REQUEST HB_CODEPAGE_SL852 
    // REQUEST HB_CODEPAGE_SLISO
