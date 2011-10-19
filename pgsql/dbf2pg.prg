@@ -252,9 +252,9 @@ PROCEDURE Main( ... )
          dType := oRecord:Fieldtype( i )
          cValue := FieldGet( FieldPos( cField ) )
         
-         IF UPPER(cField) == "SIFRA"       
-            loop
-         ENDIF
+         //IF UPPER(cField) == "SIFRA"       
+         //   loop
+         //ENDIF
 
          IF cValue != NIL
             IF dType != sType
@@ -284,11 +284,9 @@ PROCEDURE Main( ... )
 
             IF cValue != NIL
                IF oRecord:Fieldtype( i ) == "C"
-                  //? cValue, hb_oemtoansi(cValue)
-                  //oRecord:FieldPut( i, strkznutf8(hb_oemtoansi(cValue), "h8") )
                   oRecord:FieldPut( i,  hb_strtoutf8(cValue) )
                ELSEIF oRecord:Fieldtype( i ) == "M"
-                  oRecord:FieldPut( i, hb_oemtoansi( cValue ) )
+                  oRecord:FieldPut( i, hb_strtoutf8( cValue ) )
                ELSE
                   oRecord:FieldPut( i, cValue )
                ENDIF
