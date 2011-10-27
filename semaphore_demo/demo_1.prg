@@ -33,13 +33,31 @@ ENDIF
 
 // neki kod kojim se update-uje  konto ...
 
-? "update_semaphore_version", update_semaphore_version("konto", cUser)
+? "update_semaphore_version", cUser, update_semaphore_version("konto", cUser)
 
-? "get_semaphore_version", get_semaphore_version("konto", cUser)
+? "neki drugi user update", update_semaphore_version("konto", "neko2")
+? "neki treci user update", update_semaphore_version("konto", "neko3")
+? "neki cetvrti user update", update_semaphore_version("konto", "neko4")
 
+//for i:=1 to 50
+   ? "get_semaphore_version", cUser, get_semaphore_version("konto", cUser)
+//next
 
+? "aktuelna verzija na serveru", last_semaphore_version("konto")
 
 return
+
+// ------------------------------------
+// ------------------------------------
+function last_semaphore_version(cTable)
+local cTmpQry
+local oRet
+
+cTmpQry := "SELECT currval('fmk.sem_ver_" + cTable + "') as val"
+oRet := _sql_query( oServer, cTmpQry )
+
+return oRet:Fieldget( oRet:Fieldpos("val") )
+
 
 /* ------------------------------------------
   get_semaphore_version( "konto", "hernad" )
@@ -98,17 +116,18 @@ else
 
 cTmpQry := "UPDATE " + cFullTable + ;
               " SET version=nextval('fmk.sem_ver_"+ cTable + "') " + ;
-              " WHERE user =" + _sql_quote(cUser) 
+              " WHERE user_code =" + _sql_quote(cUser) 
 
 
 oRet := _sql_query( oServer, cTmpQry )
 
 endif
 
-cTmpQry := "SELECT currval('fmk.sem_ver_" + cTable + "') as val"
+cTmpQry := "SELECT version from " + cFullTable + ;
+           " WHERE user_code =" + _sql_quote(cUser) 
 oRet := _sql_query( oServer, cTmpQry )
 
-return oRet:Fieldget( oRet:Fieldpos("val") )
+return oRet:Fieldget( oRet:Fieldpos("version") )
 
 
 
