@@ -114,20 +114,14 @@ cParams := set_company_params()
 @ 16, 2 SAY ""
 ? cParams
 
-// kreiraj log fajl
-//IF ( nHandle := FCreate( cDBFDataPath + "migrate.log" ) == -1 )
-//	? "Ne mogu kreirati log fajl"
-//	QUIT
-//ENDIF
-
 // ostvari konekciju na server
 oPgServer := db_server_connect(cHostName, cDatabase, cUser, cPassword, nPort, cSchema)
 
 // setuj osnovne postavke na sql serveru (jmj, tarife, ...)
 lStatus := set_db_main_params( oPgServer )
 
-// prebaci šifrarnike
-lStatus := migrate_sif( oPgServer, cDBFDataPath )
+// prebaci šifrarnike robe
+lStatus := migrate_sif_articles( oPgServer, cDBFDataPath )
 
 
 RETURN
@@ -156,6 +150,162 @@ __configure_tax( oServer )
 
 
 RETURN lStatus
+
+
+STATIC FUNCTION __get_item_type( cValue )
+LOCAL cType := "Purchased"
+
+IF cValue == "U"
+	cType := "Referenced"
+ENDIF
+
+RETURN cType 
+
+
+
+// setuj itemsite
+STATIC FUNCTION __set_itemsite( oServer, cValue, cSite, cNotes )
+LOCAL oTable
+LOCAL cTable := "api.itemsite"
+LOCAL cTmpQry
+LOCAL cCostMethod := "Average"
+LOCAL cCtrlMethod := "Regular"
+LOCAL cPlanner := "P1"
+LOCAL cCostCateg := "C1"
+
+IF ( cNotes == nil )
+	cNotes := ""
+ENDIF
+
+// provjeri prvo da li postoji uopšte ovaj UOM zapis
+IF ( __get_itemsite( oServer, cValue, cSite ) > 0 )
+	// postoji već ovaj zapis
+	? "ITEMSITE stavka " + cValue + " vec postoji !"
+	RETURN
+ENDIF
+
+// ne postoji, ubaci zapis
+cTmpQry := "INSERT INTO " + cTable + ;
+		" ( item_number, site, active, po_supplied_at_site, sold_from_site, ranking, cost_method, control_method, " + ;
+		"planner_code, cost_category, notes ) VALUES (" + ;
+		_sql_value( cValue ) + "," + ;
+		_sql_value( cSite ) + "," + ;
+		_sql_value( "TRUE" ) + "," + ;
+		_sql_value( "TRUE" ) + "," + ;
+		_sql_value( "TRUE" ) + "," + ;
+		ALLTRIM(STR( 1 )) + "," + ;
+		_sql_value( cCostMethod ) + "," + ;
+		_sql_value( cCtrlMethod ) + "," + ;
+		_sql_value( cPlanner ) + "," + ;
+		_sql_value( cCostCateg ) + "," + ;
+		_sql_value( cNotes ) + ")"
+
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+    QUIT
+ENDIF
+
+RETURN
+
+
+STATIC FUNCTION __get_itemsite( oServer, cValue, cSite )
+LOCAL oTable
+LOCAL cTable := "api.itemsite"
+LOCAL nResult
+LOCAL cTmpQry
+
+// provjeri prvo da li postoji uopšte ovaj site zapis
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = '" + cValue + "'" + ;
+	" AND site = '" + cSite + "'"
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+      Alert( oTable:ErrorMsg() )
+      QUIT
+ENDIF
+
+nResult := oTable:Fieldget( oTable:Fieldpos("count") )
+
+RETURN nResult
+
+
+
+// setuj site
+STATIC FUNCTION __set_item( oServer, cValue, cDescription, cType, cUom, nPrice, cUpc_code, cNotes )
+LOCAL oTable
+LOCAL cTable := "api.item"
+LOCAL cTmpQry
+LOCAL cItemType
+LOCAL cClassCode := "OSTALO"
+LOCAL cProdCateg := "OSTALO"
+LOCAL lReturn := .f.
+
+IF (cNotes == nil)
+	cNotes := ""
+ENDIF
+
+cUom := UPPER(cUom)
+// ubaci jedinicu mjere
+__set_uom( oServer, cUom, "" )
+
+// vrati tip na osnovu tipa iz FMK
+cItemType := __get_item_type( cType )
+
+// provjeri prvo da li postoji uopšte ovaj UOM zapis
+IF ( __get_item( oServer, cValue ) > 0 )
+	// postoji već ovaj zapis
+	? "ITEM " + cValue + " vec postoji !"
+	RETURN lReturn
+ENDIF
+
+// ne postoji, ubaci zapis
+cTmpQry := "INSERT INTO " + cTable + ;
+		" ( item_number, active, description1, item_type, class_code, inventory_uom, product_category, " + ;
+		"list_price, list_price_uom, upc_code, notes ) VALUES (" + ;
+		_sql_value( cValue ) + "," + ;
+		_sql_value( "TRUE" ) + "," + ;
+		_sql_value( cDescription ) + "," + ;
+		_sql_value( cItemType ) + "," + ;
+		_sql_value( cClassCode ) + "," + ;
+		_sql_value( cUom ) + "," + ;
+		_sql_value( cProdCateg ) + "," + ;
+		ALLTRIM(STR( nPrice )) + "," + ;
+		_sql_value( cUom ) + "," + ;
+		_sql_value( cUpc_code ) + "," + ;
+		_sql_value( cNotes ) + ;
+		")"
+
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+    QUIT
+ENDIF
+
+lReturn := .t.
+
+RETURN lReturn
+
+
+STATIC FUNCTION __get_item( oServer, cValue )
+LOCAL oTable
+LOCAL cTable := "api.item"
+LOCAL nResult
+LOCAL cTmpQry
+
+// provjeri prvo da li postoji uopšte ovaj site zapis
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = '" + cValue +"'"
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+      Alert( oTable:ErrorMsg() )
+      QUIT
+ENDIF
+
+nResult := oTable:Fieldget( oTable:Fieldpos("count") )
+
+RETURN nResult
+
+
+
 
 
 // setuj site
@@ -275,6 +425,11 @@ nTax := __get_tax( oServer, "TINO" )
 __set_taxrate( oServer, nTax, 0, nCurr )
 // poveži tax zonu i tax tip
 __set_taxass( oServer, nTaxZoneIno, nTaxTypeIno, nTax )
+
+
+// dodaj terms
+
+__set_terms( oServer, "DEFAULT", "DEFAULT" )
 
 
 RETURN
@@ -440,7 +595,7 @@ LOCAL cTable := "taxtype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT taxtype_id FROM " + cTable + " WHERE taxtype_code = '" + cValue + "'"
+cTmpQry := "SELECT taxtype_id FROM " + cTable + " WHERE taxtype_name = '" + cValue + "'"
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
       Alert( oTable:ErrorMsg() )
@@ -450,6 +605,56 @@ ENDIF
 nResult := oTable:Fieldget( oTable:Fieldpos("taxtype_id") )
 
 RETURN nResult
+
+
+STATIC FUNCTION __set_itemtaxtype( oServer, cValue, cTaxZone, cTaxType )
+LOCAL oTable
+LOCAL cTable := "api.itemtaxtype"
+LOCAL cTmpQry
+
+IF ( __get_itemtaxtype( oServer, cValue, cTaxZone, cTaxType ) > 0 )  
+	RETURN
+ENDIF
+
+cTmpQry := "INSERT INTO " + cTable + ;
+		" ( item_number, tax_zone, tax_type ) VALUES (" + ;
+		_sql_value( cValue ) + "," + ;
+		_sql_value( cTaxZone ) + "," + ;
+		_sql_value( cTaxType ) + ;
+		")"
+
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+    QUIT
+ENDIF
+
+RETURN
+
+
+STATIC FUNCTION __get_itemtaxtype( oServer, cValue, cTaxZone, cTaxType )
+LOCAL oTable
+LOCAL cTable := "api.itemtaxtype"
+LOCAL nResult
+LOCAL cTmpQry
+
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE " + ;
+			"item_number = " + _sql_value(cValue) + ;
+			" AND tax_zone = " + _sql_value(cTaxZone) + ;
+			" AND tax_type = " + _sql_value(cTaxType)
+
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+      Alert( oTable:ErrorMsg() )
+      QUIT
+ENDIF
+
+nResult := oTable:Fieldget( oTable:Fieldpos("count") )
+
+RETURN nResult
+
+
+
 
 
 STATIC FUNCTION __set_taxrate( oServer, nTax, nAmount, nCurrency )
@@ -706,10 +911,11 @@ ENDIF
 
 // ne postoji, ubaci zapis
 cTmpQry := "INSERT INTO " + cTable + ;
-		" ( curr_base, curr_name, curr_symbol ) VALUES (" + ;
+		" ( curr_base, curr_name, curr_symbol, curr_abbr ) VALUES (" + ;
 		_sql_value(cBase) + "," + ;
 		_sql_value(cDescription) + "," + ;
 		_sql_value(cValue) + "," + ;
+		_sql_value("") + ; 
 		")"
 
 oTable := _sql_query( oServer, cTmpQry )
@@ -754,14 +960,68 @@ ENDIF
 RETURN oResult
 
 
+
 // konvertuje neku vrijednost za sql value
 STATIC FUNCTION _sql_value( cValue )
 RETURN "'" + cValue + "'"
 
 
-// migracija šifrarnika
-FUNCTION migrate_sif( oServer, cDBPath )
+// migracija šifrarnika robe
+FUNCTION migrate_sif_articles( oServer, cDBPath )
 LOCAL lStatus := .t.
+LOCAL cFileName := cDBPath + "ROBA.DBF"
+LOCAL cNotes := ""
+
+// koristimo funkciju __set_item()
+// __set_item( oServer, cValue, cDescription, cType, cUom, nPrice, cUpc_code, cNotes )
+
+
+USE (cFileName) ALIAS "ROBA"
+SET ORDER TO TAG "1"
+
+GO TOP
+
+DO WHILE !EOF()
+
+	// provjeri sta ces preskociti
+	IF EMPTY( field->id )
+		SKIP
+		LOOP
+	ENDIF
+
+	IF EMPTY( field->naz )
+		? "Artikal " + field->id + ", je bez naziva ! Preskacem..."
+        SKIP
+		LOOP
+	ENDIF
+
+	? "Ubacujem " + field->id + ", " + field->naz
+
+	// ubaci stavku na server u tabelu item
+	if __set_item( oServer, ;
+				field->id, ;
+				field->naz, ;
+				field->tip, ;
+				UPPER(field->jmj), ;
+				field->vpc, ;
+				field->barkod, ;
+				cNotes )
+
+		// ubaci stavku na server u tabelu itemsite
+		__set_itemsite( oServer, ;
+					field->id, ;
+					__site_name )
+
+		// setuj porezne tipove za artikal
+		__set_itemtaxtype( oServer, field->id, ;
+					__taxzone_bih, ;
+					__taxtype )
+	
+	endif
+
+	SKIP
+
+ENDDO
 
 RETURN lStatus
 
