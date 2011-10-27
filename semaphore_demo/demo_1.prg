@@ -16,6 +16,8 @@ procedure Main( p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 )
 
 // ? _sql_quote("ab'cde") => 'ab''cde'
 
+init_app()
+
 set_params( p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 )
 
 // hernad
@@ -29,32 +31,40 @@ cHome := hb_DirSepAdd(cHome + ".fmk")
 
 ? cHome
 
-
-create_partn(cHome)
-close all
-
-use (cHome + "partn") new via "DBFCDX"
-append blank
-replace id with "01", naz with "naz 01"
-append blank
-replace id with "02", naz with "naz 02"
-append blank
-replace id with "03", naz with "naz 03"
-
-set order to tag "ID"
-dbedit()
-
-init_app()
-
+? "PostgreSQL konekcija ..."
 oServer := TPQServer():New( cHostName, cDatabase, cUser, cPassWord, nPort, cSchema )
 IF oServer:NetErr()
       ? oServer:ErrorMsg()
       QUIT
 ENDIF
 
+
+
+create_partn(cHome)
+close all
+
+use (cHome + "partn") new via "DBFCDX"
+
+
+for i:=20000 to 20009
+   ? "update_partn (dbf/sql)", i
+   update_partn( str(i, 5), "naz " + str(i, 5) )
+next
+? "update_semaphore_version", cUser, update_semaphore_version("konto", cUser)
+
+? "start"
+update_partn_from_sql()
+? "stop"
+? "---------------------------"
+? "pritisni nesto"
+inke(10)
+
+set order to tag "ID"
+dbedit()
+
+
 // neki kod kojim se update-uje  konto ...
 
-? "update_semaphore_version", cUser, update_semaphore_version("konto", cUser)
 
 ? "neki drugi user update", update_semaphore_version("konto", "neko2")
 ? "neki treci user update", update_semaphore_version("konto", "neko3")
@@ -66,7 +76,95 @@ ENDIF
 
 ? "aktuelna verzija na serveru", last_semaphore_version("konto")
 
+
+oServer:Destroy()
 return
+
+
+function update_partn_from_sql()
+local oQuery
+local nCounter
+   ? "updateujem partn.dbf from sql stanja"
+
+   oQuery := oServer:Query( "SELECT id, naz FROM fmk.partn" )
+
+   aStruct := oQuery:Struct()
+
+   FOR i := 1 TO Len( aStruct )
+      ? aStruct[ i ][ 1 ], aStruct[ i ][ 2 ]
+   NEXT
+
+   ? "Fields: ", oQuery:Fcount()
+
+   SELECT PARTN
+   ZAP
+  
+    
+   nCounter := 1
+   DO WHILE ! oQuery:Eof()
+      append blank
+      replace id with oQuery:FieldGet(1), ;
+              naz with oQuery:FieldGet(2)
+
+      oQuery:Skip()
+
+      //? nCounter++
+   ENDDO
+
+   oQuery:Destroy()
+
+return 
+
+
+
+function update_partn(cId, cNaz)
+ update_partn_dbf(cId, cNaz)
+ update_partn_sql(cId, cNaz)
+return
+
+
+function update_partn_dbf(cId, cNaz)
+ append blank
+ replace id with cId, naz with cNaz
+return
+
+function update_partn_sql(cId, cNaz)
+LOCAL oRet
+LOCAL nResult
+LOCAL cTmpQry
+LOCAL cTable
+
+cTable := "fmk.partn"
+
+nResult := table_count(oServer, cTable, "id=" + _sql_quote(cId)) 
+
+if nResult == 0
+
+   cTmpQry := "INSERT INTO " + cTable + ;
+              "(id, naz) " + ;
+               "VALUES(" + _sql_quote(cId)  + "," + _sql_quote(cNaz) +  ")"
+
+   oRet := _sql_query( oServer, cTmpQry)
+
+else
+
+cTmpQry := "UPDATE " + cTable + ;
+              " SET naz = " + _sql_quote(cNaz) + ;
+              " WHERE id =" + _sql_quote(cId) 
+
+
+oRet := _sql_query( oServer, cTmpQry )
+
+endif
+
+cTmpQry := "SELECT count(*) from " + cTable 
+oRet := _sql_query( oServer, cTmpQry )
+
+return oRet:Fieldget( oRet:Fieldpos("count") )
+
+ 
+return
+
 
 // ------------------------------------
 // ------------------------------------
@@ -165,7 +263,7 @@ LOCAL cTmpQry
 cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE " + cCondition
 
 oTable := _sql_query( oServer, cTmpQry )
-IF oTable == NIL
+IF oTable:NetErr()
       ? "problem sa query-jem: " + cTmpQry 
       QUIT
 ENDIF
