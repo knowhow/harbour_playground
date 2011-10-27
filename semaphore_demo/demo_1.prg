@@ -10,6 +10,7 @@ static cDataBase := "demo_db1"
 static cDBFDataPath := ""
 static cSchema := "public"
 static oServer := NIL
+static cHome := ""
 
 procedure Main( p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 )
 
@@ -22,6 +23,26 @@ set_params( p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 )
 nPort := 5433
 cDatabase := "quick38"
 ? "------ brisi ovo na drugom racunaru ----"
+
+cHome := hb_DirSepAdd( GetEnv( "HOME" ) ) 
+cHome := hb_DirSepAdd(cHome + ".fmk")
+
+? cHome
+
+
+create_partn(cHome)
+close all
+
+use (cHome + "partn") new via "DBFCDX"
+append blank
+replace id with "01", naz with "naz 01"
+append blank
+replace id with "02", naz with "naz 02"
+append blank
+replace id with "03", naz with "naz 03"
+
+set order to tag "ID"
+dbedit()
 
 init_app()
 
