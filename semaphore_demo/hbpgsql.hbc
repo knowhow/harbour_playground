@@ -1,0 +1,12 @@
+incpaths=.
+
+libs=${_HB_DYNPREF}${hb_name}${_HB_DYNSUFF}
+
+
+libs=hbvm hbrtl hblang hbrdd hbrtl hbmacro hbpp rddcdx rddfpt rddntx
+libs=hbsqlit3 sqlite3
+libs=hbcommon hbct
+
+{unix}libs=pq
+{!unix}libs=libpq
+{darwin}libpaths=/Library/PostgreSQL/9.1/lib
