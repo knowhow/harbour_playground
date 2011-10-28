@@ -149,6 +149,11 @@ nRecords := migrate_sif_partners( oPgServer, cDBFDataPath )
 
 ? "  - Importovao " + ALLTRIM(STR(nRecords)) + " partnera..."
 
+? "5) Import podataka modula FAKT, sacekajte trenutak"
+// prebaci fakturne podatke
+nRecords := migrate_fakt_data( oPgServer, cDBFDataPath )
+
+? "  - Importovao " + ALLTRIM(STR(nRecords)) + " podataka..."
 
 RETURN
 
@@ -384,6 +389,23 @@ ENDIF
 nResult := oTable:Fieldget( oTable:Fieldpos("count") )
 
 RETURN nResult
+
+
+STATIC FUNCTION __get_item_data( oServer, cValue )
+LOCAL oTable
+LOCAL cTable := "api.item"
+LOCAL nResult
+LOCAL cTmpQry
+
+cTmpQry := "SELECT * FROM " + cTable + " WHERE item_number = '" + cValue +"'"
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+RETURN oTable
+
 
 
 
@@ -1919,30 +1941,35 @@ RETURN nResult
 
 
 
-	// pomoćna funkcija za sql query izvršavanje
+// pomoćna funkcija za sql query izvršavanje
 STATIC FUNCTION _sql_query( oServer, cQuery )
-	LOCAL oResult
-	oResult := oServer:Query( cQuery )
-	IF oResult:NetErr()
-Alert( oResult:ErrorMsg() )
+LOCAL oResult
+oResult := oServer:Query( cQuery )
+IF oResult:NetErr()
+	Alert( oResult:ErrorMsg() )
 	QUIT
-	ENDIF
-	RETURN oResult
+ENDIF
+RETURN oResult
 
 
 
-	// konvertuje neku vrijednost za sql value
+// konvertuje neku vrijednost za sql value
 STATIC FUNCTION _sql_value( cValue )
-	RETURN "'" + cValue + "'"
+RETURN "'" + cValue + "'"
 
 
-	// migracija šifrarnika robe
+// migracija šifrarnika robe
 FUNCTION migrate_sif_articles( oServer, cDBPath )
 LOCAL cNotes := ""
 LOCAL nCount := 0
 LOCAL cRobaNaziv
 LOCAL cTblName := "ROBA.DBF"
 LOCAL cFileName := cDBPath + cTblName
+
+IF !FILE( cFileName )
+	? "Fajl " + cFileName + " ne postoji, prekidam operaciju !"
+	QUIT
+ENDIF
 
 // ubaci class code
 __set_classcode( oServer, "OSTALO", "OSTALO" )
@@ -1954,6 +1981,7 @@ __set_plcode( oServer, "P1", "Plan 1" )
 __set_costcat( oServer, "C1", "Kategorija 1" )
 
 // zakači se na tabelu robe
+SELECT 100
 USE (cFileName) ALIAS "ROBA"
 SET ORDER TO TAG "ID"
 
@@ -1973,7 +2001,7 @@ DO WHILE !EOF()
 
 	// ubaci stavku na server u tabelu item
 	if __set_item( oServer, ;
-		ALLTRIM( hb_strtoutf8( roba->id ) ), ;
+		ALLTRIM( hb_strtoutf8( UPPER(roba->id) ) ), ;
 		ALLTRIM( hb_strtoutf8( cRobaNaziv ) ), ;
 		roba->tip, ;
 		ALLTRIM( hb_strtoutf8( UPPER(field->jmj) ) ), ;
@@ -1987,13 +2015,13 @@ DO WHILE !EOF()
 
 		// ubaci stavku na server u tabelu itemsite
 		__set_itemsite( oServer, ;
-			ALLTRIM( hb_strtoutf8(roba->id) ), ;
+			ALLTRIM( hb_strtoutf8(UPPER(roba->id)) ), ;
 			__site_name )
 
 		verbosed( "itemsite ubacen" )
 
 		// setuj porezne tipove za artikal
-		__set_itemtaxtype( oServer, ALLTRIM( hb_strtoutf8( field->id ) ), ;
+		__set_itemtaxtype( oServer, ALLTRIM( hb_strtoutf8( UPPER(roba->id) ) ), ;
 			__taxzone_bih, ;
 			__taxtype )
 
@@ -2016,6 +2044,12 @@ LOCAL cFileName := cDBPath + cTblName
 LOCAL cAccType
 LOCAL cAccSubType
 LOCAL cKto
+
+IF !FILE( cFileName )
+	? "Fajl " + cFileName + " ne postoji, prekidam operaciju !"
+	QUIT
+ENDIF
+
 
 // zakači se na tabelu robe
 USE (cFileName) ALIAS "KONTO"
@@ -2176,6 +2210,15 @@ LOCAL cSFileName := cDBPath + cTblSName
 LOCAL cId
 LOCAL cPartIdBroj := ""
 
+IF !FILE( cPFileName )
+	? "Fajl " + cPFileName + " ne postoji, prekidam operaciju !"
+	QUIT
+ENDIF
+IF !FILE( cSFileName )
+	? "Fajl " + cSFileName + " ne postoji, prekidam operaciju !"
+	QUIT
+ENDIF
+
 // prvo ubaci podešenja potrebna za partnere
 __set_custtype( oServer, "KD", "Domaci kupci" )
 __set_vendtype( oServer, "DD", "Domaci dobavljaci" )
@@ -2229,6 +2272,385 @@ DO WHILE !EOF()
 ENDDO	
 
 RETURN nCount
+
+
+
+FUNCTION fix_fakt_broj( cIdTipDok, cNumber )
+LOCAL cTmp := ""
+LOCAL i
+LOCAL cResult := ""
+
+FOR i := 1 TO LEN( ALLTRIM(cNumber) )
+	cTmp := SUBSTR( cNumber, i, 1 )
+	IF cTmp $ "0123456789"
+		cResult += cTmp
+	ELSE
+		EXIT
+	ENDIF
+NEXT
+
+cResult := cIdTipDok + PADL( cResult, 8, "0" )
+
+RETURN cResult
+
+
+// migracija podataka modula FAKT
+FUNCTION migrate_fakt_data( oServer, cDBPath )
+LOCAL cNotes := ""
+LOCAL nCount := 0
+LOCAL cTblFakt := "FAKT.DBF"
+LOCAL cTblDoks := "DOKS.DBF"
+LOCAL cFFileName := cDBPath + cTblFakt
+LOCAL cDFileName := cDBPath + cTblDoks
+LOCAL cIdFirma
+LOCAL cIdTipDok
+LOCAL cBrDok
+LOCAL cSO_number
+LOCAL cUOM
+LOCAL oTable
+
+IF !FILE( cFFileName )
+	? "Fajl " + cFFileName + " ne postoji, prekidam operaciju !"
+	QUIT
+ENDIF
+
+// zakači se na tabele
+SELECT 60
+USE (cFFileName) ALIAS "FAKT"
+SET ORDER TO TAG "1"
+
+SELECT 61
+USE (cDFileName) ALIAS "DOKS"
+SET ORDER TO TAG "1"
+
+SELECT doks
+GO TOP
+
+// prvo ćemo odraditi fakture
+DO WHILE !EOF()
+
+	cIdFirma := doks->idfirma
+
+	IF EMPTY( cIdFirma )
+		SKIP
+		LOOP
+	ENDIF
+
+	DO WHILE !EOF() .AND. doks->idfirma == cIdFirma
+		
+		cIdTipDok := doks->idtipdok
+		cBrDok := doks->brdok
+
+		// vidi ima li karaktera, kreiraj broj
+		cSO_number := fix_fakt_broj( cIdTipDok, cBrDok )
+
+		// ako nije ništa od računa, preskoči...
+		IF cIdTipDok <> "10" .AND. cIdTipDok <> "11"
+			SKIP
+			LOOP
+		ENDIF
+
+		// dobro, ovo je neki račun
+		? "Radim dokument:", cIdFirma + "-" + cIdTipDok + "-" + cBrDok + " / " + cSO_number 
+
+
+		// provjeri mi robu !
+		SELECT fakt
+		GO TOP
+		SEEK cIdFirma + cIdTipDok + cBrDok
+
+		lNoArticle := .f.
+
+		DO WHILE !EOF() .AND. fakt->idfirma == cIdFirma ;
+			.AND. fakt->idtipdok == cIdTipDok ;
+			.AND. fakt->brdok == cBrDok
+			
+			cIdRoba := ALLTRIM( UPPER( fakt->idroba ))
+			
+			if __get_item( oServer, hb_strtoutf8(cIdRoba) ) = 0
+				? " - fali artikal: " + cIdRoba + ", preskacem ovaj dokument !"
+				lNoArticle := .t.
+				EXIT
+			endif
+			
+			SKIP
+		ENDDO
+
+		// idi na idući dokument
+		if lNoArticle = .t.
+			SELECT doks
+			SKIP
+			LOOP
+		endif
+		
+		// ubaci podatke u ponude
+		__insert_so( oServer, ;
+				cSO_number, ;
+				doks->datdok, ;
+				ALLTRIM( hb_strtoutf8( doks->idpartner )) )
+
+		// ubaci podatke u račune
+		__insert_inv( oServer, ;
+				cSO_number, ;
+				doks->datdok, ;
+				ALLTRIM( hb_strtoutf8( doks->idpartner)) )
+
+		SELECT fakt
+		GO TOP
+		SEEK cIdFirma + cIdTipDok + cBrDok
+
+		DO WHILE !EOF() .AND. fakt->idfirma == cIdFirma ;
+			.AND. fakt->idtipdok == cIdTipDok ;
+			.AND. fakt->brdok == cBrDok
+			
+			cIdRoba := fakt->idroba
+
+			SELECT roba
+			GO TOP
+			SEEK cIdRoba
+
+			SELECT fakt
+
+			// uzmi sa artikla pojedina polja
+			oTable := __get_item_data( oServer, ALLTRIM( hb_strtoutf8( UPPER(roba->id)) ) )
+			cUOM := oTable:Fieldget( oTable:Fieldpos("list_price_uom") )
+			
+			// dodaj stavke ponude
+			__insert_so_line( oServer, ;
+							cSO_number, ;
+							ALLTRIM( fakt->rbr ), ;
+							ALLTRIM( hb_strtoutf8( fakt->idroba )), ;
+							fakt->kolicina, ;
+							cUOM, ; 
+							fakt->cijena, ;
+							doks->datdok, ;
+							roba->idtarifa )
+
+			// dodaj stavke fakture
+			__insert_inv_line( oServer, ;
+							cSO_number, ;
+							ALLTRIM( fakt->rbr ), ;
+							ALLTRIM( hb_strtoutf8( fakt->idroba )), ;
+							fakt->kolicina, ;
+							cUOM, ; 
+							fakt->cijena, ;
+							doks->datdok, ;
+							roba->idtarifa )
+
+
+			SKIP
+		
+		ENDDO
+
+		SELECT doks
+		SKIP
+
+	ENDDO
+
+ENDDO
+
+RETURN nCount
+
+
+FUNCTION format_sql_date( dDate )
+LOCAL cDate := ""
+
+cDate := "'"
+cDate += ALLTRIM(STR(YEAR(dDate)))
+cDate += "-"
+cDate += ALLTRIM(STR(MONTH(dDate)))
+cDate += "-"
+cDate += ALLTRIM(STR(DAY(dDate)))
+cDate += "'"
+
+RETURN cDate
+
+
+STATIC FUNCTION __insert_so( oServer, cOrderNumber, dOrderDate, cPartner )
+LOCAL oTable
+LOCAL cTable := "api.salesorder"
+LOCAL cTmpQry
+LOCAL lReturn := .f.
+
+IF ( __get_so( oServer, cOrderNumber ) > 0 )  
+	verbosed( "SO " + cOrderNumber + " vec postoji!"  )
+	RETURN lReturn
+ENDIF
+
+cTmpQry := "INSERT INTO " + cTable + ;
+	" ( order_number, order_date, pack_date, originated_by, sales_rep, " + ;
+	"tax_zone, terms, customer_number, billto_contact_name, shipto_contact_honorific, " + ;
+	"ship_via, shipping_form, order_notes ) VALUES (" + ;
+	_sql_value( cOrderNumber ) + "," + ;
+	format_sql_date( dOrderDate ) + "," + ;
+	format_sql_date( dOrderDate ) + "," + ;
+	_sql_value( "Customer" ) + "," + ;
+	_sql_value( "DEFAULT" ) + "," + ;
+	_sql_value( __taxzone_bih ) + "," + ;
+	_sql_value( "DEFAULT" ) + "," + ;
+	_sql_value( cPartner ) + "," + ;
+	_sql_value( cPartner ) + "," + ;
+	_sql_value( cPartner ) + "," + ;
+	_sql_value( "DEFAULT" ) + "," + ;
+	_sql_value( "KUPCI" ) + "," + ;
+	_sql_value( "" ) + ;
+	")"
+
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+lReturn := .t.
+
+RETURN lReturn 
+
+
+STATIC FUNCTION __get_so( oServer, cValue )
+LOCAL oTable
+LOCAL cTable := "api.salesorder"
+LOCAL nResult
+LOCAL cTmpQry
+
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE order_number = '" + cValue + "'"
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+nResult := oTable:Fieldget( oTable:Fieldpos("count") )
+
+RETURN nResult
+
+
+
+STATIC FUNCTION __insert_so_line( oServer, cOrderNumber, cItemLine, cItem, nQty, cUom, nPrice, dDate, cTax )
+LOCAL oTable
+LOCAL cTable := "api.salesline"
+LOCAL cTmpQry
+LOCAL lReturn := .f.
+
+cTmpQry := "INSERT INTO " + cTable + ;
+	" ( order_number, line_number, item_number, sold_from_site, status, " + ;
+	"qty_ordered, qty_uom, net_unit_price, price_uom, scheduled_date, " + ;
+	"promise_date, tax_type, discount_pct_from_list ) VALUES (" + ;
+	_sql_value( cOrderNumber ) + "," + ;
+	_sql_value( cItemLine ) + "," + ;
+	_sql_value( cItem ) + "," + ;
+	_sql_value( __site_name ) + "," + ;
+	_sql_value( "C" ) + "," + ;
+	ALLTRIM(STR( nQty )) + "," + ;
+	_sql_value( cUom ) + "," + ;
+	ALLTRIM(STR( nPrice )) + "," + ;
+	_sql_value( cUom ) + "," + ;
+	format_sql_date( dDate ) + "," + ;
+	format_sql_date( dDate ) + "," + ;
+	_sql_value( "OSTALO" ) + "," + ;
+	ALLTRIM(STR( 0 )) + ;
+	")"
+
+
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+lReturn := .t.
+
+RETURN lReturn 
+
+
+
+STATIC FUNCTION __insert_inv( oServer, cInvNumber, dOrderDate, cPartner )
+LOCAL oTable
+LOCAL cTable := "api.invoice"
+LOCAL cTmpQry
+LOCAL lReturn := .f.
+
+IF ( __get_inv( oServer, cInvNumber ) > 0 )  
+	verbosed( "INV " + cOrderNumber + " vec postoji!"  )
+	RETURN lReturn
+ENDIF
+
+cTmpQry := "INSERT INTO " + cTable + ;
+	" ( invoice_number, order_number, invoice_date, ship_date, sales_rep, " + ;
+	"tax_zone, terms, customer_number, " + ;
+	"ship_via, notes ) VALUES (" + ;
+	_sql_value( cInvNumber ) + "," + ;
+	_sql_value( cInvNumber ) + "," + ;
+	format_sql_date( dOrderDate ) + "," + ;
+	format_sql_date( dOrderDate ) + "," + ;
+	_sql_value( "DEFAULT" ) + "," + ;
+	_sql_value( __taxzone_bih ) + "," + ;
+	_sql_value( "DEFAULT" ) + "," + ;
+	_sql_value( cPartner ) + "," + ;
+	_sql_value( "DEFAULT" ) + "," + ;
+	_sql_value( "" ) + ;
+	")"
+
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+lReturn := .t.
+
+RETURN lReturn 
+
+
+STATIC FUNCTION __get_inv( oServer, cValue )
+LOCAL oTable
+LOCAL cTable := "api.invoice"
+LOCAL nResult
+LOCAL cTmpQry
+
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE invoice_number = '" + cValue + "'"
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+nResult := oTable:Fieldget( oTable:Fieldpos("count") )
+
+RETURN nResult
+
+
+
+STATIC FUNCTION __insert_inv_line( oServer, cInvNumber, cItemLine, cItem, nQty, cUom, nPrice, dDate, cTax )
+LOCAL oTable
+LOCAL cTable := "api.invoiceline"
+LOCAL cTmpQry
+LOCAL lReturn := .f.
+
+cTmpQry := "INSERT INTO " + cTable + ;
+	" ( invoice_number, line_number, item_number, site, " + ;
+	"qty_ordered, qty_billed, net_unit_price, " + ;
+	"tax_type, qty_uom, price_uom ) VALUES (" + ;
+	_sql_value( cInvNumber ) + "," + ;
+	_sql_value( cItemLine ) + "," + ;
+	_sql_value( cItem ) + "," + ;
+	_sql_value( __site_name ) + "," + ;
+	ALLTRIM(STR( nQty )) + "," + ;
+	ALLTRIM(STR( nQty )) + "," + ;
+	ALLTRIM(STR( nPrice )) + "," + ;
+	_sql_value( "OSTALO" ) + "," + ;
+	_sql_value( cUom ) + "," + ;
+	_sql_value( cUom ) + ")" 
+
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+lReturn := .t.
+
+RETURN lReturn 
 
 
 
@@ -2341,7 +2763,9 @@ RETURN
 PROCEDURE help()
    
    ? "fmk_migrate - migriranje podataka iz FMK u xtuple bazu"
-   ? "--- uslovi"
+   ? 
+   ? ":: uslovi"
+   ? 
    ? "-h hostname (default: localhost)"
    ? "-y port (default: 5432)"
    ? "-u user (default: root)"
@@ -2350,7 +2774,7 @@ PROCEDURE help()
    ? "-e schema (default: public)"
    ? "-t fmk tables path"
    ? "-v verbose rezim"
-   ? ""
+   ? 
 
 RETURN
 
