@@ -217,8 +217,10 @@ ENDIF
 RETURN
 
 
-RETURN
+// otvori mi potrebne tabele
+PROCEDURE o_db( cDBPath )
 
+RETURN
 
 
 
@@ -2070,6 +2072,11 @@ IF !FILE( cFileName )
 	QUIT
 ENDIF
 
+// ako ne postoji fajl cdx, napravi indeks
+IF !FILE( STRTRAN( cFileName, ".DBF", ".CDX" ) )
+	CREATE_INDEX("ID", "ID", cDBPath + "ROBA")
+ENDIF
+
 // ubaci class code
 __set_classcode( oServer, "OSTALO", "OSTALO" )
 // ubaci prod category
@@ -2149,6 +2156,10 @@ IF !FILE( cFileName )
 	QUIT
 ENDIF
 
+// ako ne postoji fajl cdx, napravi indeks
+IF !FILE( STRTRAN( cFileName, ".DBF", ".CDX" ) )
+	CREATE_INDEX("ID", "ID", cDBPath + "KONTO")
+ENDIF
 
 // zakači se na tabelu robe
 USE (cFileName) ALIAS "KONTO"
@@ -2318,6 +2329,15 @@ IF !FILE( cSFileName )
 	QUIT
 ENDIF
 
+// ako ne postoji fajl cdx, napravi indeks
+IF !FILE( STRTRAN( cPFileName, ".DBF", ".CDX" ) )
+	CREATE_INDEX("ID", "ID", cDBPath + "PARTN")
+ENDIF
+
+IF !FILE( STRTRAN( cSFileName, ".DBF", ".CDX" ) )
+	CREATE_INDEX("ID", "id+oznaka+IdSif+Naz", cDBPath + "SIFV")
+ENDIF
+
 // prvo ubaci podešenja potrebna za partnere
 __set_custtype( oServer, "KD", "Domaci kupci" )
 __set_vendtype( oServer, "DD", "Domaci dobavljaci" )
@@ -2399,8 +2419,10 @@ LOCAL cNotes := ""
 LOCAL nCount := 0
 LOCAL cTblFakt := "FAKT.DBF"
 LOCAL cTblDoks := "DOKS.DBF"
+LOCAL cTblRoba := "ROBA.DBF"
 LOCAL cFFileName := cDBPath + cTblFakt
 LOCAL cDFileName := cDBPath + cTblDoks
+LOCAL cRFileName := cDBPath + cTblRoba
 LOCAL cIdFirma
 LOCAL cIdTipDok
 LOCAL cBrDok
@@ -2418,15 +2440,25 @@ IF !FILE( cDFileName )
 	RETURN
 ENDIF
 
+IF !FILE( STRTRAN( cFFileName, ".DBF", ".CDX" ) )
+	CREATE_INDEX("1","IdFirma+idtipdok+brdok+rbr+podbr", cDBPath+"FAKT")
+ENDIF
+
+IF !FILE( STRTRAN( cDFileName, ".DBF", ".CDX" ) )
+	CREATE_INDEX("1","IdFirma+idtipdok+brdok",cDBPath+"DOKS")
+ENDIF
+
+CLOSE ALL
 
 // zakači se na tabele
-SELECT 60
-USE (cFFileName) ALIAS "FAKT"
+USE (cFFileName) ALIAS "FAKT" NEW
 SET ORDER TO TAG "1"
 
-SELECT 61
-USE (cDFileName) ALIAS "DOKS"
+USE (cDFileName) ALIAS "DOKS" NEW
 SET ORDER TO TAG "1"
+
+USE (cRFileName) ALIAS "ROBA" NEW
+SET ORDER TO TAG "ID"
 
 SELECT doks
 GO TOP
