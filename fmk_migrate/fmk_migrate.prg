@@ -2064,7 +2064,7 @@ FUNCTION migrate_sif_articles( oServer, cDBPath )
 LOCAL cNotes := ""
 LOCAL nCount := 0
 LOCAL cRobaNaziv
-LOCAL cTblName := "ROBA.DBF"
+LOCAL cTblName := "ROBA.dbf"
 LOCAL cFileName := cDBPath + cTblName
 
 IF !FILE( cFileName )
@@ -2073,7 +2073,7 @@ IF !FILE( cFileName )
 ENDIF
 
 // ako ne postoji fajl cdx, napravi indeks
-IF !FILE( STRTRAN( cFileName, ".DBF", ".cdx" ) )
+IF !FILE( STRTRAN( cFileName, ".dbf", ".cdx" ) )
 	CREATE_INDEX("ID", "ID", cDBPath + "ROBA")
 ENDIF
 
@@ -2145,7 +2145,7 @@ RETURN nCount
 
 FUNCTION migrate_sif_accounts( oServer, cDBPath )
 LOCAL nCount := 0
-LOCAL cTblName := "KONTO.DBF"
+LOCAL cTblName := "KONTO.dbf"
 LOCAL cFileName := cDBPath + cTblName
 LOCAL cAccType
 LOCAL cAccSubType
@@ -2157,7 +2157,7 @@ IF !FILE( cFileName )
 ENDIF
 
 // ako ne postoji fajl cdx, napravi indeks
-IF !FILE( STRTRAN( cFileName, ".DBF", ".cdx" ) )
+IF !FILE( STRTRAN( cFileName, ".dbf", ".cdx" ) )
 	CREATE_INDEX("ID", "ID", cDBPath + "KONTO")
 ENDIF
 
@@ -2313,8 +2313,8 @@ RETURN cValue
 
 FUNCTION migrate_sif_partners( oServer, cDBPath )
 LOCAL nCount := 0
-LOCAL cTblPName := "PARTN.DBF"
-LOCAL cTblSName := "SIFV.DBF"
+LOCAL cTblPName := "PARTN.dbf"
+LOCAL cTblSName := "SIFV.dbf"
 LOCAL cPFileName := cDBPath + cTblPName
 LOCAL cSFileName := cDBPath + cTblSName
 LOCAL cId
@@ -2330,11 +2330,11 @@ IF !FILE( cSFileName )
 ENDIF
 
 // ako ne postoji fajl cdx, napravi indeks
-IF !FILE( STRTRAN( cPFileName, ".DBF", ".cdx" ) )
+IF !FILE( STRTRAN( cPFileName, ".dbf", ".cdx" ) )
 	CREATE_INDEX("ID", "ID", cDBPath + "PARTN")
 ENDIF
 
-IF !FILE( STRTRAN( cSFileName, ".DBF", ".cdx" ) )
+IF !FILE( STRTRAN( cSFileName, ".dbf", ".cdx" ) )
 	CREATE_INDEX("ID", "id+oznaka+IdSif+Naz", cDBPath + "SIFV")
 ENDIF
 
@@ -2417,9 +2417,9 @@ RETURN cResult
 FUNCTION migrate_fakt_data( oServer, cDBPath )
 LOCAL cNotes := ""
 LOCAL nCount := 0
-LOCAL cTblFakt := "FAKT.DBF"
-LOCAL cTblDoks := "DOKS.DBF"
-LOCAL cTblRoba := "ROBA.DBF"
+LOCAL cTblFakt := "FAKT.dbf"
+LOCAL cTblDoks := "DOKS.dbf"
+LOCAL cTblRoba := "ROBA.dbf"
 LOCAL cFFileName := cDBPath + cTblFakt
 LOCAL cDFileName := cDBPath + cTblDoks
 LOCAL cRFileName := cDBPath + cTblRoba
@@ -2440,11 +2440,11 @@ IF !FILE( cDFileName )
 	RETURN
 ENDIF
 
-IF !FILE( STRTRAN( cFFileName, ".DBF", ".cdx" ) )
+IF !FILE( STRTRAN( cFFileName, ".dbf", ".cdx" ) )
 	CREATE_INDEX("1","IdFirma+idtipdok+brdok+rbr+podbr", cDBPath+"FAKT")
 ENDIF
 
-IF !FILE( STRTRAN( cDFileName, ".DBF", ".cdx" ) )
+IF !FILE( STRTRAN( cDFileName, ".dbf", ".cdx" ) )
 	CREATE_INDEX("1","IdFirma+idtipdok+brdok",cDBPath+"DOKS")
 ENDIF
 
