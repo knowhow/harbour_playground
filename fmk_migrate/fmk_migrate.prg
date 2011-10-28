@@ -114,15 +114,15 @@ ENDDO
 ? "Ulazni parametri:"
 ? cParams
 
+// ostvari konekciju na server
+oPgServer := db_server_connect(cHostName, cDatabase, cUser, cPassword, nPort, cSchema)
+
 // daj mi parametre firme
-cParams := set_company_params()
+cParams := set_company_params( oPgServer )
 
 @ 16, 2 SAY ""
 
 verbosed( cParams )
-
-// ostvari konekciju na server
-oPgServer := db_server_connect(cHostName, cDatabase, cUser, cPassword, nPort, cSchema)
 
 __set_currency( oPgServer, "KM", "Konvertibilna marka", .t. ) 
 
@@ -604,6 +604,23 @@ ENDIF
 nResult := oTable:Fieldget( oTable:Fieldpos("count") )
 
 RETURN nResult
+
+
+
+STATIC FUNCTION __get_site_data( oServer, cValue )
+LOCAL oTable
+LOCAL cTable := "api.site"
+LOCAL nResult
+LOCAL cTmpQry
+
+cTmpQry := "SELECT * FROM " + cTable + " WHERE code = '" + cValue +"'"
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+RETURN oTable
 
 
 
@@ -2217,9 +2234,12 @@ RETURN nCount
 
 
 // setuje static varijable, parametri matične firme
-FUNCTION set_company_params()
+FUNCTION set_company_params(oServer)
 LOCAL x := 5
 LOCAL cInfo
+LOCAL oTable
+LOCAL cNastaviti := "D"
+LOCAL lDefineSite := .t.
 
 __site_name := PADR( __site_name, 50 )
 __comp_name := PADR( __comp_name, 200 )
@@ -2234,20 +2254,41 @@ __comp_pdv_number := PADR( __comp_pdv_number, 12 )
 
 @ x + 1, 4 SAY "Unesi maticne podatke firme:"
 @ x + 2, 4 SAY "Naziv organizacione jedince (site):" GET __site_name VALID !EMPTY(__site_name)
-@ x + 3, 4 SAY "Naziv:" GET __comp_name VALID !EMPTY(__comp_name) PICT "@S60"
-@ x + 4, 4 SAY "Adresa:" GET __comp_addr
-@ x + 5, 4 SAY "Grad:" GET __comp_city
-@ x + 6, 4 SAY "PTT broj:" GET __comp_postalcode
-@ x + 7, 4 SAY "Telefon:" GET __comp_tel1
-@ x + 7, 40 SAY "Fax:" GET __comp_fax
-@ x + 8, 4 SAY "Email:" GET __comp_email
-@ x + 9, 4 SAY "ID broj:" GET __comp_id_number
-@ x + 9, 40 SAY "PDV broj:" GET __comp_pdv_number
+
+READ
+
+IF __get_site( oServer, ALLTRIM(__site_name) ) > 0
+	
+	// daj mi podatke site-a
+	oTable := __get_site_data( oServer, ALLTRIM( __site_name ) )
+	
+	__comp_name := PADR( oTable:Fieldget( oTable:Fieldpos("description") ), 200)
+	__comp_addr := PADR( oTable:Fieldget( oTable:Fieldpos("address1") ), 200)
+	__comp_city := PADR( oTable:Fieldget( oTable:Fieldpos("city") ), 50)
+	__comp_postalcode := PADR( oTable:Fieldget( oTable:Fieldpos("postal_code") ), 10)
+	__comp_tel1 := PADR( oTable:Fieldget( oTable:Fieldpos("phone") ), 20)
+	__comp_fax := PADR( oTable:Fieldget( oTable:Fieldpos("fax") ), 20)
+	__comp_email := PADR( oTable:Fieldget( oTable:Fieldpos("email") ), 50)
+	
+	lDefineSite := .f.
+
+ENDIF
+
+@ x + 3, 4 SAY "Naziv:" GET __comp_name WHEN lDefineSite VALID !EMPTY(__comp_name) PICT "@S60"
+@ x + 4, 4 SAY "Adresa:" GET __comp_addr WHEN lDefineSite
+@ x + 5, 4 SAY "Grad:" GET __comp_city WHEN lDefineSite
+@ x + 6, 4 SAY "PTT broj:" GET __comp_postalcode WHEN lDefineSite
+@ x + 7, 4 SAY "Telefon:" GET __comp_tel1 WHEN lDefineSite
+@ x + 7, 40 SAY "Fax:" GET __comp_fax WHEN lDefineSite
+@ x + 8, 4 SAY "Email:" GET __comp_email WHEN lDefineSite
+@ x + 9, 4 SAY "ID broj:" GET __comp_id_number WHEN lDefineSite
+@ x + 9, 40 SAY "PDV broj:" GET __comp_pdv_number WHEN lDefineSite
+@ x + 10, 4 SAY "Nastaviti dalje (D/N):" GET cNastaviti VALID cNastaviti $ "DN" PICT "@!"
 
 READ
 
 // escape hendler
-if LastKey() == 27
+if LastKey() == 27 .OR. cNastaviti == "N"
 	QUIT
 	RETURN
 endif
