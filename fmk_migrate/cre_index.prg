@@ -18,6 +18,9 @@ local nPos
 private cTag
 private cKljuciz
 
+if fSilent == nil
+	fSilent := .t.
+endif
 
 close all
 
@@ -105,8 +108,10 @@ if !FILE(LOWER(cImeCdx))  .or. nOrder==0  .or. UPPER(cOrdKey) <> UPPER(cKljuc)
      
      USE (cImeDbf) VIA "DBFCDX" NEW
 
-     ? "Baza:" + cImeDbf + ", Kreiram index-tag :" + cImeInd + "#" +  cImeCdx
-    
+	 if !fSilent
+     	? "Baza:" + cImeDbf + ", Kreiram index-tag :" + cImeInd + "#" +  cImeCdx
+	 endif    
+
      nPom:=RAT( SLASH, cImeInd)
     
      private cTag:=""
@@ -124,7 +129,9 @@ if !FILE(LOWER(cImeCdx))  .or. nOrder==0  .or. UPPER(cOrdKey) <> UPPER(cKljuc)
 
          cImeCdx := strtran(cImeCdx, "." + INDEXEXT, "" )
     
-         ? cKljucIz, cTag, cImeCdx
+         if !fSilent
+		    ? cKljucIz, cTag, cImeCdx
+		 endif
 
          index on &cKljucIz TAG (cTag)
  
