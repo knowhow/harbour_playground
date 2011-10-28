@@ -12,7 +12,19 @@ static cSchema := "public"
 static oServer := NIL
 static cHome := ""
 
+#define F_SUBAN 1
+#define F_PARTN 2
+#define F_KONTO 3
+
 procedure Main( p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 )
+
+PUBLIC gTabele:={ ;
+  { F_SUBAN, "fin_suban"  ,  "fmk.fin_suban", "fmk.sem_ver_fin_suban"},;
+  { F_KONTO, "konto"  ,  "fmk.konto", "fmk.sem_ver__konto"},;
+  { F_PARTN, "partn"  ,  "fmk.partn", "fmk_sem_ver__partn"};
+}
+
+
 
 // ? _sql_quote("ab'cde") => 'ab''cde'
 
@@ -41,12 +53,13 @@ ENDIF
 
 
 create_partn(cHome)
+create_fin_suban(cHome)
 close all
 
 use (cHome + "partn") new via "DBFCDX"
 
 
-for i:=20000 to 20009
+for i:=30000 to 30009
    ? "update_partn (dbf/sql)", i
    update_partn( str(i, 5), "naz " + str(i, 5) )
 next
@@ -59,8 +72,10 @@ update_partn_from_sql()
 ? "pritisni nesto"
 inke(10)
 
-set order to tag "ID"
-dbedit()
+// set order to tag "ID"
+//dbedit()
+
+update_suban_from_sql(DATE())
 
 
 // neki kod kojim se update-uje  konto ...
@@ -79,6 +94,68 @@ dbedit()
 
 oServer:Destroy()
 return
+
+
+
+// ------------------------------
+// ------------------------------
+function update_suban_from_sql(dDatDok)
+local oQuery
+local nCounter
+local nRec
+local cQuery
+
+   ? "updateujem suban.dbf from sql stanja"
+
+   cQuery :=  "SELECT idfirma, naz, idkonto, idpartn FROM fmk.suban"  
+   if dDatDok != NIL
+      cQuery += " WHERE " + DTOS(dDatDok)
+   endif
+ 
+   oQuery := oServer:Query(cQuery) 
+   
+   ? "Fields: ", oQuery:Fcount()
+
+   USE (cHome + "fin_suban") NEW
+   SELECT fin_suban
+
+   if dDatDok == NIL
+      // "full" algoritam
+      ZAP 
+
+   else
+      // "date" algoritam  - brisi sve vece od zadanog datuma
+      SET ORDER TO TAG "8"
+      // tag je "DatDok" nije DTOS(DatDok)
+      seek dDatDok
+      do while !eof() .and. (datDok >= dDatDok) 
+          // otidji korak naprijed
+          SKIP
+          nRec := RECNO()
+          SKIP -1
+          DELETE
+          GO nRec  
+      enddo
+ 
+    endif
+
+
+   nCounter := 1
+   DO WHILE ! oQuery:Eof()
+      append blank
+      replace id with oQuery:FieldGet(1), ;
+              naz with oQuery:FieldGet(2)
+
+      oQuery:Skip()
+
+      //? nCounter++
+   ENDDO
+
+   USE
+   oQuery:Destroy()
+
+return 
+
 
 
 function update_partn_from_sql()
