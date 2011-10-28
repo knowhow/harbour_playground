@@ -91,10 +91,21 @@ update_suban_from_sql(DATE())
 
 ? "aktuelna verzija na serveru", last_semaphore_version("konto")
 
+
 use (cHome + "fin_suban") new via "DBFCDX"
-update_fin_suban("10", "10", "00000008", DATE(), "4300", "2", 1500)
-update_fin_suban("10", "10", "00000008", DATE(), "3000", "1", 1000)
-update_fin_suban("10", "10", "00000008", DATE(), "3001", "1", 500)
+
+for i:=9 to 100
+
+ cBrNal := STR(i, 8)
+ cBrNal:= STRTRAN(cBrNal, " ", "0") 
+
+ ? cBrNal
+ update_fin_suban("10", "10", cBrNal, 1, DATE(), "4300", "2", 1500 + i)
+ update_fin_suban("10", "10", cBrNal, 2, DATE(), "3000", "1", 1000 + i)
+ update_fin_suban("10", "10", cBrNal, 3, DATE(), "3001", "1", 500 + i)
+
+next
+
 use
 
 oServer:Destroy()
@@ -102,26 +113,28 @@ return
 
 
 //--------------------------
-function update_fin_suban(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
+//       update_fin_suban("10", "10", "00000008", 1, DATE(), "4300", "2", 1500)
+function update_fin_suban(cIdFirma, cIdVn, cBrNal, nRbr, dDatDok, cKonto, cDP, nIznos)
 
-update_fin_suban_dbf(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
-update_fin_suban_sql(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
+update_fin_suban_dbf(cIdFirma, cIdVn, cBrNal, nRbr, dDatDok, cKonto, cDP, nIznos)
+update_fin_suban_sql(cIdFirma, cIdVn, cBrNal, nRbr, dDatDok, cKonto, cDP, nIznos)
 
 return
 
 
-function update_fin_suban_dbf(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
- 
+function update_fin_suban_dbf(cIdFirma, cIdVn, cBrNal, nRbr, dDatDok, cKonto, cDP, nIznos)
+ ? nIznos
  append blank
  replace IdFirma with cIdFirma,;
          IdVn with cIdVn,;
          BrNal with cBrNal,;
+         rbr with STR(nRbr, 4),;
          IdKonto with cKonto,;
          D_P with cDP, ;
-         IznosBHD  with nIznos
+         IZNOSBHD  with nIznos
 return
 
-function update_fin_suban_sql(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
+function update_fin_suban_sql(cIdFirma, cIdVn, cBrNal, nRbr, dDatDok, cKonto, cDP, nIznos)
 LOCAL oRet
 LOCAL nResult
 LOCAL cTmpQry
@@ -129,7 +142,9 @@ LOCAL cTable
 LOCAL cWhere
 
 
-cWhere := "idfirma=" + _sql_quote(cIdFirma) + " and idvn=" + _sql_quote(cIdVn) + " and brnal=" + _sql_quote(cBrNal) 
+cWhere := "idfirma=" + _sql_quote(cIdFirma) + " and idvn=" + _sql_quote(cIdVn) +;
+                      " and brnal=" + _sql_quote(cBrNal) +;
+                      " and rbr=" + _sql_quote(STR(nRbr,4)); 
 
 cTable := "fmk.fin_suban"
 
@@ -138,10 +153,11 @@ cTable := "fmk.fin_suban"
 //if nResult == 0
 
    cTmpQry := "INSERT INTO " + cTable + ;
-              "(idfirma, idvn, brnal, datdok, idkonto, d_P, iznosbhd) " + ;
+              "(idfirma, idvn, brnal, rbr, datdok, idkonto, d_P, iznosbhd) " + ;
                "VALUES(" + _sql_quote(cIdFirma)  + "," +;
                          + _sql_quote(cIdVn) + "," +; 
                          + _sql_quote(cBrNal) + "," +; 
+                         + _sql_quote(STR(nRbr, 4)) + "," +; 
                          + _sql_quote(DTOS(dDatDok)) + "," +; 
                          + _sql_quote(cKonto) + "," +; 
                          + _sql_quote(cDP) + "," +; 
