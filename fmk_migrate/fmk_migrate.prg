@@ -2073,7 +2073,7 @@ IF !FILE( cFileName )
 ENDIF
 
 // ako ne postoji fajl cdx, napravi indeks
-IF !FILE( STRTRAN( cFileName, ".DBF", ".CDX" ) )
+IF !FILE( STRTRAN( cFileName, ".DBF", ".cdx" ) )
 	CREATE_INDEX("ID", "ID", cDBPath + "ROBA")
 ENDIF
 
@@ -2157,7 +2157,7 @@ IF !FILE( cFileName )
 ENDIF
 
 // ako ne postoji fajl cdx, napravi indeks
-IF !FILE( STRTRAN( cFileName, ".DBF", ".CDX" ) )
+IF !FILE( STRTRAN( cFileName, ".DBF", ".cdx" ) )
 	CREATE_INDEX("ID", "ID", cDBPath + "KONTO")
 ENDIF
 
@@ -2330,11 +2330,11 @@ IF !FILE( cSFileName )
 ENDIF
 
 // ako ne postoji fajl cdx, napravi indeks
-IF !FILE( STRTRAN( cPFileName, ".DBF", ".CDX" ) )
+IF !FILE( STRTRAN( cPFileName, ".DBF", ".cdx" ) )
 	CREATE_INDEX("ID", "ID", cDBPath + "PARTN")
 ENDIF
 
-IF !FILE( STRTRAN( cSFileName, ".DBF", ".CDX" ) )
+IF !FILE( STRTRAN( cSFileName, ".DBF", ".cdx" ) )
 	CREATE_INDEX("ID", "id+oznaka+IdSif+Naz", cDBPath + "SIFV")
 ENDIF
 
@@ -2440,11 +2440,11 @@ IF !FILE( cDFileName )
 	RETURN
 ENDIF
 
-IF !FILE( STRTRAN( cFFileName, ".DBF", ".CDX" ) )
+IF !FILE( STRTRAN( cFFileName, ".DBF", ".cdx" ) )
 	CREATE_INDEX("1","IdFirma+idtipdok+brdok+rbr+podbr", cDBPath+"FAKT")
 ENDIF
 
-IF !FILE( STRTRAN( cDFileName, ".DBF", ".CDX" ) )
+IF !FILE( STRTRAN( cDFileName, ".DBF", ".cdx" ) )
 	CREATE_INDEX("1","IdFirma+idtipdok+brdok",cDBPath+"DOKS")
 ENDIF
 
