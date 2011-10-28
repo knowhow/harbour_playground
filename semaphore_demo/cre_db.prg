@@ -16,8 +16,8 @@ return .t.
 
 
 
-
-
+//-------------------------------
+//-------------------------------
 function create_fin_suban(cHome)
 local cTable := "fin_suban.dbf"
 local cFullTable := cHome + cTable

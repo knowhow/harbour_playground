@@ -70,7 +70,7 @@ update_partn_from_sql()
 ? "stop"
 ? "---------------------------"
 ? "pritisni nesto"
-inke(10)
+inkey(10)
 
 // set order to tag "ID"
 //dbedit()
@@ -91,9 +91,82 @@ update_suban_from_sql(DATE())
 
 ? "aktuelna verzija na serveru", last_semaphore_version("konto")
 
+use (cHome + "fin_suban") new via "DBFCDX"
+update_fin_suban("10", "10", "00000008", DATE(), "4300", "2", 1500)
+update_fin_suban("10", "10", "00000008", DATE(), "3000", "1", 1000)
+update_fin_suban("10", "10", "00000008", DATE(), "3001", "1", 500)
+use
 
 oServer:Destroy()
 return
+
+
+//--------------------------
+function update_fin_suban(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
+
+update_fin_suban_dbf(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
+update_fin_suban_sql(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
+
+return
+
+
+function update_fin_suban_dbf(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
+ 
+ append blank
+ replace IdFirma with cIdFirma,;
+         IdVn with cIdVn,;
+         BrNal with cBrNal,;
+         IdKonto with cKonto,;
+         D_P with cDP, ;
+         IznosBHD  with nIznos
+return
+
+function update_fin_suban_sql(cIdFirma, cIdVn, cBrNal, dDatDok, cKonto, cDP, nIznos)
+LOCAL oRet
+LOCAL nResult
+LOCAL cTmpQry
+LOCAL cTable
+LOCAL cWhere
+
+
+cWhere := "idfirma=" + _sql_quote(cIdFirma) + " and idvn=" + _sql_quote(cIdVn) + " and brnal=" + _sql_quote(cBrNal) 
+
+cTable := "fmk.fin_suban"
+
+//nResult := table_count(oServer, cTable, "idfirma=" + _sql_quote(cIdFirma) + " and idvn=" + _sql_quite(cIdVn) + " and brnal=" + _sql_quote(cBrNal) ) 
+
+//if nResult == 0
+
+   cTmpQry := "INSERT INTO " + cTable + ;
+              "(idfirma, idvn, brnal, datdok, idkonto, d_P, iznosbhd) " + ;
+               "VALUES(" + _sql_quote(cIdFirma)  + "," +;
+                         + _sql_quote(cIdVn) + "," +; 
+                         + _sql_quote(cBrNal) + "," +; 
+                         + _sql_quote(DTOS(dDatDok)) + "," +; 
+                         + _sql_quote(cKonto) + "," +; 
+                         + _sql_quote(cDP) + "," +; 
+                         + STR(nIznos, 17, 2) + ")" 
+
+
+   oRet := _sql_query( oServer, cTmpQry)
+
+//else
+
+//cTmpQry := "UPDATE " + cTable + ;
+//              " SET naz = " + _sql_quote(cNaz) + ;
+//              " WHERE id =" + _sql_quote(cId) 
+
+
+/// oRet := _sql_query( oServer, cTmpQry )
+
+//endif
+
+cTmpQry := "SELECT count(*) from " + cTable + " WHERE " + cWhere
+oRet := _sql_query( oServer, cTmpQry )
+
+return oRet:Fieldget( oRet:Fieldpos("count") )
+
+
 
 
 
