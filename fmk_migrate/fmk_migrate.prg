@@ -2535,7 +2535,10 @@ DO WHILE !EOF()
 		
 		// uzmi fakt->txt
 		aMemo := parsmemo( fakt->txt )
-		cMemo := hb_strtoutf8( ALLTRIM( aMemo[2] ) )
+		
+		IF LEN( aMemo ) > 1
+			cMemo := hb_strtoutf8( ALLTRIM( aMemo[2] ) )
+		ENDIF
 
 		lNoArticle := .f.
 
@@ -2948,9 +2951,15 @@ IF cTip == "U"
 
 	// parsiraj memo polje
 	aMemo := parsmemo(cMemo)
-	cMiscItem := "'" + hb_strtoutf8( aMemo[1] ) + "'"
-	cMiscItemDescr := cMiscItem
 	
+	IF LEN( aMemo ) > 0 .and. !EMPTY( aMemo[1] )
+		cMiscItem := "'" + hb_strtoutf8( aMemo[1] ) + "'"
+		cMiscItemDescr := cMiscItem
+	ELSE
+		cMiscItem := "NEMA NAZIVA"
+		cMiscItemDescr := "NEMA OPISA"
+	ENDIF
+
 	// ubaci sales kategoriju ako ne postoji
 	__set_salescat( oServer, ALLTRIM( cItem ), ALLTRIM( cItem ) )
 	
