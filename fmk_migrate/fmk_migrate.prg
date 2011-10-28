@@ -2056,7 +2056,7 @@ RETURN oResult
 
 // konvertuje neku vrijednost za sql value
 STATIC FUNCTION _sql_value( cValue )
-RETURN "'" + cValue + "'"
+RETURN _sql_quote(cValue)
 
 
 // migracija šifrarnika robe
@@ -3087,4 +3087,8 @@ PROCEDURE help()
 
 RETURN
 
+// ------------------------
+function _sql_quote(xVar)
+xVar := STRTRAN(xVar, "'","''")
+return "'" + xVar + "'"
 
