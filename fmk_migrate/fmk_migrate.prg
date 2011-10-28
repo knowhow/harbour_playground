@@ -2425,9 +2425,13 @@ LOCAL nCount := 0
 LOCAL cTblFakt := "FAKT.dbf"
 LOCAL cTblDoks := "DOKS.dbf"
 LOCAL cTblRoba := "ROBA.dbf"
+LOCAL cTblPartn := "PARTN.dbf"
+LOCAL cTblSifV := "SIFV.dbf"
 LOCAL cFFileName := cDBPath + cTblFakt
 LOCAL cDFileName := cDBPath + cTblDoks
 LOCAL cRFileName := cDBPath + cTblRoba
+LOCAL cPFileName := cDBPath + cTblPartn
+LOCAL cSFileName := cDBPath + cTblSifV
 LOCAL cIdFirma
 LOCAL cIdTipDok
 LOCAL cBrDok
@@ -2465,6 +2469,12 @@ SET ORDER TO TAG "1"
 USE (cRFileName) ALIAS "ROBA" NEW
 SET ORDER TO TAG "ID"
 
+USE (cRFileName) ALIAS "PARTN" NEW
+SET ORDER TO TAG "ID"
+
+USE (cRFileName) ALIAS "SIFV" NEW
+SET ORDER TO TAG "ID"
+
 SELECT doks
 GO TOP
 
@@ -2495,6 +2505,34 @@ DO WHILE !EOF()
 
 		// dobro, ovo je neki račun
 		? "Obradjujem dokument:", cIdFirma + "-" + cIdTipDok + "-" + cBrDok + " / " + cSO_number 
+
+		cIdPartner := ALLTRIM( UPPER( hb_strtoutf8(doks->idpartner) ) )
+		
+		// da vidimo ima li partnera...	
+		IF __get_crm( oServer, cIdPartner ) = 0
+			
+			SELECT partn
+			APPEND BLANK
+			REPLACE field->id WITH doks->idpartner
+			REPLACE field->naz WITH "NEMA NAZIVA"	
+
+			// dodaj ga i u crm
+			__set_crm( oServer, ;
+				cIdPartner, ;
+				ALLTRIM( hb_strtoutf8( partn->naz ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->telefon ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->fax ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->adresa ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->mjesto ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->ptt ) ), ;
+				"", ;
+				"" )
+
+			? " - ubacio nepostojeceg partnera: " + cIdPartner
+
+			SELECT doks
+
+		ENDIF
 
 		// provjeri mi robu !
 		SELECT fakt
