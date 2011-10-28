@@ -392,7 +392,7 @@ LOCAL cTable := "api.item"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = '" + cValue +"'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -410,7 +410,7 @@ LOCAL cTable := "api.item"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT * FROM " + cTable + " WHERE item_number = '" + cValue +"'"
+cTmpQry := "SELECT * FROM " + cTable + " WHERE item_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -493,8 +493,8 @@ LOCAL cTable := "api.itemsite"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = '" + cValue + "'" + ;
-	" AND site = '" + cSite + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = " + _sql_quote(cValue) +  ;
+	" AND site = " + _sql_quote(cSite)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -572,7 +572,7 @@ LOCAL cTable := "crmacct"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE crmacct_number = '" + cValue +"'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE crmacct_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -630,7 +630,7 @@ LOCAL cTable := "api.site"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = '" + cValue +"'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -649,7 +649,7 @@ LOCAL cTable := "api.site"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT * FROM " + cTable + " WHERE code = '" + cValue +"'"
+cTmpQry := "SELECT * FROM " + cTable + " WHERE code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -757,7 +757,7 @@ LOCAL cTable := "classcode"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE classcode_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE classcode_code = " + _sql_quote(cValue) 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -776,7 +776,7 @@ LOCAL cTable := "classcode"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT classcode_id FROM " + cTable + " WHERE classcode_code = '" + cValue + "'"
+cTmpQry := "SELECT classcode_id FROM " + cTable + " WHERE classcode_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -849,7 +849,7 @@ LOCAL cTable := "costcat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE costcat_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE costcat_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -867,7 +867,7 @@ LOCAL cTable := "costcat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT costcat_id FROM " + cTable + " WHERE costcat_code = '" + cValue + "'"
+cTmpQry := "SELECT costcat_id FROM " + cTable + " WHERE costcat_code = " + _sql_quote(cValue) 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -910,7 +910,7 @@ LOCAL cTable := "api.customertype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -952,7 +952,7 @@ LOCAL cTable := "api.vendortype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = " + _sql_quote(cValue) 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -994,7 +994,7 @@ LOCAL cTable := "sitetype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE sitetype_name = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE sitetype_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1038,7 +1038,7 @@ LOCAL cTable := "api.salesrep"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE number = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1080,7 +1080,7 @@ LOCAL cTable := "shipform"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE shipform_name = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE shipform_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1098,7 +1098,7 @@ LOCAL cTable := "shipform"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT shipform_id FROM " + cTable + " WHERE shipform_name = '" + cValue + "'"
+cTmpQry := "SELECT shipform_id FROM " + cTable + " WHERE shipform_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1149,7 +1149,7 @@ LOCAL cTable := "salescat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT count(*) FROM " + cTable + " WHERE salescat_name = '" + cValue + "'"
+cTmpQry := "SELECT count(*) FROM " + cTable + " WHERE salescat_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1168,7 +1168,7 @@ LOCAL cTable := "salescat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT salescat_id FROM " + cTable + " WHERE salescat_name = '" + cValue + "'"
+cTmpQry := "SELECT salescat_id FROM " + cTable + " WHERE salescat_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1215,7 +1215,7 @@ LOCAL cTable := "prodcat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT count(*) FROM " + cTable + " WHERE prodcat_code = '" + cValue + "'"
+cTmpQry := "SELECT count(*) FROM " + cTable + " WHERE prodcat_code = " + _sql_quote(cValue) 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1234,7 +1234,7 @@ LOCAL cTable := "prodcat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT prodcat_id FROM " + cTable + " WHERE prodcat_code = '" + cValue + "'"
+cTmpQry := "SELECT prodcat_id FROM " + cTable + " WHERE prodcat_code = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1279,7 +1279,7 @@ LOCAL cTable := "plancode"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE plancode_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE plancode_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1298,7 +1298,7 @@ LOCAL cTable := "plancode"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT plancode_id FROM " + cTable + " WHERE plancode_code = '" + cValue + "'"
+cTmpQry := "SELECT plancode_id FROM " + cTable + " WHERE plancode_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1343,7 +1343,7 @@ LOCAL cTable := "tax"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE tax_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE tax_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1362,7 +1362,7 @@ LOCAL cTable := "tax"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT tax_id FROM " + cTable + " WHERE tax_code = '" + cValue + "'"
+cTmpQry := "SELECT tax_id FROM " + cTable + " WHERE tax_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1408,7 +1408,7 @@ LOCAL cTable := "taxauth"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxauth_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxauth_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1427,7 +1427,7 @@ LOCAL cTable := "taxauth"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT taxauth_id FROM " + cTable + " WHERE taxauth_code = '" + cValue + "'"
+cTmpQry := "SELECT taxauth_id FROM " + cTable + " WHERE taxauth_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1472,7 +1472,7 @@ LOCAL cTable := "taxzone"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxzone_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxzone_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1490,7 +1490,7 @@ LOCAL cTable := "taxzone"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT taxzone_id FROM " + cTable + " WHERE taxzone_code = '" + cValue + "'"
+cTmpQry := "SELECT taxzone_id FROM " + cTable + " WHERE taxzone_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1534,7 +1534,7 @@ LOCAL cTable := "taxtype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxtype_name = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxtype_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1552,7 +1552,7 @@ LOCAL cTable := "taxtype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT taxtype_id FROM " + cTable + " WHERE taxtype_name = '" + cValue + "'"
+cTmpQry := "SELECT taxtype_id FROM " + cTable + " WHERE taxtype_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1798,7 +1798,7 @@ STATIC FUNCTION __get_terms( oServer, cValue )
 	LOCAL nResult
 	LOCAL cTmpQry
 
-	cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE terms_code = '" + cValue + "'"
+	cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE terms_code = " + _sql_quote(cValue)
 	oTable := _sql_query( oServer, cTmpQry )
 	IF oTable:NetErr()
 Alert( oTable:ErrorMsg() )
@@ -1817,7 +1817,7 @@ STATIC FUNCTION __get_terms_id( oServer, cValue )
 	LOCAL nResult
 	LOCAL cTmpQry
 
-	cTmpQry := "SELECT terms_id FROM " + cTable + " WHERE terms_code = '" + cValue + "'"
+	cTmpQry := "SELECT terms_id FROM " + cTable + " WHERE terms_code = " + _sql_quote(cValue)
 	oTable := _sql_query( oServer, cTmpQry )
 	IF oTable:NetErr()
 Alert( oTable:ErrorMsg() )
@@ -1867,7 +1867,7 @@ LOCAL cTable := "accnt"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE accnt_number = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE accnt_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1885,7 +1885,7 @@ LOCAL cTable := "accnt"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT accnt_id FROM " + cTable + " WHERE accnt_number = '" + cValue + "'"
+cTmpQry := "SELECT accnt_id FROM " + cTable + " WHERE accnt_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1932,7 +1932,7 @@ STATIC FUNCTION __get_uom( oServer, cValue )
 	LOCAL cTmpQry
 
 	// provjeri prvo da li postoji uopšte ovaj UOM zapis
-	cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE uom_name = '" + cValue +"'"
+	cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE uom_name = " + _sql_quote(cValue)
 	oTable := _sql_query( oServer, cTmpQry )
 	IF oTable:NetErr()
 Alert( oTable:ErrorMsg() )
@@ -1951,7 +1951,7 @@ STATIC FUNCTION __get_uom_id( oServer, cValue )
 	LOCAL cTmpQry
 
 	// provjeri prvo da li postoji uopšte ovaj UOM zapis
-	cTmpQry := "SELECT uom_id FROM " + cTable + " WHERE uom_name = '" + cValue +"'"
+	cTmpQry := "SELECT uom_id FROM " + cTable + " WHERE uom_name = " + _sql_quote(cValue)
 	oTable := _sql_query( oServer, cTmpQry )
 	IF oTable:NetErr()
 Alert( oTable:ErrorMsg() )
@@ -2008,7 +2008,7 @@ LOCAL nResult
 LOCAL cTmpQry
 
 // provjeri prvo da li postoji uopšte ovaj UOM zapis
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE curr_symbol = " + _sql_value( cValue )
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE curr_symbol = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -2027,7 +2027,7 @@ LOCAL nResult
 LOCAL cTmpQry
 
 // provjeri prvo da li postoji uopšte ovaj UOM zapis
-cTmpQry := "SELECT curr_id FROM " + cTable + " WHERE curr_symbol = " + _sql_value( cValue )
+cTmpQry := "SELECT curr_id FROM " + cTable + " WHERE curr_symbol = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -2736,7 +2736,7 @@ LOCAL cTable := "api.salesorder"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE order_number = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE order_number = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -2835,7 +2835,7 @@ LOCAL cTable := "api.invoice"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE invoice_number = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE invoice_number = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
