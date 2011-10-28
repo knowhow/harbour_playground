@@ -1111,10 +1111,12 @@ LOCAL cTmpQry
 LOCAL nAccnt1 := 0 
 LOCAL nAccnt2 := 0
 
-__set_account( oServer, "6000", "Test" )
+__set_account( oServer, "6000", "Test", get_accnt_type("6000"), ;
+		get_accnt_subtype( "6000" ) )
 nAccnt1 := __get_account_id( oServer, "6000" ) 
 
-__set_account( oServer, "2003", "Test" )
+__set_account( oServer, "2003", "Test", get_accnt_type("2003"), ;
+		get_accnt_subtype( "2003" ) )
 nAccnt2 := __get_account_id( oServer, "2003" ) 
 
 IF ( __get_salescat( oServer, cValue ) > 0 )  
