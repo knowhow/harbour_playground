@@ -1108,8 +1108,14 @@ STATIC FUNCTION __set_salescat( oServer, cValue, cDescription )
 LOCAL oTable
 LOCAL cTable := "salescat"
 LOCAL cTmpQry
-LOCAL nAccnt1 := __get_account_id( oServer, "6000" ) 
-LOCAL nAccnt2 := __get_account_id( oServer, "2003" ) 
+LOCAL nAccnt1 := 0 
+LOCAL nAccnt2 := 0
+
+__set_account( oServer, "6000", "Test" )
+nAccnt1 := __get_account_id( oServer, "6000" ) 
+
+__set_account( oServer, "2003", "Test" )
+nAccnt2 := __get_account_id( oServer, "2003" ) 
 
 IF ( __get_salescat( oServer, cValue ) > 0 )  
 	verbosed( "Sales category " + cValue + " vec postoji!"  )
@@ -2956,8 +2962,8 @@ IF cTip == "U"
 		cMiscItem := "'" + hb_strtoutf8( aMemo[1] ) + "'"
 		cMiscItemDescr := cMiscItem
 	ELSE
-		cMiscItem := "NEMA NAZIVA"
-		cMiscItemDescr := "NEMA OPISA"
+		cMiscItem := _sql_quote( "NEMA NAZIVA" )
+		cMiscItemDescr := _sql_quote( "NEMA OPISA" )
 	ENDIF
 
 	// ubaci sales kategoriju ako ne postoji
@@ -2970,7 +2976,7 @@ IF cTip == "U"
 
 ELSE
 
-	cItem := "'" + cItem + "'"
+	cItem := _sql_quote( cItem )
 
 ENDIF
 
