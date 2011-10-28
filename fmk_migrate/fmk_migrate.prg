@@ -2066,6 +2066,7 @@ LOCAL nCount := 0
 LOCAL cRobaNaziv
 LOCAL cTblName := "ROBA.dbf"
 LOCAL cFileName := cDBPath + cTblName
+LOCAL cBarKod := ""
 
 IF !FILE( cFileName )
 	? "Fajl " + cFileName + " ne postoji, prekidam operaciju !"
@@ -2103,6 +2104,10 @@ DO WHILE !EOF()
 
 	cRobaNaziv := field->naz
 
+	IF roba->(FIELDPOS("BARKOD")) <> 0
+		cBarKod := roba->barkod
+	ENDIF
+
 	verbosed( "- Ubacujem: " + ALLTRIM(roba->id) + ", " + ALLTRIM(roba->naz) )
 
 	// ubaci stavku na server u tabelu item
@@ -2112,7 +2117,7 @@ DO WHILE !EOF()
 		roba->tip, ;
 		ALLTRIM( hb_strtoutf8( UPPER(field->jmj) ) ), ;
 		field->vpc, ;
-		field->barkod, ;
+		cBarKod, ;
 		hb_strtoutf8( cNotes ) ) = .t.
 
 		verbosed( "item ubacen" )
@@ -2507,10 +2512,15 @@ DO WHILE !EOF()
 			.AND. fakt->brdok == cBrDok
 			
 			cIdRoba := ALLTRIM( UPPER( hb_strtoutf8(fakt->idroba) ))
-			
+			cBarKod := ""
+
 			SELECT roba
 			GO TOP
 			SEEK fakt->idroba
+
+			IF roba->(FIELDPOS("BARKOD")) <> 0
+				cBarKod := roba->barkod
+			ENDIF
 
 			SELECT fakt
 			
@@ -2531,7 +2541,7 @@ DO WHILE !EOF()
 						roba->tip, ;
 						ALLTRIM( hb_strtoutf8( UPPER(roba->jmj) ) ), ;
 						roba->vpc, ;
-						roba->barkod, ;
+						cBarKod, ;
 						"" ) = .t.
 
 						__set_itemsite( oServer, ;
