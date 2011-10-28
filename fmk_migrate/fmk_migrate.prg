@@ -217,12 +217,6 @@ ENDIF
 RETURN
 
 
-// otvori mi potrebne tabele
-PROCEDURE o_db( cDBPath )
-
-RETURN
-
-
 
 STATIC FUNCTION __set_crm( oServer, cValue, cDescription, cTel, cFax, cAddr, cCity, cPostal, cIdBroj, cNotes )
 LOCAL oTable
