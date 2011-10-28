@@ -24,8 +24,6 @@ PUBLIC gTabele:={ ;
   { F_PARTN, "partn"  ,  "fmk.partn", "fmk_sem_ver__partn"};
 }
 
-
-
 // ? _sql_quote("ab'cde") => 'ab''cde'
 
 init_app()
@@ -34,8 +32,9 @@ set_params( p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 )
 
 // hernad
 ? "hernad settings"
-nPort := 5433
-cDatabase := "quick38"
+cHostName :=  "knowhow-erp.bring.out.ba"
+nPort := 5432
+cDatabase := "hernad"
 ? "------ brisi ovo na drugom racunaru ----"
 
 cHome := hb_DirSepAdd( GetEnv( "HOME" ) ) 
@@ -75,7 +74,6 @@ inkey(10)
 // set order to tag "ID"
 //dbedit()
 
-update_suban_from_sql(DATE())
 
 
 // neki kod kojim se update-uje  konto ...
@@ -94,7 +92,21 @@ update_suban_from_sql(DATE())
 
 use (cHome + "fin_suban") new via "DBFCDX"
 
-for i:=9 to 100
+/*
+for i:=50000 to 60000
+
+ cBrNal := STR(i, 8)
+ cBrNal:= STRTRAN(cBrNal, " ", "0") 
+
+ ? cBrNal
+ update_fin_suban("10", "10", cBrNal, 1, DATE()-30, "4300", "2", 1500 + i)
+ update_fin_suban("10", "10", cBrNal, 2, DATE()-30, "3000", "1", 1000 + i)
+ update_fin_suban("10", "10", cBrNal, 3, DATE()-30, "3001", "1", 500 + i)
+
+next
+*/
+
+for i:=101 to 500
 
  cBrNal := STR(i, 8)
  cBrNal:= STRTRAN(cBrNal, " ", "0") 
@@ -106,6 +118,33 @@ for i:=9 to 100
 
 next
 
+use
+
+
+? "date", "algoritam", DATE()
+update_fin_suban_from_sql(DATE())
+
+use (cHome + "fin_suban") via "DBFCDX" NEW
+DBEDIT()
+use
+
+CLEAR SCREEN
+? "----------------"
+
+? TIME()
+nTime := SECONDS()
+
+
+use (cHome + "fin_suban") via "DBFCDX" NEW
+? "full", "algoritam"
+update_fin_suban_from_sql(NIL)
+
+? TIME(), SECONDS() - nTime
+? "----------------"
+? "pritisni stone ..."
+inkey(10)
+use (cHome + "fin_suban") via "DBFCDX" NEW
+DBEDIT()
 use
 
 oServer:Destroy()
@@ -188,17 +227,17 @@ return oRet:Fieldget( oRet:Fieldpos("count") )
 
 // ------------------------------
 // ------------------------------
-function update_suban_from_sql(dDatDok)
+function update_fin_suban_from_sql(dDatDok)
 local oQuery
 local nCounter
 local nRec
 local cQuery
 
-   ? "updateujem suban.dbf from sql stanja"
+   ? "updateujem fin_suban.dbf from sql stanja"
 
-   cQuery :=  "SELECT idfirma, naz, idkonto, idpartn FROM fmk.suban"  
+   cQuery :=  "SELECT idfirma, idvn, brnal, rbr, datdok, idkonto, d_p, iznosbhd FROM fmk.fin_suban"  
    if dDatDok != NIL
-      cQuery += " WHERE " + DTOS(dDatDok)
+      cQuery += " WHERE datdok>=" + _sql_quote(DTOS(dDatDok))
    endif
  
    oQuery := oServer:Query(cQuery) 
@@ -232,8 +271,15 @@ local cQuery
    nCounter := 1
    DO WHILE ! oQuery:Eof()
       append blank
-      replace id with oQuery:FieldGet(1), ;
-              naz with oQuery:FieldGet(2)
+      //cQuery :=  "SELECT idfirma, idvn, brnal, rbr, datdok, idkonto, d_p, iznosbhd FROM fmk.fin_suban"  
+      replace idfirma with oQuery:FieldGet(1), ;
+              idvn with oQuery:FieldGet(2), ;
+              brnal with oQuery:FieldGet(3), ;
+              rbr with oQuery:FieldGet(4), ;
+              datdok with oQuery:FieldGet(5), ;
+              idkonto with oQuery:FieldGet(6), ;
+              d_p with oQuery:FieldGet(7), ;
+              iznosbhd with oQuery:FieldGet(8)
 
       oQuery:Skip()
 
