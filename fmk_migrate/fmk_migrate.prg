@@ -2766,7 +2766,17 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	Alert( oTable:ErrorMsg() )
+	Alert( "insert cohead: " + oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+cTable := "cohead"
+cTmpQry := "UPDATE " + cTable + ;
+	"SET  cohead_status = 'C' WHERE cohead_number = " + _sql_quote( cOrderNumber )
+	
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( "Update cohead status: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
@@ -2825,8 +2835,7 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	? cOrderNumber, cItem, nQty
-	Alert( oTable:ErrorMsg() )
+	Alert( "insert so_line: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
@@ -2865,7 +2874,7 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	Alert( oTable:ErrorMsg() )
+	Alert( "insert invoice: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
@@ -3003,7 +3012,7 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	Alert( oTable:ErrorMsg() )
+	Alert( "insert invc_line: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
