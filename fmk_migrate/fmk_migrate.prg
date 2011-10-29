@@ -611,7 +611,7 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	Alert( oTable:ErrorMsg() )
+	Alert( "set_site: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
