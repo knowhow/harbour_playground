@@ -2963,7 +2963,7 @@ IF cTip == "U"
 	aMemo := parsmemo(cMemo)
 	
 	IF LEN( aMemo ) > 0 .and. !EMPTY( aMemo[1] )
-		cMiscItem := "'" + hb_strtoutf8( aMemo[1] ) + "'"
+		cMiscItem := _sql_quote( hb_strtoutf8( aMemo[1] ) )
 		cMiscItemDescr := cMiscItem
 	ELSE
 		cMiscItem := _sql_quote( "NEMA NAZIVA" )
