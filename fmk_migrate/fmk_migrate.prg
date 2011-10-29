@@ -1845,12 +1845,14 @@ IF ( __get_account( oServer, cValue ) > 0 )
 ENDIF
 
 cTmpQry := "INSERT INTO " + cTable + ;
-	" ( accnt_number, accnt_descrip, accnt_type, accnt_subaccnttype_code ) VALUES (" + ;
+	" ( accnt_number, accnt_descrip, accnt_type, accnt_subaccnttype_code, " + ;
+	"accnt_closedpost, accnt_forwardupdate ) VALUES (" + ;
 	_sql_value( cValue ) + "," + ;
 	_sql_value( cDescription ) + "," + ;
 	_sql_value( cType ) + "," + ;
-	_sql_value( cSubType ) + ;
-	")"
+	_sql_value( cSubType ) + "," + ;
+	"FALSE" + "," + ;
+	"FALSE" + ")" 
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
