@@ -432,7 +432,7 @@ RETURN cType
 
 
 	// setuj itemsite
-STATIC FUNCTION __set_itemsite( oServer, cValue, cSite, cNotes )
+STATIC FUNCTION __set_itemsite( oServer, cValue, cSite, cNotes, cTip )
 LOCAL oTable
 LOCAL cTable := "api.itemsite"
 LOCAL cTmpQry
@@ -440,6 +440,11 @@ LOCAL cCostMethod := "Average"
 LOCAL cCtrlMethod := "Regular"
 LOCAL cPlanner := "P1"
 LOCAL cCostCateg := "C1"
+
+IF cTip == "U"
+	cCostMethod := "None"
+	cCtrlMethod := "None"
+ENDIF
 
 IF ( cNotes == nil )
 	cNotes := ""
@@ -2131,7 +2136,7 @@ DO WHILE !EOF()
 		// ubaci stavku na server u tabelu itemsite
 		__set_itemsite( oServer, ;
 			ALLTRIM( hb_strtoutf8(UPPER(roba->id)) ), ;
-			__site_name )
+			__site_name, roba->tip )
 
 		verbosed( "itemsite ubacen" )
 
@@ -2591,7 +2596,7 @@ DO WHILE !EOF()
 
 						__set_itemsite( oServer, ;
 								ALLTRIM( hb_strtoutf8(UPPER(roba->id)) ), ;
-								__site_name )
+								__site_name, roba->tip )
 
 						__set_itemtaxtype( oServer, ALLTRIM( hb_strtoutf8( UPPER(roba->id) ) ), ;
 								__taxzone_bih, ;
