@@ -436,7 +436,8 @@ STATIC FUNCTION __set_itemsite( oServer, cValue, cSite, cNotes, cTip )
 LOCAL oTable
 LOCAL cTable := "api.itemsite"
 LOCAL cTmpQry
-LOCAL cCostMethod := "Average"
+//LOCAL cCostMethod := "Average"
+LOCAL cCostMethod := "Standard"
 LOCAL cCtrlMethod := "Regular"
 LOCAL cPlanner := "P1"
 LOCAL cCostCateg := "C1"
