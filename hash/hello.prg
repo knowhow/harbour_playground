@@ -14,6 +14,13 @@ set_hash(aIni)
 ? "hash poslije setovanja:"
 print_hash(@aIni)
 
+if ! HB_HHASKEY(aIni, "nepostojeci_key")
+  aIni["nepostojeci_key"] := NIL
+  ? "vrijednost za nepostojeci key je nakon setovanja nil", aIni["nepostojeci_key"]
+else  
+  ? "vrijednost za nepostojeci_key", aIni["nepostojeci_key"]
+endif
+
 return
 
 
