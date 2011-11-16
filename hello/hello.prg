@@ -1,3 +1,5 @@
+#include "inkey.ch"
+
 procedure Main(...)
 
 local aPom
@@ -6,11 +8,18 @@ local nPos
 
 ? "hello world"
 
+? K_ESC
+
+? "Valtype od .f. :", VALTYPE(.f.)
 for i:=1 to 10
   ? "hello world", i
 next
 
-cPom:="/home/hernad/test/DATA.DBF"
+cPom := "/home/hernad/test/DATA.DBF"
+
+? FILEBASE(cPom), FILEEXT(cPom)
+
+cPom := "osuban"
 
 ? FILEBASE(cPom), FILEEXT(cPom)
 
