@@ -5,6 +5,7 @@ procedure Main(...)
 local aPom
 local cPom
 local nPos
+local pg_sql
 
 ? "hello world"
 
@@ -34,5 +35,26 @@ nPos:=ASCAN(aPom,  { |x|  x[1]=="dva"} )
 
 
 ? "broj ulaznih parametara: ", PCount() 
+
+
+pg_sql  = "{jen,dva,tri}"
+
+? pg_sql
+
+? pg_sql := SUBSTR(pg_sql, 2, LEN(pg_sql)-2)
+
+_num_arr := numtoken(pg_sql, ",")
+
+_arr := {}
+
+for i:=1 to _num_arr
+    AADD(_arr, token(pg_sql, ",", i))
+next
+
+? "_arr", LEN(_arr)
+for i:=1 to LEN(_arr)
+   ? _arr[i]
+next
+
 
 
