@@ -54,6 +54,8 @@ cd $FMKDBPATH/FAKT/$KUMDIR
 for table in $FAKTB
 do 
 cp $table.DBF $F18DBPATH/fakt_$table.dbf 
+cp $table.FPT $F18DBPATH/fakt_$table.fpt
+
 done
 
 cd $F18DBPATH
@@ -91,6 +93,8 @@ cd $FMKDBPATH/SIF1
 for table in $SIFTB
 do
 cp $table.DBF $F18DBPATH/$table.dbf
+cp $table.FPT $F18DBPATH/$table.fpt
+
 done
 
 cd $F18DBPATH
