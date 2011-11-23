@@ -17,14 +17,17 @@ STATIC s_mainThreadID
 
 proc main()
    field F1
-   local thID, bResult
-
+   local thID, bResult  
+   local i
    s_mainThreadID := hb_threadSelf()
    /* create table */
+
    dbCreate("_tst",{{"F1","C",1,0}})
    use _tst
-   while lastRec() < 10000
+   i := 0
+   while lastRec() < 10
       dbAppend()
+      ? i++
       F1 := chr( recno() )
    enddo
 
@@ -32,11 +35,17 @@ proc main()
    thID := hb_threadStart( @thFunc() )
    ? "current thread ID:", thID
    ? "work area in use, used() =>", used(), alias()
-   WAIT "Press a key to detach work area"
-   hb_dbDetach( , {|| countRecords( {|| F1 == "A" } ) } )
+   ? 
+   ? "detachhing WA"
+   //WAIT "Press a key to detach work area"
+   //hb_dbDetach( , {|| countRecords( {|| F1 == "A" } ) } )
+   hb_dbDetach( , {|| countRecords( {|| .t. } ) } )
    ? "work area detached, used() =>", used(), alias()
    ? "we will make some other things now..."
-   hb_idleSleep( 1 )
+   ? "tamo u pozadini se radi cekam dvije sec ......................................................"
+   hb_idleSleep( 2 )
+   ? REPLICATE("=", 80)
+   ? "Zavrsio sam posao unosa, idem sada provjeriti je li onaj sljaker zavrsio sa brojanjem:"
    ? "let's check the result"
    ? "request for work area"
    hb_dbRequest( , , @bResult, .T. )
@@ -60,10 +69,13 @@ static func countRecords( bFor )
    dbGoTop()
    while ! eof()
       if eval( bFor )
-         nCount ++
+         ? "ajoj jest naporno radit' u drugoj niti", nCount ++
+         hb_idleSleep(0.09)
       endif
       dbSkip()
    enddo
    ? "!!! JOB DONE !!!" + iif( hb_threadSelf() == s_mainThreadID, ;
                                " (by main thread)", " (by child thread)" )
+   
+   ? "napokon ZAVRSIO !"
    return nCount
