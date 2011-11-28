@@ -379,10 +379,21 @@ return _fld_name
 static function _change_dbf_struct( dbf_struct )
 local _dbf_stct := {}
 local _scan
+local _field
+local i
+
 // provjeravaj i da li postoje duple
 for i := 1 to len( dbf_struct )
+	
+	_field := _get_dbf_field_name( dbf_struct[i, 1] )
+	
+	// sljedeca polja preskoci
+	if _field $ "#oid#host#"
+		loop
+	endif
 
-	_scan := ASCAN( _dbf_stct, { |var| var[1] == _get_dbf_field_name( dbf_struct[i, 1] ) } )
+	// vidi da li vec postoji ?
+	_scan := ASCAN( _dbf_stct, { |var| var[1] == _field } )
 
 	if _scan = 0
 		// dodaj u novu matricu... slog
@@ -392,7 +403,6 @@ for i := 1 to len( dbf_struct )
 	endif
 
 next
-
 
 return _dbf_stct
 
