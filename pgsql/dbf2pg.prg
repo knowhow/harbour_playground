@@ -358,13 +358,19 @@ RETURN
 
 // vraca korigovan naziv polja, ako su ključne riječi korištene za naziv polja
 static function _get_dbf_field_name( field_name )
-local _fld_name := field_name
+local _fld_name
+
+field_name := LOWER( field_name )
+_fld_name := field_name
+
 do case
 	
 	case alltrim(field_name) == "decimal"
 		_fld_name := "f_decimal"
 	case alltrim(field_name) == "unique"
 		_fld_name := "f_unique"
+	case alltrim(field_name) == "user"
+		_fld_name := "f_user"
 endcase
 return _fld_name
 
