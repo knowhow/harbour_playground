@@ -180,7 +180,7 @@ PROCEDURE Main( ... )
    
    ? "USE ( " + cFile +")" 
    USE (cFile) SHARED 
-   aDbfStruct := DBStruct()
+   aDbfStruct := _change_dbf_struct( DBStruct() )
 
    oServer := TPQServer():New( cHostName, cDatabase, cUser, cPassWord, nPort, cPath )
    IF oServer:NetErr()
@@ -250,12 +250,8 @@ PROCEDURE Main( ... )
          sType := FieldType( FieldPos( cField ) )
          // data type
          dType := oRecord:Fieldtype( i )
-         cValue := FieldGet( FieldPos( cField ) )
+         cValue := FieldGet( FieldPos( _get_dbf_field_name(cField) ) )
         
-         //IF UPPER(cField) == "SIFRA"       
-         //   loop
-         //ENDIF
-
          IF cValue != NIL
             IF dType != sType
                IF dType == "C" .AND. sType == "N"
@@ -360,103 +356,38 @@ PROCEDURE Help()
 RETURN
 
 
-// ---------------------------------------------------
-// convert and return string in utf-8
-// ---------------------------------------------------
-FUNCTION strkznutf8( cInput, cIz )
-local aWin := {} 
-local aUTF := {}
-local a852 := {}
-local ahb852 := {}
-local aTmp := {}
-local cRet
-local i
-
-// windows codes...
-AADD( aWin, "&" ) 
-AADD( aWin, "Š" )
-AADD( aWin, "Ð" )
-AADD( aWin, "Æ" )
-AADD( aWin, "È" )
-AADD( aWin, "Ž" )
-AADD( aWin, "š" )
-AADD( aWin, "ð" )
-AADD( aWin, "æ" )
-AADD( aWin, "è" )
-AADD( aWin, "ž" )
-AADD( aWin, "!" ) 
-AADD( aWin, '"' ) 
-AADD( aWin, "'" ) 
-AADD( aWin, "," ) 
-
-// 852 codes...
-AADD( a852, "&" ) // feature
-AADD( a852, "æ" ) // SS
-AADD( a852, "Ñ" ) // DJ
-AADD( a852, "¬" ) // CC
-AADD( a852, "¬" ) // CH
-AADD( a852, "¦" ) // ZZ
-AADD( a852, "ç" ) // ss
-AADD( a852, "Ð" ) // dj
-AADD( a852, "Ÿ" ) // cc
-AADD( a852, "†" ) // ch
-AADD( a852, "§" ) // zz
-AADD( a852, "!" ) // uzvicnik
-AADD( a852, '"' ) // navodnici
-AADD( a852, "'" ) // jedan navodnik
-AADD( a852, "," ) // zarez
-
-//  ƒ å º τ ╨ - ¼ Å ª µ ╤
-//  č ć ž š đ - Č Ć Ž Š Đ
-
-// hb852 codes (harbour)...
-AADD( ahb852, "&" ) // feature
-AADD( ahb852, "µ" ) // SS
-AADD( ahb852, "╤" ) // DJ
-AADD( ahb852, "Å" ) // CC
-AADD( ahb852, "¼" ) // CH
-AADD( ahb852, "ª" ) // ZZ
-AADD( ahb852, "τ" ) // ss
-AADD( ahb852, "╨" ) // dj
-AADD( ahb852, "å" ) // cc
-AADD( ahb852, "ƒ" ) // ch
-AADD( ahb852, "º" ) // zz
-AADD( ahb852, "!" ) // uzvicnik
-AADD( ahb852, '"' ) // navodnici
-AADD( ahb852, "'" ) // jedan navodnik
-AADD( ahb852, "," ) // zarez
-
-// UTF codes...
-AADD( aUTF, "&#38;" ) 
-AADD( aUTF, "&#352;" )
-AADD( aUTF, "&#272;" )
-AADD( aUTF, "&#268;" )
-AADD( aUTF, "&#262;" )
-AADD( aUTF, "&#381;" )
-AADD( aUTF, "&#353;" )
-AADD( aUTF, "&#273;" )
-AADD( aUTF, "&#269;" )
-AADD( aUTF, "&#263;" )
-AADD( aUTF, "&#382;" )
-AADD( aUTF, "&#33;" ) 
-AADD( aUTF, "&#34;" ) 
-AADD( aUTF, "&#39;" ) 
-AADD( aUTF, "&#44;" ) 
+// vraca korigovan naziv polja, ako su ključne riječi korištene za naziv polja
+static function _get_dbf_field_name( field_name )
+local _fld_name := field_name
+do case
+	
+	case alltrim(field_name) == "decimal"
+		_fld_name := "f_decimal"
+	case alltrim(field_name) == "unique"
+		_fld_name := "f_unique"
+endcase
+return _fld_name
 
 
-if cIz == "8"
-	aTmp := a852
-elseif cIz == "h8"
-    aTmp := ahb852
-elseif cIz == "W"
-	aTmp := aWin
-endif
+// promjeniti strukturu dbf-a ?
+static function _change_dbf_struct( dbf_struct )
+local _dbf_stct := {}
+local _scan
+// provjeravaj i da li postoje duple
+for i := 1 to len( dbf_struct )
 
-for i := 1 to LEN( aUtf )
-    cInput := STRTRAN( cInput, aTmp[i], aUtf[i] )
+	_scan := ASCAN( _dbf_stct, { |var| var[1] == _get_dbf_field_name( dbf_struct[i, 1] ) } )
+
+	if _scan = 0
+		// dodaj u novu matricu... slog
+		AADD( _dbf_stct, { _get_dbf_field_name( dbf_struct[i, 1] ), dbf_struct[i, 2], dbf_struct[i, 3], dbf_struct[i, 4] } )
+	else
+		? "Preskacem duplo polje: " + dbf_struct[i, 1], "(", dbf_struct[i, 2], dbf_struct[i, 3], dbf_struct[i, 4], ")"
+	endif
+
 next
 
-cRet := cInput
 
-return cRet
+return _dbf_stct
+
 
