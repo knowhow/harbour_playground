@@ -217,10 +217,6 @@ ENDIF
 RETURN
 
 
-RETURN
-
-
-
 
 STATIC FUNCTION __set_crm( oServer, cValue, cDescription, cTel, cFax, cAddr, cCity, cPostal, cIdBroj, cNotes )
 LOCAL oTable
@@ -390,7 +386,7 @@ LOCAL cTable := "api.item"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = '" + cValue +"'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -408,7 +404,7 @@ LOCAL cTable := "api.item"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT * FROM " + cTable + " WHERE item_number = '" + cValue +"'"
+cTmpQry := "SELECT * FROM " + cTable + " WHERE item_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -436,14 +432,20 @@ RETURN cType
 
 
 	// setuj itemsite
-STATIC FUNCTION __set_itemsite( oServer, cValue, cSite, cNotes )
+STATIC FUNCTION __set_itemsite( oServer, cValue, cSite, cNotes, cTip )
 LOCAL oTable
 LOCAL cTable := "api.itemsite"
 LOCAL cTmpQry
-LOCAL cCostMethod := "Average"
+//LOCAL cCostMethod := "Average"
+LOCAL cCostMethod := "Standard"
 LOCAL cCtrlMethod := "Regular"
 LOCAL cPlanner := "P1"
 LOCAL cCostCateg := "C1"
+
+IF cTip == "U"
+	cCostMethod := "None"
+	cCtrlMethod := "None"
+ENDIF
 
 IF ( cNotes == nil )
 	cNotes := ""
@@ -491,8 +493,8 @@ LOCAL cTable := "api.itemsite"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = '" + cValue + "'" + ;
-	" AND site = '" + cSite + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE item_number = " + _sql_quote(cValue) +  ;
+	" AND site = " + _sql_quote(cSite)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -570,7 +572,7 @@ LOCAL cTable := "crmacct"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE crmacct_number = '" + cValue +"'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE crmacct_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -615,7 +617,7 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	Alert( oTable:ErrorMsg() )
+	Alert( "set_site: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
@@ -628,7 +630,7 @@ LOCAL cTable := "api.site"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = '" + cValue +"'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -647,7 +649,7 @@ LOCAL cTable := "api.site"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT * FROM " + cTable + " WHERE code = '" + cValue +"'"
+cTmpQry := "SELECT * FROM " + cTable + " WHERE code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -755,7 +757,7 @@ LOCAL cTable := "classcode"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE classcode_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE classcode_code = " + _sql_quote(cValue) 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -774,7 +776,7 @@ LOCAL cTable := "classcode"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT classcode_id FROM " + cTable + " WHERE classcode_code = '" + cValue + "'"
+cTmpQry := "SELECT classcode_id FROM " + cTable + " WHERE classcode_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -847,7 +849,7 @@ LOCAL cTable := "costcat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE costcat_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE costcat_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -865,7 +867,7 @@ LOCAL cTable := "costcat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT costcat_id FROM " + cTable + " WHERE costcat_code = '" + cValue + "'"
+cTmpQry := "SELECT costcat_id FROM " + cTable + " WHERE costcat_code = " + _sql_quote(cValue) 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -908,7 +910,7 @@ LOCAL cTable := "api.customertype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -950,7 +952,7 @@ LOCAL cTable := "api.vendortype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE code = " + _sql_quote(cValue) 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -992,7 +994,7 @@ LOCAL cTable := "sitetype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE sitetype_name = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE sitetype_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1036,7 +1038,7 @@ LOCAL cTable := "api.salesrep"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE number = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1078,7 +1080,7 @@ LOCAL cTable := "shipform"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE shipform_name = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE shipform_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1096,7 +1098,7 @@ LOCAL cTable := "shipform"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT shipform_id FROM " + cTable + " WHERE shipform_name = '" + cValue + "'"
+cTmpQry := "SELECT shipform_id FROM " + cTable + " WHERE shipform_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1112,8 +1114,16 @@ STATIC FUNCTION __set_salescat( oServer, cValue, cDescription )
 LOCAL oTable
 LOCAL cTable := "salescat"
 LOCAL cTmpQry
-LOCAL nAccnt1 := __get_account_id( oServer, "6000" ) 
-LOCAL nAccnt2 := __get_account_id( oServer, "2003" ) 
+LOCAL nAccnt1 := 0 
+LOCAL nAccnt2 := 0
+
+__set_account( oServer, "6000", "Test", get_accnt_type("6000"), ;
+		get_accnt_subtype( "6000" ) )
+nAccnt1 := __get_account_id( oServer, "6000" ) 
+
+__set_account( oServer, "2003", "Test", get_accnt_type("2003"), ;
+		get_accnt_subtype( "2003" ) )
+nAccnt2 := __get_account_id( oServer, "2003" ) 
 
 IF ( __get_salescat( oServer, cValue ) > 0 )  
 	verbosed( "Sales category " + cValue + " vec postoji!"  )
@@ -1147,7 +1157,7 @@ LOCAL cTable := "salescat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT count(*) FROM " + cTable + " WHERE salescat_name = '" + cValue + "'"
+cTmpQry := "SELECT count(*) FROM " + cTable + " WHERE salescat_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1166,7 +1176,7 @@ LOCAL cTable := "salescat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT salescat_id FROM " + cTable + " WHERE salescat_name = '" + cValue + "'"
+cTmpQry := "SELECT salescat_id FROM " + cTable + " WHERE salescat_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1213,7 +1223,7 @@ LOCAL cTable := "prodcat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT count(*) FROM " + cTable + " WHERE prodcat_code = '" + cValue + "'"
+cTmpQry := "SELECT count(*) FROM " + cTable + " WHERE prodcat_code = " + _sql_quote(cValue) 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1232,7 +1242,7 @@ LOCAL cTable := "prodcat"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT prodcat_id FROM " + cTable + " WHERE prodcat_code = '" + cValue + "'"
+cTmpQry := "SELECT prodcat_id FROM " + cTable + " WHERE prodcat_code = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1277,7 +1287,7 @@ LOCAL cTable := "plancode"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE plancode_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE plancode_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1296,7 +1306,7 @@ LOCAL cTable := "plancode"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT plancode_id FROM " + cTable + " WHERE plancode_code = '" + cValue + "'"
+cTmpQry := "SELECT plancode_id FROM " + cTable + " WHERE plancode_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1341,7 +1351,7 @@ LOCAL cTable := "tax"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE tax_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE tax_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1360,7 +1370,7 @@ LOCAL cTable := "tax"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT tax_id FROM " + cTable + " WHERE tax_code = '" + cValue + "'"
+cTmpQry := "SELECT tax_id FROM " + cTable + " WHERE tax_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1406,7 +1416,7 @@ LOCAL cTable := "taxauth"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxauth_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxauth_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1425,7 +1435,7 @@ LOCAL cTable := "taxauth"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT taxauth_id FROM " + cTable + " WHERE taxauth_code = '" + cValue + "'"
+cTmpQry := "SELECT taxauth_id FROM " + cTable + " WHERE taxauth_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1470,7 +1480,7 @@ LOCAL cTable := "taxzone"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxzone_code = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxzone_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1488,7 +1498,7 @@ LOCAL cTable := "taxzone"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT taxzone_id FROM " + cTable + " WHERE taxzone_code = '" + cValue + "'"
+cTmpQry := "SELECT taxzone_id FROM " + cTable + " WHERE taxzone_code = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1532,7 +1542,7 @@ LOCAL cTable := "taxtype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxtype_name = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE taxtype_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1550,7 +1560,7 @@ LOCAL cTable := "taxtype"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT taxtype_id FROM " + cTable + " WHERE taxtype_name = '" + cValue + "'"
+cTmpQry := "SELECT taxtype_id FROM " + cTable + " WHERE taxtype_name = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1796,7 +1806,7 @@ STATIC FUNCTION __get_terms( oServer, cValue )
 	LOCAL nResult
 	LOCAL cTmpQry
 
-	cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE terms_code = '" + cValue + "'"
+	cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE terms_code = " + _sql_quote(cValue)
 	oTable := _sql_query( oServer, cTmpQry )
 	IF oTable:NetErr()
 Alert( oTable:ErrorMsg() )
@@ -1815,7 +1825,7 @@ STATIC FUNCTION __get_terms_id( oServer, cValue )
 	LOCAL nResult
 	LOCAL cTmpQry
 
-	cTmpQry := "SELECT terms_id FROM " + cTable + " WHERE terms_code = '" + cValue + "'"
+	cTmpQry := "SELECT terms_id FROM " + cTable + " WHERE terms_code = " + _sql_quote(cValue)
 	oTable := _sql_query( oServer, cTmpQry )
 	IF oTable:NetErr()
 Alert( oTable:ErrorMsg() )
@@ -1841,12 +1851,14 @@ IF ( __get_account( oServer, cValue ) > 0 )
 ENDIF
 
 cTmpQry := "INSERT INTO " + cTable + ;
-	" ( accnt_number, accnt_descrip, accnt_type, accnt_subaccnttype_code ) VALUES (" + ;
+	" ( accnt_number, accnt_descrip, accnt_type, accnt_subaccnttype_code, " + ;
+	"accnt_closedpost, accnt_forwardupdate ) VALUES (" + ;
 	_sql_value( cValue ) + "," + ;
 	_sql_value( cDescription ) + "," + ;
 	_sql_value( cType ) + "," + ;
-	_sql_value( cSubType ) + ;
-	")"
+	_sql_value( cSubType ) + "," + ;
+	"FALSE" + "," + ;
+	"FALSE" + ")" 
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
@@ -1865,7 +1877,7 @@ LOCAL cTable := "accnt"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE accnt_number = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE accnt_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1883,7 +1895,7 @@ LOCAL cTable := "accnt"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT accnt_id FROM " + cTable + " WHERE accnt_number = '" + cValue + "'"
+cTmpQry := "SELECT accnt_id FROM " + cTable + " WHERE accnt_number = " + _sql_quote(cValue)
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -1930,7 +1942,7 @@ STATIC FUNCTION __get_uom( oServer, cValue )
 	LOCAL cTmpQry
 
 	// provjeri prvo da li postoji uopšte ovaj UOM zapis
-	cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE uom_name = '" + cValue +"'"
+	cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE uom_name = " + _sql_quote(cValue)
 	oTable := _sql_query( oServer, cTmpQry )
 	IF oTable:NetErr()
 Alert( oTable:ErrorMsg() )
@@ -1949,7 +1961,7 @@ STATIC FUNCTION __get_uom_id( oServer, cValue )
 	LOCAL cTmpQry
 
 	// provjeri prvo da li postoji uopšte ovaj UOM zapis
-	cTmpQry := "SELECT uom_id FROM " + cTable + " WHERE uom_name = '" + cValue +"'"
+	cTmpQry := "SELECT uom_id FROM " + cTable + " WHERE uom_name = " + _sql_quote(cValue)
 	oTable := _sql_query( oServer, cTmpQry )
 	IF oTable:NetErr()
 Alert( oTable:ErrorMsg() )
@@ -2006,7 +2018,7 @@ LOCAL nResult
 LOCAL cTmpQry
 
 // provjeri prvo da li postoji uopšte ovaj UOM zapis
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE curr_symbol = " + _sql_value( cValue )
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE curr_symbol = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -2025,7 +2037,7 @@ LOCAL nResult
 LOCAL cTmpQry
 
 // provjeri prvo da li postoji uopšte ovaj UOM zapis
-cTmpQry := "SELECT curr_id FROM " + cTable + " WHERE curr_symbol = " + _sql_value( cValue )
+cTmpQry := "SELECT curr_id FROM " + cTable + " WHERE curr_symbol = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -2054,7 +2066,7 @@ RETURN oResult
 
 // konvertuje neku vrijednost za sql value
 STATIC FUNCTION _sql_value( cValue )
-RETURN "'" + cValue + "'"
+RETURN _sql_quote(cValue)
 
 
 // migracija šifrarnika robe
@@ -2062,12 +2074,18 @@ FUNCTION migrate_sif_articles( oServer, cDBPath )
 LOCAL cNotes := ""
 LOCAL nCount := 0
 LOCAL cRobaNaziv
-LOCAL cTblName := "ROBA.DBF"
+LOCAL cTblName := "ROBA.dbf"
 LOCAL cFileName := cDBPath + cTblName
+LOCAL cBarKod := ""
 
 IF !FILE( cFileName )
 	? "Fajl " + cFileName + " ne postoji, prekidam operaciju !"
 	QUIT
+ENDIF
+
+// ako ne postoji fajl cdx, napravi indeks
+IF !FILE( STRTRAN( cFileName, ".dbf", ".cdx" ) )
+	CREATE_INDEX("ID", "ID", cDBPath + "ROBA")
 ENDIF
 
 // ubaci class code
@@ -2096,6 +2114,10 @@ DO WHILE !EOF()
 
 	cRobaNaziv := field->naz
 
+	IF roba->(FIELDPOS("BARKOD")) <> 0
+		cBarKod := roba->barkod
+	ENDIF
+
 	verbosed( "- Ubacujem: " + ALLTRIM(roba->id) + ", " + ALLTRIM(roba->naz) )
 
 	// ubaci stavku na server u tabelu item
@@ -2105,7 +2127,7 @@ DO WHILE !EOF()
 		roba->tip, ;
 		ALLTRIM( hb_strtoutf8( UPPER(field->jmj) ) ), ;
 		field->vpc, ;
-		field->barkod, ;
+		cBarKod, ;
 		hb_strtoutf8( cNotes ) ) = .t.
 
 		verbosed( "item ubacen" )
@@ -2115,7 +2137,7 @@ DO WHILE !EOF()
 		// ubaci stavku na server u tabelu itemsite
 		__set_itemsite( oServer, ;
 			ALLTRIM( hb_strtoutf8(UPPER(roba->id)) ), ;
-			__site_name )
+			__site_name, roba->tip )
 
 		verbosed( "itemsite ubacen" )
 
@@ -2138,7 +2160,7 @@ RETURN nCount
 
 FUNCTION migrate_sif_accounts( oServer, cDBPath )
 LOCAL nCount := 0
-LOCAL cTblName := "KONTO.DBF"
+LOCAL cTblName := "KONTO.dbf"
 LOCAL cFileName := cDBPath + cTblName
 LOCAL cAccType
 LOCAL cAccSubType
@@ -2149,6 +2171,10 @@ IF !FILE( cFileName )
 	QUIT
 ENDIF
 
+// ako ne postoji fajl cdx, napravi indeks
+IF !FILE( STRTRAN( cFileName, ".dbf", ".cdx" ) )
+	CREATE_INDEX("ID", "ID", cDBPath + "KONTO")
+ENDIF
 
 // zakači se na tabelu robe
 USE (cFileName) ALIAS "KONTO"
@@ -2302,8 +2328,8 @@ RETURN cValue
 
 FUNCTION migrate_sif_partners( oServer, cDBPath )
 LOCAL nCount := 0
-LOCAL cTblPName := "PARTN.DBF"
-LOCAL cTblSName := "SIFV.DBF"
+LOCAL cTblPName := "PARTN.dbf"
+LOCAL cTblSName := "SIFV.dbf"
 LOCAL cPFileName := cDBPath + cTblPName
 LOCAL cSFileName := cDBPath + cTblSName
 LOCAL cId
@@ -2316,6 +2342,15 @@ ENDIF
 IF !FILE( cSFileName )
 	? "Fajl " + cSFileName + " ne postoji, prekidam operaciju !"
 	QUIT
+ENDIF
+
+// ako ne postoji fajl cdx, napravi indeks
+IF !FILE( STRTRAN( cPFileName, ".dbf", ".cdx" ) )
+	CREATE_INDEX("ID", "ID", cDBPath + "PARTN")
+ENDIF
+
+IF !FILE( STRTRAN( cSFileName, ".dbf", ".cdx" ) )
+	CREATE_INDEX("ID", "id+oznaka+IdSif+Naz", cDBPath + "SIFV")
 ENDIF
 
 // prvo ubaci podešenja potrebna za partnere
@@ -2397,10 +2432,16 @@ RETURN cResult
 FUNCTION migrate_fakt_data( oServer, cDBPath )
 LOCAL cNotes := ""
 LOCAL nCount := 0
-LOCAL cTblFakt := "FAKT.DBF"
-LOCAL cTblDoks := "DOKS.DBF"
+LOCAL cTblFakt := "FAKT.dbf"
+LOCAL cTblDoks := "DOKS.dbf"
+LOCAL cTblRoba := "ROBA.dbf"
+LOCAL cTblPartn := "PARTN.dbf"
+LOCAL cTblSifV := "SIFV.dbf"
 LOCAL cFFileName := cDBPath + cTblFakt
 LOCAL cDFileName := cDBPath + cTblDoks
+LOCAL cRFileName := cDBPath + cTblRoba
+LOCAL cPFileName := cDBPath + cTblPartn
+LOCAL cSFileName := cDBPath + cTblSifV
 LOCAL cIdFirma
 LOCAL cIdTipDok
 LOCAL cBrDok
@@ -2418,15 +2459,31 @@ IF !FILE( cDFileName )
 	RETURN
 ENDIF
 
+IF !FILE( STRTRAN( cFFileName, ".dbf", ".cdx" ) )
+	CREATE_INDEX("1","IdFirma+idtipdok+brdok+rbr+podbr", cDBPath+"FAKT")
+ENDIF
+
+IF !FILE( STRTRAN( cDFileName, ".dbf", ".cdx" ) )
+	CREATE_INDEX("1","IdFirma+idtipdok+brdok",cDBPath+"DOKS")
+ENDIF
+
+CLOSE ALL
 
 // zakači se na tabele
-SELECT 60
-USE (cFFileName) ALIAS "FAKT"
+USE (cFFileName) ALIAS "FAKT" NEW
 SET ORDER TO TAG "1"
 
-SELECT 61
-USE (cDFileName) ALIAS "DOKS"
+USE (cDFileName) ALIAS "DOKS" NEW
 SET ORDER TO TAG "1"
+
+USE (cRFileName) ALIAS "ROBA" NEW
+SET ORDER TO TAG "ID"
+
+USE (cPFileName) ALIAS "PARTN" NEW
+SET ORDER TO TAG "ID"
+
+USE (cSFileName) ALIAS "SIFV" NEW
+SET ORDER TO TAG "ID"
 
 SELECT doks
 GO TOP
@@ -2459,6 +2516,34 @@ DO WHILE !EOF()
 		// dobro, ovo je neki račun
 		? "Obradjujem dokument:", cIdFirma + "-" + cIdTipDok + "-" + cBrDok + " / " + cSO_number 
 
+		cIdPartner := ALLTRIM( UPPER( hb_strtoutf8(doks->idpartner) ) )
+		
+		// da vidimo ima li partnera...	
+		IF __get_crm( oServer, cIdPartner ) = 0
+			
+			SELECT partn
+			APPEND BLANK
+			REPLACE field->id WITH doks->idpartner
+			REPLACE field->naz WITH "NEMA NAZIVA"	
+
+			// dodaj ga i u crm
+			__set_crm( oServer, ;
+				cIdPartner, ;
+				ALLTRIM( hb_strtoutf8( partn->naz ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->telefon ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->fax ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->adresa ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->mjesto ) ), ;
+				ALLTRIM( hb_strtoutf8( partn->ptt ) ), ;
+				"", ;
+				"" )
+
+			? " - ubacio nepostojeceg partnera: " + cIdPartner
+
+			SELECT doks
+
+		ENDIF
+
 		// provjeri mi robu !
 		SELECT fakt
 		GO TOP
@@ -2466,7 +2551,10 @@ DO WHILE !EOF()
 		
 		// uzmi fakt->txt
 		aMemo := parsmemo( fakt->txt )
-		cMemo := hb_strtoutf8( ALLTRIM( aMemo[2] ) )
+		
+		IF LEN( aMemo ) > 1
+			cMemo := hb_strtoutf8( ALLTRIM( aMemo[2] ) )
+		ENDIF
 
 		lNoArticle := .f.
 
@@ -2475,10 +2563,15 @@ DO WHILE !EOF()
 			.AND. fakt->brdok == cBrDok
 			
 			cIdRoba := ALLTRIM( UPPER( hb_strtoutf8(fakt->idroba) ))
-			
+			cBarKod := ""
+
 			SELECT roba
 			GO TOP
 			SEEK fakt->idroba
+
+			IF roba->(FIELDPOS("BARKOD")) <> 0
+				cBarKod := roba->barkod
+			ENDIF
 
 			SELECT fakt
 			
@@ -2499,12 +2592,12 @@ DO WHILE !EOF()
 						roba->tip, ;
 						ALLTRIM( hb_strtoutf8( UPPER(roba->jmj) ) ), ;
 						roba->vpc, ;
-						roba->barkod, ;
+						cBarKod, ;
 						"" ) = .t.
 
 						__set_itemsite( oServer, ;
 								ALLTRIM( hb_strtoutf8(UPPER(roba->id)) ), ;
-								__site_name )
+								__site_name, roba->tip )
 
 						__set_itemtaxtype( oServer, ALLTRIM( hb_strtoutf8( UPPER(roba->id) ) ), ;
 								__taxzone_bih, ;
@@ -2679,7 +2772,17 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	Alert( oTable:ErrorMsg() )
+	Alert( "insert cohead: " + oTable:ErrorMsg() )
+	QUIT
+ENDIF
+
+cTable := "cohead"
+cTmpQry := "UPDATE " + cTable + ;
+	"SET  cohead_status = 'C' WHERE cohead_number = " + _sql_quote( cOrderNumber )
+	
+oTable := _sql_query( oServer, cTmpQry )
+IF oTable:NetErr()
+	Alert( "Update cohead status: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
@@ -2694,7 +2797,7 @@ LOCAL cTable := "api.salesorder"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE order_number = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE order_number = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -2738,8 +2841,7 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	? cOrderNumber, cItem, nQty
-	Alert( oTable:ErrorMsg() )
+	Alert( "insert so_line: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
@@ -2778,7 +2880,7 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	Alert( oTable:ErrorMsg() )
+	Alert( "insert invoice: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
@@ -2793,7 +2895,7 @@ LOCAL cTable := "api.invoice"
 LOCAL nResult
 LOCAL cTmpQry
 
-cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE invoice_number = '" + cValue + "'"
+cTmpQry := "SELECT COUNT(*) FROM " + cTable + " WHERE invoice_number = " + _sql_quote( cValue )
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
 	Alert( oTable:ErrorMsg() )
@@ -2874,9 +2976,15 @@ IF cTip == "U"
 
 	// parsiraj memo polje
 	aMemo := parsmemo(cMemo)
-	cMiscItem := "'" + hb_strtoutf8( aMemo[1] ) + "'"
-	cMiscItemDescr := cMiscItem
 	
+	IF LEN( aMemo ) > 0 .and. !EMPTY( aMemo[1] )
+		cMiscItem := _sql_quote( hb_strtoutf8( aMemo[1] ) )
+		cMiscItemDescr := cMiscItem
+	ELSE
+		cMiscItem := _sql_quote( "NEMA NAZIVA" )
+		cMiscItemDescr := _sql_quote( "NEMA OPISA" )
+	ENDIF
+
 	// ubaci sales kategoriju ako ne postoji
 	__set_salescat( oServer, ALLTRIM( cItem ), ALLTRIM( cItem ) )
 	
@@ -2887,7 +2995,7 @@ IF cTip == "U"
 
 ELSE
 
-	cItem := "'" + cItem + "'"
+	cItem := _sql_quote( cItem )
 
 ENDIF
 
@@ -2910,7 +3018,7 @@ cTmpQry := "INSERT INTO " + cTable + ;
 
 oTable := _sql_query( oServer, cTmpQry )
 IF oTable:NetErr()
-	Alert( oTable:ErrorMsg() )
+	Alert( "insert invc_line: " + oTable:ErrorMsg() )
 	QUIT
 ENDIF
 
@@ -3045,4 +3153,8 @@ PROCEDURE help()
 
 RETURN
 
+// ------------------------
+function _sql_quote(xVar)
+xVar := STRTRAN(xVar, "'","''")
+return "'" + xVar + "'"
 
