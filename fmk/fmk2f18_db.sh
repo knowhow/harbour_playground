@@ -1,8 +1,7 @@
 #!/bin/bash
 # ver 0.1
 # bjasko@bring.out.ba 
-# 05.12.2011
-# TO DO selektivno odabir tabela 
+# 24.11.2011
 # podesenja
 ###########################################
 KUMDIR=KUM1
@@ -138,7 +137,7 @@ pause
 # copy FMK LD DB to F18
 echo "kopiram fmk db to f18" 
 echo "LD tabele"
-LDTB="LD NORSIHT OBRACUNI PK_DATA PK_RADN RADKR RADN RADSAT RJ"
+LDTB="LD NORSIHT OBRACUNI PK_DATA PK_RADN RADKR RADN RADSAT RJ TPRSIHT"
 cd $FMKDBPATH/LD/$KUMDIR
 for table in $LDTB
 do
@@ -159,7 +158,7 @@ pause
 # copy FMK DB to F18
 echo "kopiram fmk db to f18" 
 echo "SIF tabele"
-SIFTB="ROBA SIFK SIFV PARTN BANKE KONTO POR RJ SAST TARIFA TDOK TIPPR TIPPR2 TNAL TRFP TRFP2 TRFP3 VALUTE VPOSLA VPRIH OPS KBENEF KONCIJ KRED DOPR LOKAL AMORT REVAL FMKRULES DEST FTXT"
+SIFTB="ROBA SIFK SIFV PARTN BANKE KONTO POR RJ SAST TARIFA TDOK TIPPR TIPPR2 TNAL TRFP TRFP2 TRFP3 VALUTE VPOSLA VPRIH OPS KBENEF KONCIJ KRED DOPR LOKAL AMORT REVAL FMKRULES DEST FTXT PAROBR STRSPR"
 cd $FMKDBPATH/SIF1
 for table in $SIFTB
 do
@@ -175,6 +174,7 @@ mv amort.dbf os_amort.dbf
 mv reval.dbf os_reval.dbf
 mv ftxt.dbf  fakt_ftxt.dbf
 mv fmkrules.dbf f18_rules.dbf
+mv parobr.dbf ld_parobr.dbf
 
 echo "lista kopiranih fajlova"
 ls $F18DBPATH
