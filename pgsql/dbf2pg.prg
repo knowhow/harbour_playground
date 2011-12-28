@@ -371,7 +371,10 @@ do case
 		_fld_name := "f_unique"
 	case alltrim(field_name) == "user"
 		_fld_name := "f_user"
+	case alltrim(field_name) == "desc"
+		_fld_name := "descr"
 endcase
+
 return _fld_name
 
 
