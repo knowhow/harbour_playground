@@ -59,3 +59,9 @@ for i:=1 to LEN(_arr)
 next
 
 
+h1 := hb_hash()
+h1["key1"] := 10
+h1["key2"] := 20
+
+? "h1", hb_ValToStr(h1)
+
