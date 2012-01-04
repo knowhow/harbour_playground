@@ -28,6 +28,7 @@ proc main()
    next
    ? "Waiting for threads..."
    nSum := 0
+   altd()
    aEval( aThreads, { |x| hb_threadJoin( x, @i ), nSum += i } )
    ? "Threads joined"
    ? "Sum of results:", nSum
