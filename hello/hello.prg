@@ -65,3 +65,10 @@ h1["key2"] := 20
 
 ? "h1", hb_ValToStr(h1)
 
+? "ok ls:", hb_run("ls")
+
+? "err ls_l:", hb_run("ls_l")
+
+? "ptxt postojeci:", hb_run("ptxt ~/outf.txt")
+? "ptxt nepostojeci err:", hb_run("ptxt ~/nepostojeci.txt")
+
