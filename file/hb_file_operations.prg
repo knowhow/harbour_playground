@@ -1,6 +1,6 @@
 #include "inkey.ch"
 
-static __root :=  "/tmp/sigma"
+static __root := "SIGMA"
 
 procedure Main(...)
 local _cur_dir, _file, _files
@@ -33,11 +33,10 @@ next
 
 //? DIRMAKE()
 
-
 ?
 ?
 
-dir_recurse(_cur_dir)
+dir_recurse(HB_OSPATHSEPARATOR() + CURDIR() + HB_OSPATHSEPARATOR() +  "SIGMA")
 
 function dir_recurse(cur_dir)
 local _files, _file
@@ -48,18 +47,26 @@ DIRCHANGE(cur_dir)
 
 ? "direct recurse:",  cur_dir
 ?
-DIRCHANGE(cur_dir) 
-_files := DIRECTORY("*", "D")
+
+//DIRCHANGE(cur_dir) 
+_files := DIRECTORY(cur_dir + HB_OSPATHSEPARATOR() + "*", "D")
 
 ? LEN(_files)
 for each _file in _files
-  ? _file[1], _file[2], _file[3], _file[4], _file[5]
+  if _file[5] != "D"
+       ? _file[1], _file[2], _file[3], _file[4], _file[5]
+       ? FILEBASE(_file[1])
+  endif
+next
+
+? "==========================================="
+
+for each _file in _files
   if _file[5] == "D"
         dir_recurse(cur_dir + HB_OSPATHSEPARATOR() +  _file[1])
   endif
 next
 
-? "==========================================="
 
 return .t.
 
