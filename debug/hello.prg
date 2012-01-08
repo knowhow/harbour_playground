@@ -10,8 +10,6 @@ local nPos
 
 ? K_ESC
 
-altd()
-
 ? "Valtype od .f. :", VALTYPE(.f.)
 for i:=1 to 10
   ? "hello world", i
