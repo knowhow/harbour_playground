@@ -14,9 +14,17 @@
 
 PROCEDURE MAIN()
 
+REQUEST HB_GT_XWC_DEFAULT
+
+REQUEST HB_CODEPAGE_SL852
+REQUEST HB_CODEPAGE_SLISO
+
    ? "QT library used is shared:", QSHAREDBUILD()
    ? "QT library version used:", QVERSION()
    ? "QT library version HBQT was built against:", QT_VERSION_STR()
    ? "QT library version HBQT was built against (numeric):", "0x" + hb_numtohex( QT_VERSION() )
 
+   ?
+
+   Alert("qt verzija je :" + hb_ValToStr(QVERSION()))
 RETURN
