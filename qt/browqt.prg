@@ -24,24 +24,19 @@ procedure Main(...)
        QUIT
   
    else
-       Alert("sve je ok")
+       ? "browsam: ", hb_PValue(1)
    endif
    
    AADD(__main_params, hb_PValue(1))
  
-   ExecOneMore()
-
-return
-
-
-PROCEDURE ExecOneMore()
-
-   hb_gtReload( 'GUI' )
+   //hb_gtReload( 'GUI' )
    BuildADialog()
-   RETURN
 
+   ? "izlazim 3 ... "
 
-STATIC PROCEDURE BuildADialog()
+return 
+
+function BuildADialog()
    LOCAL tb1, mo1, lay1, lay2, bt1, bt2, bt3, hd1, i, lExit
    LOCAL oWnd
    LOCAL oDA
@@ -54,7 +49,7 @@ STATIC PROCEDURE BuildADialog()
    SET CENTURY ON
 
    oWnd := QMainWindow()
-   oWnd:resize(640,460 )
+   oWnd:resize(700, 460 )
 
    oDA := QWidget()
    oWnd:setCentralWidget( oDA )
@@ -75,14 +70,14 @@ STATIC PROCEDURE BuildADialog()
    FOR i := 1 To Len( aStru1 )
       hd1:resizeSection( i - 1, aStru1[ i, 3 ] * 6 + 60 )
    NEXT
-   tb1:verticalHeader():setDefaultSectionSize( 24 )
+   tb1:verticalHeader():setDefaultSectionSize( 25 )
 
    lay1:addWidget( tb1 )
 
    lay2 := QHBoxLayout()
    lay1:addlayout( lay2 )
 
-   ( bt1 := QPushButton() ):SetText( "Dummy 1" )
+   ( bt1 := QPushButton() ):SetText( hb_ValToStr(reccount()) )
    ( bt2 := QPushButton() ):SetText( "Dummy 2" )
    ( bt3 := QPushButton() ):SetText( "Dummy 3" )
 
@@ -91,7 +86,7 @@ STATIC PROCEDURE BuildADialog()
    lay2:addWidget( bt2 )
    lay2:addWidget( bt3 )
 
-   oWnd:connect( QEvent_Close, {|| Alert("ja odlazim"), lExit := .t. } )
+   oWnd:connect( QEvent_Close, {|| QQout("izlazim ..."),  lExit := .t. } )
    oEventLoop := QEventLoop( oWnd )
    oWnd:Show()
 
@@ -101,6 +96,7 @@ STATIC PROCEDURE BuildADialog()
    ENDDO
 
 
+   altd()
    oWnd:disconnect( QEvent_Close )
    oEventLoop:exit( 0 )
 
@@ -114,12 +110,14 @@ STATIC PROCEDURE BuildADialog()
    bt2  := NIL
    bt3  := NIL
    hd1  := NIL
+
    oDA  := NIL
    oWnd := NIL
 
-   //oEventLoop := NIL
+   ? "izlazim 2"
 
-   RETURN
+RETURN .t.
+
 
 STATIC PROCEDURE my_save( qWidget, nArea, aStru, nCX, nCY )
    LOCAL cData := qWidget:text()
@@ -164,7 +162,7 @@ STATIC FUNCTION my_browse( nArea, aStru, t, role, x, y )
       oColorLY := QColor(   0, 150,  0 )
       oColorLN := QColor( 200,   0,  0 )
 
-      oSize := QSize(50,24)
+      oSize := QSize(80, 24)
    ENDIF 
 
    DBSelectArea( nArea )
@@ -190,7 +188,8 @@ STATIC FUNCTION my_browse( nArea, aStru, t, role, x, y )
          ENDSWITCH
          RETURN "?"
 
-      CASE Qt_EditRole /* Here we can specify different formats for editing*/
+      CASE Qt_EditRole 
+         /* Here we can specify different formats for editing*/
          DBGoto( y + 1 )
          SWITCH aStru[ x + 1, 2 ]
          CASE "C"
