@@ -1,0 +1,25 @@
+#
+# $Id: hbqt_common.hbc 16690 2011-04-29 09:19:43Z vszakats $
+#
+
+# ---------------------------------------------------------------
+# Copyright 2010 Viktor Szakats (harbour.01 syenar.hu)
+# See COPYING for licensing terms.
+# ---------------------------------------------------------------
+
+stop={dos|watcom|bcc|pocc|pocc64|poccarm|msvcia64|pcc}'hbqt' doesn't support this platform/compiler (${hb_plat}/${hb_comp}).
+stop={HB_WITH_QT='no'}QT deselected, build skipped.
+
+incpaths=.
+
+plugins=hbmk2_qt.hbs
+
+{msvc}ldflags=-nodefaultlib:msvcrt.lib -defaultlib:libcmt.lib
+{beos}ldflags=-L/boot/common/lib
+
+{allwin|os2}libpaths=${HB_WITH_QT}\..\lib
+
+{allgcc&!bsd}libs=supc++
+{allgcc&bsd}libs=stdc++
+
+{win|os2}hbcppmm=yes
