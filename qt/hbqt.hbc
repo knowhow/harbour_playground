@@ -1,0 +1,16 @@
+#
+# $Id: hbqt.hbc 16677 2011-04-26 22:37:25Z vszakats $
+#
+
+# ---------------------------------------------------------------
+# Copyright 2010 Viktor Szakats (harbour.01 syenar.hu)
+# See COPYING for licensing terms.
+# ---------------------------------------------------------------
+
+libs=hbqtcore.hbc
+# libs=hbqtdesigner.hbc
+libs=hbqtgui.hbc
+libs=hbqtnetwork.hbc
+# libs=hbqtwebkit.hbc
+libs=hbqtsql.hbc
+libs=gtqtc.hbc

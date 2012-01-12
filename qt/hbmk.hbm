@@ -1,0 +1,12 @@
+#
+# $Id: hbmk.hbm 15253 2010-08-01 12:32:44Z vszakats $
+#
+
+hbqtcore.hbc
+hbqtgui.hbc
+hbqtwebkit.hbc
+hbqtnetwork.hbc
+
+#-w3 -es2
+
+
