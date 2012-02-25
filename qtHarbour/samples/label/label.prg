@@ -36,8 +36,13 @@ FUNCTION Main()
   btn := QPushButton():New( mainWindow )
   btn:setText("button 1")
   boxLayout:addWidget( btn)
-  
   ? "scrit_1 ret", script_1(btn, 2, 3.5)
+ 
+  btn := QPushButton():New( mainWindow )
+  btn:setText("button 2")
+  boxLayout:addWidget( btn)
+  ? "scrit_1 ret", script_1(btn, 7, 8)
+  
   mainWindow:setLayout( boxLayout )
 
   
@@ -99,22 +104,22 @@ QPushButton *button;
 
 button = hb_param( 1, HB_IT_OBJECT ) ? qth_parPtr<QPushButton>( 1 ) : (QPushButton*) 0;
 
-
 QScriptEngine engine;
-
 QScriptValue js_btn = engine.newQObject( button);
 
 engine.globalObject().setProperty("button", js_btn);
-
-engine.evaluate("button.text = 'Hello World! http://docs.huihoo.com/qt/4.7/qscriptengine.html '");
-engine.evaluate("button.styleSheet = 'font-style: italic'");
-engine.evaluate("button.show()");
 
 QScriptValue fun = engine.evaluate("(function(a, b) { return a * b; })");
 QScriptValueList args;
 args << hb_parnd(2) << hb_parnd(3);
  
 QScriptValue ret = fun.call(QScriptValue(), args);
+
+QScriptValue fun2 = engine.evaluate("(function(a,b) { button.text = a * b; })");
+QScriptValue ret2 = fun2.call(QScriptValue(), args);
+
+engine.evaluate("button.styleSheet = 'font-style: italic'");
+engine.evaluate("button.show()");
 
 hb_retnd(ret.toNumber());
 
