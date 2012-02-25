@@ -3,52 +3,121 @@
 #translate TEST_LINE( <x>, <result> ) => TEST_CALL( #<x>, {|| <x> }, <result> )
 
 static __keystrokes := {}
-
-
-
 static __only_one := 0
 
-procedure Main(...)
-local aPom
-local cPom
-local nPos
-local pg_sql
-local _var_1 := "0"
-local _var_2 := "5"
-local _var_3 := 100
-local _var_4 := 0
-CLEAR
-? "pogledati: harbour-3.0.0/tests/inkeytst.prg"
 
-/*
-moze i vise varijabli odjednom:
+#ifdef TEST
 
-__keystrokes := { ;
-   { "_var_1", "1", K_ENTER}, ;
-   { "_var_2", K_ENTER, "5", "444", K_ENTER} ;
-}
 
-*/
+procedure Main()
+local _task, _var_key, _key_test, _key_tests := {}
+local _i := 1
 
-__keystrokes := { ;
+AADD(_key_tests, key_test_1())
+AADD(_key_tests, key_test_2())
+
+for each _key_test IN _key_tests 
+
+  __keystrokes := _key_test["keys"]
+  __only_one := 0
+   CLEAR TYPEAHEAD
+   _task := HB_IDLEADD( {|| test_keystrokes()} )
+
+  run_main()
+
+  Qout("uklanjam idleadd task")
+  HB_IDLEDEL(_task)
+  CLEAR TYPEAHEAD
+
+  check_test_vars(_key_test["vars"])
+  _i++
+next
+
+return
+
+static function check_test_vars(var_tests)
+local  _var_key := NIL
+
+for each _var_key in var_tests:Keys
+      ? "var:", _var_key
+      if __g_test_vars[_var_key] != var_tests[_var_key]
+           ? "ERR: "
+      else
+           ?  "OK: "
+      endif
+      ?? " ocekivana vrijednost ", var_tests[_var_key]
+      ?? " dobijena vrijednost ", __g_test_vars[_var_key]
+next
+
+alert("check test vars zavrsen")
+return .t.
+
+
+
+
+static function key_test_1()
+local _ret := hb_hash()
+local _keys := { ;
    { "_var_1", "1", K_ENTER}, ;
    { "_var_2", K_ENTER, "2"}, ;
    { "_var_3", "333", K_DOWN}, ;
    { "_var_4", "7", K_ENTER} ;
 }
 
+local _vars := hb_hash()
+_vars["main_var_1"] := "1"
 
- 
+_ret["keys"] := _keys
+_ret["vars"] := _vars
+return _ret
 
-nTask := HB_IDLEADD( {|| keystroke_test_1()} )
+
+static function  key_test_2()
+local _ret := hb_hash()
+local _keys := { ;
+   { "_var_1", "1", K_ENTER}, ;
+   { "_var_2", K_ENTER, "2"}, ;
+   { "_var_3", "555", K_DOWN}, ;
+   { "_var_4", "1", K_ENTER} ;
+}
+local _vars := hb_hash()
+
+_vars["main_var_3"] := 111
+
+_ret["keys"] := _keys
+_ret["vars"] := _vars
+return _ret
+
+#endif
+
+
+#ifdef TEST
+procedure run_Main(...)
+#else
+procedure Main(...)
+#endif
+
+local aPom
+local cPom
+local nPos
+local pg_sql
+local _var_2 := "5"
+local _var_3 := 100
+local _var_4 := 0
+
+local  _var_1 := "0"
+
+#ifdef TEST
+  public __g_test_vars := hb_hash()
+#endif
+
+CLEAR
+? "pogledati: harbour-3.0.0/tests/inkeytst.prg"
 
 CLEAR
 SET TYPEAHEAD TO 1000
 
 @ 1, 1 SAY "ukucaj 1 pa enter" GET _var_1 PICT "9" 
-
-
-
 READ
 
 CLEAR
@@ -57,6 +126,11 @@ CLEAR
 @ 7, 1 SAY " unesi nesto u var 4" GET _var_4 PICT "99" 
 
 READ
+
+#ifdef TEST
+__g_test_vars["main_var_1"] := _var_1
+__g_test_vars["main_var_3"] := _var_3
+#endif
 
 if _var_1 == "1"
   ? "dobro si", _var_1
@@ -70,9 +144,6 @@ endif
 ? "_var_4", _var_4
 
 
-Qout("uklanjam idleadd task")
-HB_IDLEDEL(nTask)
-
 
 return
 
@@ -85,7 +156,7 @@ var_2 := "8"
 
 return .t.
 
-function keystroke_test_1()
+function test_keystrokes()
 local _var_name
 local _i, _j, _expected_var_name
 local _buffer
