@@ -1,5 +1,5 @@
 /*
- * $Id: wx_Grid.cpp 746 2011-08-05 18:55:31Z tfonrouge $
+ * $Id: wx_Grid.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -44,10 +44,10 @@ HB_FUNC( WXGRID_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-    wxWindowID id = HB_ISNIL(2) ? wxID_ANY : hb_parni( 2 );
+    wxWindowID id = ISNIL(2) ? wxID_ANY : hb_parni( 2 );
     wxPoint pos = wxh_par_wxPoint( 3 );
     wxSize size = wxh_par_wxSize( 4 );
-    long style = HB_ISNIL( 5 ) ? wxWANTS_CHARS : hb_parnl( 5 );
+    long style = ISNIL( 5 ) ? wxWANTS_CHARS : hb_parnl( 5 );
     wxString name = wxh_parc( 6 );
 
     wx_Grid* grid = new wx_Grid( parent, id, pos, size, style, name );
@@ -62,7 +62,7 @@ HB_FUNC( WXGRID_NEW )
 HB_FUNC( WXGRID_APPENDCOLS )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
         hb_retl( grid->AppendCols( hb_parni( 1 ) ) );
 }
@@ -74,7 +74,7 @@ HB_FUNC( WXGRID_APPENDCOLS )
 HB_FUNC( WXGRID_APPENDROWS )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
         hb_retl( grid->AppendRows( hb_parni( 1 ) ) );
 }
@@ -86,7 +86,7 @@ HB_FUNC( WXGRID_APPENDROWS )
 HB_FUNC( WXGRID_AUTOSIZE )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
         grid->AutoSize();
 }
@@ -272,7 +272,7 @@ HB_FUNC( WXGRID_CREATEGRID )
 HB_FUNC( WXGRID_DELETECOLS )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         int pos = hb_pcount() > 0 ? hb_parni( 1 ) - 1 : 0;
@@ -288,7 +288,7 @@ HB_FUNC( WXGRID_DELETECOLS )
 HB_FUNC( WXGRID_DELETEROWS )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         int pos = hb_pcount() > 0 ? hb_parni( 1 ) - 1 : 0;
@@ -550,7 +550,7 @@ HB_FUNC( WXGRID_GETCELLVALUE )
 HB_FUNC( WXGRID_GETDEFAULTROWLABELSIZE )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid && grid->GetTable() )
     {
         hb_retni( grid->GetDefaultRowLabelSize() );
@@ -564,7 +564,7 @@ HB_FUNC( WXGRID_GETDEFAULTROWLABELSIZE )
 HB_FUNC( WXGRID_GETDEFAULTROWSIZE )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid && grid->GetTable() )
     {
         hb_retni( grid->GetDefaultRowSize() );
@@ -581,7 +581,7 @@ HB_FUNC( WXGRID_GETGRIDCURSORCOL )
 
     if( grid )
     {
-        hb_retni( grid->GetGridCursorCol() + 1 );
+        hb_retni( grid->GetGridCursorCol() );
     }
 }
 
@@ -595,7 +595,7 @@ HB_FUNC( WXGRID_GETGRIDCURSORROW )
 
     if( grid )
     {
-        hb_retni( grid->GetGridCursorRow() + 1 );
+        hb_retni( grid->GetGridCursorRow() );
     }
 }
 
@@ -620,7 +620,7 @@ HB_FUNC( WXGRID_GETNUMBERCOLS )
 HB_FUNC( WXGRID_GETNUMBERROWS )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid && grid->GetTable() )
     {
         hb_retnl( grid->GetTable()->GetNumberRows() );
@@ -634,7 +634,7 @@ HB_FUNC( WXGRID_GETNUMBERROWS )
 HB_FUNC( WXGRID_GETROWLABELSIZE )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid && grid->GetTable() )
     {
         hb_retni( grid->GetRowLabelSize() );
@@ -648,7 +648,7 @@ HB_FUNC( WXGRID_GETROWLABELSIZE )
 HB_FUNC( WXGRID_GETROWLABELVALUE )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid && grid->GetTable() )
     {
         if( hb_pcount() == 1 )
@@ -667,7 +667,7 @@ HB_FUNC( WXGRID_GETROWLABELVALUE )
 HB_FUNC( WXGRID_GETROWSIZE )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid && grid->GetTable() )
     {
         if( hb_pcount() == 1 )
@@ -704,7 +704,7 @@ HB_FUNC( WXGRID_GETTABLE )
 HB_FUNC( WXGRID_HIDECELLEDITCONTROL )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         grid->HideCellEditControl();
@@ -718,7 +718,7 @@ HB_FUNC( WXGRID_HIDECELLEDITCONTROL )
 HB_FUNC( WXGRID_INSERTCOLS )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         int pos = hb_pcount() > 0 ? hb_parni( 1 ) - 1 : 0;
@@ -734,7 +734,7 @@ HB_FUNC( WXGRID_INSERTCOLS )
 HB_FUNC( WXGRID_INSERTROWS )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         int pos = hb_pcount() > 0 ? hb_parni( 1 ) - 1 : 0;
@@ -750,7 +750,7 @@ HB_FUNC( WXGRID_INSERTROWS )
 HB_FUNC( WXGRID_ISCELLEDITCONTROLENABLED )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         hb_retl( grid->IsCellEditControlEnabled() );
@@ -764,7 +764,7 @@ HB_FUNC( WXGRID_ISCELLEDITCONTROLENABLED )
 HB_FUNC( WXGRID_ISCURRENTCELLREADONLY )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         hb_retl( grid->IsCurrentCellReadOnly() );
@@ -778,7 +778,7 @@ HB_FUNC( WXGRID_ISCURRENTCELLREADONLY )
 HB_FUNC( WXGRID_ISEDITABLE )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         hb_retl( grid->IsEditable() );
@@ -792,7 +792,7 @@ HB_FUNC( WXGRID_ISEDITABLE )
 HB_FUNC( WXGRID_ISINSELECTION )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() == 2 )
@@ -811,7 +811,7 @@ HB_FUNC( WXGRID_ISINSELECTION )
 HB_FUNC( WXGRID_ISREADONLY )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() == 2 )
@@ -830,7 +830,7 @@ HB_FUNC( WXGRID_ISREADONLY )
 HB_FUNC( WXGRID_ISSELECTION )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         hb_retl( grid->IsSelection() );
@@ -911,7 +911,7 @@ HB_FUNC( WXGRID_MOVECURSORRIGHT )
 HB_FUNC( WXGRID_SELECTCOL )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() > 0 )
@@ -930,7 +930,7 @@ HB_FUNC( WXGRID_SELECTCOL )
 HB_FUNC( WXGRID_SELECTROW )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() > 0 )
@@ -972,7 +972,7 @@ HB_FUNC( WXGRID_SETCELLALIGNMENT )
 HB_FUNC( WXGRID_SETCELLBACKGROUNDCOLOUR )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() == 3 )
@@ -991,7 +991,7 @@ HB_FUNC( WXGRID_SETCELLBACKGROUNDCOLOUR )
 HB_FUNC( WXGRID_SETCELLTEXTCOLOUR )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() == 3 )
@@ -1017,7 +1017,7 @@ HB_FUNC( WXGRID_SETCELLTEXTCOLOUR )
 HB_FUNC( WXGRID_SETCELLVALUE )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() == 3 )
@@ -1039,17 +1039,17 @@ HB_FUNC( WXGRID_SETCELLVALUE )
 HB_FUNC( WXGRID_SETCOLATTR )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() == 2 )
         {
             wxColour colour = wxColour( wxh_parc( 2 ) );
-
+            
             wxGridCellAttr *attr;
             attr = new wxGridCellAttr;
             attr->SetBackgroundColour( colour );
-
+            
             grid->SetColAttr( hb_parni( 1 ) - 1, attr );
         }
         else
@@ -1064,7 +1064,7 @@ HB_FUNC( WXGRID_SETCOLATTR )
 HB_FUNC( WXGRID_SETCOLFORMATBOOL )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() == 1 )
@@ -1164,7 +1164,7 @@ HB_FUNC( WXGRID_SETCOLSIZE )
 HB_FUNC( WXGRID_SETDEFAULTCELLALIGNMENT )
 {
     wx_Grid* grid = (wx_Grid *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( grid )
     {
         if( hb_pcount() == 2 )
@@ -1216,7 +1216,7 @@ HB_FUNC( WXGRID_SETGRIDCURSOR )
     if( grid )
     {
         if( hb_pcount() == 2 )
-            grid->SetGridCursor( hb_parni( 1 ) - 1, hb_parni( 2 ) - 1 );
+            grid->SetGridCursor( hb_parni( 1 ), hb_parni( 2 ) );
         else
             wxh_errRT_ParamNum();
     }

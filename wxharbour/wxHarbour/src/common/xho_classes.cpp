@@ -1,5 +1,5 @@
 /*
- * $Id: xho_classes.cpp 746 2011-08-05 18:55:31Z tfonrouge $
+ * $Id: xho_classes.cpp 663 2010-11-24 15:32:06Z tfonrouge $
  */
 
 #ifdef QTHARBOUR_LIBRARY
@@ -22,10 +22,10 @@ xho_Item::~xho_Item()
 {
     hashPHB_BASEARRAY.erase( hashPHB_BASEARRAY.find( m_pBaseArray ) );
     hashXHOObject.erase( hashXHOObject.find( m_xhoObject ) );
-
+    
     if( map_crc32.find( uiProcNameLine ) != map_crc32.end() )
         map_crc32.erase( map_crc32.find( uiProcNameLine ) );
-
+    
     /* release codeblocks stored in event list */
     if( evtList.size() > 0 )
     {
@@ -40,7 +40,7 @@ xho_Item::~xho_Item()
             delete pConnParams;
         }
     }
-
+    
     if( delete_Xho )
     {
         if( m_xhoObject )
@@ -103,18 +103,18 @@ xhoObject* xho_ObjParams::param( const int param )
 xhoObject* xho_ObjParams::paramChild( PHB_ITEM pChildItm )
 {
     xhoObject* m_xhoObject = NULL;
-
+    
     if( pChildItm )
     {
         m_xhoObject = xho_itemListGet_XHO( pChildItm );
-
+        
         if( m_xhoObject )
         {
             map_paramListChild[ pChildItm ] = m_xhoObject;
             linkChildParentParams = true;
         }
     }
-
+    
     return m_xhoObject;
 }
 
@@ -134,11 +134,11 @@ xhoObject* xho_ObjParams::paramChild( const int param )
 xhoObject* xho_ObjParams::paramParent( PHB_ITEM pParentItm )
 {
     xhoObject* m_xhoObject = NULL;
-
+    
     if( pParentItm )
     {
         m_xhoObject = xho_itemListGet_XHO( pParentItm );
-
+        
         if( m_xhoObject )
         {
             if( this->pParamParent == NULL )
@@ -148,7 +148,7 @@ xhoObject* xho_ObjParams::paramParent( PHB_ITEM pParentItm )
             linkChildParentParams = true;
         }
     }
-
+    
     return m_xhoObject;
 }
 
@@ -174,7 +174,7 @@ void xho_ObjParams::ProcessParamLists()
         {
             SetChildItem( pSelf );
         }
-
+        
         /* add the Child objects to the child/parent lists */
         while( map_paramListChild.size() > 0 )
         {
@@ -186,7 +186,7 @@ void xho_ObjParams::ProcessParamLists()
 #endif
             map_paramListChild.erase( it );
         }
-
+        
         linkChildParentParams = false;
     }
 }
@@ -202,69 +202,69 @@ void xho_ObjParams::Return( xhoObject* xhoObj, bool bItemRelease )
     {
         pXho_Item = NULL;
         PHB_ITEM pItem = NULL;
-
+        
         pXho_Item = new xho_Item;
         pXho_Item->nullObj = false;
         pXho_Item->m_xhoObject = xhoObj;
         pXho_Item->uiClass = hb_objGetClass( pSelf );
         pXho_Item->m_pBaseArray = (HB_BASEARRAY *) hb_arrayId( pSelf );
-
+        
         /* Objs derived from wxTopLevelWindow are not volatile to local */
         if( hb_clsIsParent( hb_objGetClass( pSelf ), xhoTopLevelWindow ) )
         {
             /* calculate the crc32 for the procname/procline/uiClass that created this obj */
             char szName[ HB_SYMBOL_NAME_LEN + HB_SYMBOL_NAME_LEN + 5 ];
-            HB_UINT uiProcOffset = 1;
-            HB_USHORT usProcLine = 0;
-
+            UINT uiProcOffset = 1;
+            USHORT usProcLine = 0;
+            
             hb_procname( uiProcOffset, szName, TRUE );
             if( strncmp( "__WXH_", szName, 6 ) == 0 )
                 hb_procname( ++uiProcOffset, szName, TRUE );
-
+            
             long lOffset = hb_stackBaseProcOffset( uiProcOffset );
             if( lOffset > 0 )
                 usProcLine = hb_stackItem( lOffset )->item.asSymbol.stackstate->uiLineNo;
-
-            HB_UINT uiCrc32 = hb_crc32( (long) hb_objGetClass( pSelf ) + usProcLine, (const char *) szName, strlen( szName ) );
-
+            
+            UINT uiCrc32 = hb_crc32( (long) hb_objGetClass( pSelf ) + usProcLine, (const char *) szName, strlen( szName ) );
+            
             //			 qoutf("METHODNAME: %s:%d, crc32: %u", szName, usProcLine, uiCrc32 );
-
+            
             /* check if we are calling again the obj creation code and a xho_Item exists */
             if( map_crc32.find( uiCrc32 ) != map_crc32.end() )
             {
                 delete map_crc32[ uiCrc32 ];
             }
-
+            
             map_crc32[ uiCrc32 ] = pXho_Item;
             pXho_Item->uiProcNameLine = uiCrc32;
-
+            
             //pItem = wxh_itemNullObject( pSelf );
             //pXho_Item->nullObj = true;
             pItem = hb_itemNew( pSelf );
             lastTopLevelWindow = pItem;
         }
-
+        
         if( pItem )
         {
             pXho_Item->pSelf = pItem;
         }
-
+        
         hashPHB_BASEARRAY[ (HB_BASEARRAY *) hb_arrayId( pSelf ) ] = pXho_Item;
         hashXHOObject[ xhoObj ] = pXho_Item;
-
+        
         linkChildParentParams = true;
         ProcessParamLists();
-
+        
         hb_objSendMsg( pSelf, "OnCreate", 0 );
-
+        
         if( hb_stackReturnItem() != pSelf )
         {
             hb_itemReturn( pSelf );
         }
-
+        
         if( bItemRelease )
             hb_itemRelease( pSelf );
-
+        
     }else
         hb_errRT_BASE_SubstR( EG_ARG, WXH_ERRBASE + 4, NULL, HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
 }
@@ -276,7 +276,7 @@ void xho_ObjParams::Return( xhoObject* xhoObj, bool bItemRelease )
 void xho_ObjParams::SetChildItem( const PHB_ITEM pChildItm )
 {
     xho_Item* pWxh_ItemChild = xho_itemListGet_PXHO_ITEM( pChildItm );
-
+    
     if( pWxh_ItemChild )
     {
         if( pWxh_ItemChild->pSelf == NULL )
@@ -304,7 +304,7 @@ void xho_ObjParams::SetChildItem( const PHB_ITEM pChildItm )
 void xho_itemListDel_XHO( xhoObject* wxObj, bool bDeleteWxObj )
 {
     xho_Item* pXho_Item = xho_itemListGet_PXHO_ITEM( wxObj );
-
+    
     if( pXho_Item )
     {
         pXho_Item->delete_Xho = bDeleteWxObj;
@@ -319,11 +319,11 @@ void xho_itemListDel_XHO( xhoObject* wxObj, bool bDeleteWxObj )
 PHB_ITEM xho_itemListGet_HB( xhoObject* wxObj )
 {
     PHB_ITEM pSelf = NULL;
-
+    
     if( wxObj )
     {
         xho_Item* pXho_Item = xho_itemListGet_PXHO_ITEM( wxObj );
-
+        
         if( pXho_Item )
         {
             pSelf = pXho_Item->pSelf;
@@ -350,12 +350,12 @@ PHB_ITEM xho_itemListGet_HB( xhoObject* wxObj )
 xho_Item* xho_itemListGet_PXHO_ITEM( PHB_ITEM pSelf )
 {
     xho_Item* pXho_Item = NULL;
-
+    
     if( pSelf && ( hashPHB_BASEARRAY.find( (HB_BASEARRAY *) hb_arrayId( pSelf ) ) != hashPHB_BASEARRAY.end() ) )
     {
         pXho_Item = hashPHB_BASEARRAY[ (HB_BASEARRAY *) hb_arrayId( pSelf ) ];
     }
-
+    
     return pXho_Item;
 }
 
@@ -366,12 +366,12 @@ xho_Item* xho_itemListGet_PXHO_ITEM( PHB_ITEM pSelf )
 xho_Item* xho_itemListGet_PXHO_ITEM( xhoObject* m_xhoObject )
 {
     xho_Item* pXho_Item = NULL;
-
+    
     if( m_xhoObject && ( hashXHOObject.find( m_xhoObject ) != hashXHOObject.end() ) )
     {
         pXho_Item = hashXHOObject[ m_xhoObject ];
     }
-
+    
     return pXho_Item;
 }
 
@@ -382,8 +382,8 @@ xho_Item* xho_itemListGet_PXHO_ITEM( xhoObject* m_xhoObject )
 xhoObject* xho_itemListGet_XHO( PHB_ITEM pSelf, const char* inheritFrom )
 {
     xhoObject* m_xhoObject = NULL;
-
-
+    
+    
     if( inheritFrom == NULL || hb_clsIsParent( hb_objGetClass( pSelf ), inheritFrom ) )
     {
         if( pSelf && ( hashPHB_BASEARRAY.find( (HB_BASEARRAY *) hb_arrayId( pSelf ) ) != hashPHB_BASEARRAY.end() ) )
@@ -402,7 +402,7 @@ xhoObject* xho_itemListGet_XHO( PHB_ITEM pSelf, const char* inheritFrom )
 void xho_itemListReleaseAll()
 {
     MAP_XHOOBJECT::iterator it;
-
+    
     while( ! hashXHOObject.empty() )
     {
         it = hashXHOObject.begin();
@@ -424,7 +424,7 @@ void xho_itemListReleaseAll()
 bool xho_itemListSwap( xhoObject *oldObj, xhoObject *newObj )
 {
     xho_Item *pXho_Item = xho_itemListGet_PXHO_ITEM( oldObj );
-
+    
     if( pXho_Item )
     {
         pXho_Item->m_xhoObject = newObj;
@@ -443,24 +443,24 @@ bool xho_itemListSwap( xhoObject *oldObj, xhoObject *newObj )
 void xho_itemNewReturn( const char * szClsName, xhoObject* ctrl, xhoObject* parent )
 {
     PHB_ITEM pSelf = xho_itemListGet_HB( ctrl );
-
+    
     if( pSelf == NULL )
     {
         PHB_DYNS pDynSym = hb_dynsymFindName( szClsName );
-
+        
         if( pDynSym )
         {
             hb_vmPushDynSym( pDynSym );
             hb_vmPushNil();
             hb_vmDo( 0 );
-
+            
             pSelf = hb_itemNew( hb_stackReturnItem() );
-
+            
             xho_ObjParams objParams = xho_ObjParams( pSelf );
-
+            
             if( parent )
                 objParams.paramParent( xho_itemListGet_HB( parent ) );
-
+            
             objParams.Return( ctrl, true );
         }
     }
@@ -485,13 +485,13 @@ void xho_itemReturn( xhoObject *xhoObj )
  */
 void xho_par_arrayInt( int param, int* arrayInt, const size_t len )
 {
-
-    if( HB_ISARRAY( param ) )
+    
+    if( ISARRAY( param ) )
     {
         PHB_ITEM pArray = hb_param( param, HB_IT_ARRAY );
         PHB_ITEM pItm;
-        HB_ULONG ulLen = min( (size_t) hb_arrayLen( pArray ), len );
-        for( HB_ULONG ulI = 1; ulI <= ulLen; ulI++ )
+        ULONG ulLen = min( (size_t) hb_arrayLen( pArray ), len );
+        for( ULONG ulI = 1; ulI <= ulLen; ulI++ )
         {
             pItm = hb_arrayGetItemPtr( pArray, ulI );
             if( hb_itemType( pItm ) && HB_IT_NUMERIC )
@@ -500,7 +500,7 @@ void xho_par_arrayInt( int param, int* arrayInt, const size_t len )
             }
         }
     }
-
+    
 }
 
 /*
@@ -511,7 +511,7 @@ xhoObject* xho_par_XhoObject( const int param, const char* inheritFrom )
 {
     PHB_ITEM hbObj = hb_param( param, HB_IT_OBJECT );
     xhoObject* object = NULL;
-
+    
     if( hbObj )
     {
         object = xho_itemListGet_XHO( hbObj, inheritFrom );
@@ -545,13 +545,13 @@ void qoutf( const char* format, ... )
 {
     static char text[512];
     static PHB_DYNS s___qout = NULL;
-
+    
     va_list argp;
-
+    
     va_start( argp, format );
     vsprintf( text, format, argp );
     va_end( argp );
-
+    
     if( s___qout == NULL )
     {
         s___qout = hb_dynsymGetCase( "QOUT" );
@@ -570,13 +570,13 @@ void qqoutf( const char* format, ... )
 {
     static char text[512];
     static PHB_DYNS s___qout = NULL;
-
+    
     va_list argp;
-
+    
     va_start( argp, format );
     vsprintf( text, format, argp );
     va_end( argp );
-
+    
     if( s___qout == NULL )
     {
         s___qout = hb_dynsymGetCase( "QQOUT" );

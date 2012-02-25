@@ -1,5 +1,5 @@
 /*
- * $Id: property.ch 812 2012-02-24 00:45:51Z tfonrouge $
+ * $Id: property.ch 648 2010-10-01 20:10:37Z tfonrouge $
  */
 
 /*
@@ -43,7 +43,7 @@
 #xcommand PROPERTY <name> [AS <astype>] [READ <rm>] [WRITE <wm>] ;
                     [<scope: EXPORTED, EXPORT, VISIBLE, PUBLIC, PROTECTED, HIDDEN, PRIVATE, READONLY, RO, PUBLISHED >] ;
                     => ;
-                    METHOD <name> BLOCK {|Self,...| ::<rm> } [<scope>] ;;
+                    METHOD <name> INLINE ::<rm> [<scope>] ;;
                     METHOD _<name>( xNewVal ) INLINE ::<wm>( xNewVal ) [<scope>]
 
 // Without INDEX
@@ -51,7 +51,7 @@
 // Without WRITE
 #xcommand PROPERTY <name> [AS <astype>] [READ <rm>] ;
                     => ;
-                    METHOD <name> BLOCK {|Self,...| ::<rm> }
+                    METHOD <name> INLINE ::<rm>
 
 // Without INDEX
 // Without READ

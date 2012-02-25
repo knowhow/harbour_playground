@@ -1,5 +1,5 @@
 /*
- * $Id: wx_GridTableBase.cpp 746 2011-08-05 18:55:31Z tfonrouge $
+ * $Id: wx_GridTableBase.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -299,7 +299,7 @@ HB_FUNC( WXGRIDTABLEBASE_DELETEROWS )
 HB_FUNC( WXGRIDTABLEBASE_GETGRIDDATAISOEM )
 {
     wx_GridTableBase* gridTable = (wx_GridTableBase *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( gridTable )
     {
         hb_retnl( gridTable->gridDataIsOEM );
@@ -313,7 +313,7 @@ HB_FUNC( WXGRIDTABLEBASE_GETGRIDDATAISOEM )
 HB_FUNC( WXGRIDTABLEBASE_GETNUMBERCOLS )
 {
     wx_GridTableBase* gridTable = (wx_GridTableBase *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( gridTable )
     {
         hb_retnl( gridTable->GetNumberCols() );
@@ -391,7 +391,7 @@ HB_FUNC( WXGRIDTABLEBASE_INSERTROWS )
 HB_FUNC( WXGRIDTABLEBASE_SETGRIDDATAISOEM )
 {
     wx_GridTableBase* gridTable = (wx_GridTableBase *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( gridTable )
     {
         gridTable->gridDataIsOEM = hb_parl( 1 );

@@ -1,5 +1,5 @@
 /*
- * $Id: TTable_c.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: TTable_c.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -29,9 +29,9 @@ HB_FUNC( TTABLE_SENDTOSERVER )
     PHB_ITEM pSelf = hb_stackSelfItem();
 
     char pBuffer[ SND_BUFFERSIZE ];
-    HB_ULONG bufSize, ulLen;
+    ULONG bufSize, ulLen;
 
-    bufSize = sizeof( HB_ULONG );
+    bufSize = sizeof( ULONG );
     ulLen = sizeof( hb_arrayId( pSelf ) );
 
     cout << endl << "*** " << hb_arrayId( pSelf ) << " ***" << endl;
@@ -40,10 +40,10 @@ HB_FUNC( TTABLE_SENDTOSERVER )
 
     hb_procname( 1, pBuffer + bufSize + 1, FALSE );
     ulLen = strlen( pBuffer + bufSize + 1 );
-    pBuffer[ bufSize ] = HB_BYTE( ulLen + 1 );
+    pBuffer[ bufSize ] = BYTE( ulLen + 1 );
     bufSize += ulLen + 2;
 
-    HB_USHORT iPCount = hb_pcount();
+    USHORT iPCount = hb_pcount();
 
     memcpy( pBuffer + bufSize, &iPCount, sizeof( iPCount ) );
     bufSize += sizeof( iPCount );
@@ -51,7 +51,7 @@ HB_FUNC( TTABLE_SENDTOSERVER )
     if( iPCount )
     {
         char* pBuf;
-        HB_ULONG ulSize;
+        ULONG ulSize;
         for( int i = 1; i <= iPCount; i++ )
         {
             pBuf = hb_itemSerialize( hb_param( i, HB_IT_ANY ), FALSE, &ulSize );

@@ -1,5 +1,5 @@
 /*
- * $Id: xho_classes.h 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: xho_classes.h 663 2010-11-24 15:32:06Z tfonrouge $
  */
 
 void          xho_itemListDel_XHO( xhoObject* wxObj, bool bDeleteWxObj = false );
@@ -36,12 +36,12 @@ public:
     bool delete_Xho;
     bool nullObj;
     xhoObject* m_xhoObject;
-    HB_USHORT uiClass;
+    USHORT uiClass;
     PHB_BASEARRAY m_pBaseArray;
     vector<PCONN_PARAMS> evtList;
     PHB_ITEM pSelf;
-    HB_USHORT uiRefCount;
-    HB_UINT uiProcNameLine;
+    USHORT uiRefCount;
+    UINT uiProcNameLine;
     
     xho_Item() { delete_Xho = true; uiClass = 0; pSelf = NULL ; uiRefCount = 0; uiProcNameLine = 0; }
     ~xho_Item();

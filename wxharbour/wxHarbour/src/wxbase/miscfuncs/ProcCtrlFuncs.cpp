@@ -1,5 +1,5 @@
 /*
- * $Id: ProcCtrlFuncs.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: ProcCtrlFuncs.cpp 637 2010-06-26 15:56:06Z tfonrouge $
  */
 
 /*
@@ -47,11 +47,11 @@ HB_FUNC( WXGETPROCESSID )
 HB_FUNC( WXKILL )
 {
     long pid = hb_parnl( 1 );
-    wxSignal sig = HB_ISNIL( 2 ) ? wxSIGTERM : (wxSignal) hb_parni( 2 );
+    wxSignal sig = ISNIL( 2 ) ? wxSIGTERM : (wxSignal) hb_parni( 2 );
     wxKillError rc;
-    int flags = HB_ISNIL( 4 ) ? 0 : hb_parni( 4 );
+    int flags = ISNIL( 4 ) ? 0 : hb_parni( 4 );
     wxKill( pid, sig, &rc, flags );
-    if( hb_pcount() > 2 && HB_ISBYREF( 3 ) )
+    if( hb_pcount() > 2 && ISBYREF( 3 ) )
     {
         hb_storni( (int) rc, 3 );
     }

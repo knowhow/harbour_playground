@@ -1,5 +1,5 @@
 /*
- * $Id: wx_IPV4address.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: wx_IPV4address.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -145,9 +145,9 @@ HB_FUNC( WXIPV4ADDRESS_SERVICE )
 
     if( ipv4Address )
     {
-        if( HB_ISCHAR( 1 ) )
+        if( ISCHAR( 1 ) )
             hb_retl( ipv4Address->Service( wxh_parc( 1 ) ) );
-        if( HB_ISNUM( 1 ) )
+        if( ISNUM( 1 ) )
             hb_retl( ipv4Address->Service( hb_parnl( 1 ) ) );
         if( hb_pcount() == 0 )
             hb_retnl( ipv4Address->Service() );

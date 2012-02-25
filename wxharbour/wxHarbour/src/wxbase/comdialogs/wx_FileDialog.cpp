@@ -1,5 +1,5 @@
 /*
- * $Id: wx_FileDialog.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: wx_FileDialog.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -37,14 +37,14 @@ HB_FUNC( WXFILEDIALOG_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-    const wxString& message = HB_ISNIL( 2 ) ? wxString( _T("Choose a file") ) : wxh_parc( 2 );
+    const wxString& message = ISNIL( 2 ) ? wxString( _T("Choose a file") ) : wxh_parc( 2 );
     const wxString& defaultDir = wxh_parc( 3 );
     const wxString& defaultFile = wxh_parc( 4 );
-    const wxString& wildcard = HB_ISNIL( 5 ) ? wxString( _T("*.*") ) : wxh_parc( 5 );
-    long style = HB_ISNIL( 6 )  ? wxFD_DEFAULT_STYLE : hb_parni( 6 );
+    const wxString& wildcard = ISNIL( 5 ) ? wxString( _T("*.*") ) : wxh_parc( 5 );
+    long style = ISNIL( 6 )  ? wxFD_DEFAULT_STYLE : hb_parni( 6 );
     wxPoint pos = wxh_par_wxPoint( 7 );
     wxSize size = wxh_par_wxSize( 8 );
-    const wxString& name = HB_ISNIL( 9 ) ? wxString( _T("FileDlg") ) : wxh_parc( 9 );
+    const wxString& name = ISNIL( 9 ) ? wxString( _T("FileDlg") ) : wxh_parc( 9 );
 
     wxFileDialog* fileDlg = new wx_FileDialog( parent, message, defaultDir, defaultFile, wildcard, style, pos, size, name );
 

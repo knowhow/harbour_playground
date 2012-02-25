@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: build_pkgs.sh 721 2011-05-26 21:57:02Z tfonrouge $
+# $Id: build_pkgs.sh 388 2009-08-10 21:58:46Z tfonrouge $
 #
 # Build script to generate tgz, rpm, zip files
 #
@@ -8,7 +8,7 @@
 #
 
 rootdir="./"
-specfile="wxHarbour.spec"
+specfile="wxharbour.spec"
 fname=`sed -n -e 's/\(%define \+name \+\)\(.*\)/\2/p' ${rootdir}${specfile}`
 fversion=`sed -n -e 's/\(%define \+version \+\)\(.*\)/\2/p' ${rootdir}${specfile}`
 frelease=`sed -n -e 's/\(%define \+release \+\)\(.*\)/\2/p' ${rootdir}${specfile}`

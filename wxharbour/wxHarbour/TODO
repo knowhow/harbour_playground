@@ -1,4 +1,0 @@
-
-2012-02-20 :
-    ! Validate index expression builded against physical index on table
-      [ ] use lowercase on fieldnames

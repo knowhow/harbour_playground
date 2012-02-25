@@ -1,5 +1,5 @@
 /*
- * $Id: TAlias.prg 811 2012-02-20 20:35:29Z tfonrouge $
+ * $Id: TAlias.prg 643 2010-09-24 13:50:18Z tfonrouge $
  */
 
 /*
@@ -226,21 +226,16 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
     LOCAL path
     LOCAL tableName
     LOCAL tableFullFileName
-    LOCAL netIO
-    LOCAL cPrefix
-    LOCAL isTempTable := .F.
 
     IF HB_IsObject( table )
 
         /* Check for a previously open workarea */
         IF HB_HHasKey( ::FInstances, table:TableFileName )
             ::FTableName := table:TableFileName
-            table:fullFileName := ::FInstances[ table:TableFileName, "fullFileName" ]
             RETURN .T.
         ENDIF
-
+        
         IF table:IsTempTable
-            isTempTable := .T.
             IF !table:CreateTable()
                 RETURN .F.
             ENDIF
@@ -258,7 +253,7 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
             RETURN .T.
         ENDIF
 
-        IF !table:IsTempTable .AND. !Empty( path := LTrim( RTrim( table:DataBase:Directory ) ) )
+        IF !Empty( path := LTrim( RTrim( table:DataBase:Directory ) ) )
             IF !Right( path, 1 ) == HB_OSPathSeparator()
                 path += HB_OSPathSeparator()
             ENDIF
@@ -267,36 +262,27 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
         ENDIF
 
         table:fullFileName := path + table:TableFileName
-
+        
         tableFullFileName := table:fullFileName
         tableName := table:TableFileName
         
-        netIO := table:DataBase:netIO
-
     ELSE
-
+    
         tableFullFileName := table
         tableName := table
 
     ENDIF
     
-    cPrefix := iif( !isTempTable .AND. netIO == .T., "net:", "" )
-
-    IF ! HB_DbExists( cPrefix + tableFullFileName ) .AND. table:AutoCreate
+    IF ! HB_DbExists( tableFullFileName ) .AND. table:AutoCreate
         IF !table:CreateTable( tableFullFileName )
             BREAK( "TAlias: Cannot Create Table '" + tableFullFileName + "'" )
         ENDIF
     ENDIF
 
-    IF Select( tableName ) = 0
-        DbUseArea( .T., ::driver, cPrefix + tableFullFileName, aliasName, ::lShared, ::lReadOnly )
-    ELSE
-        DbSelectArea( tableName )
-    ENDIF
+    DbUseArea( .T., ::driver, tableFullFileName, aliasName, ::lShared, ::lReadOnly )
 
     ::FTableName := tableName
     ::workArea := Select()
-    ::FInstances[ tableName, "fullFileName" ] := tableFullFileName 
 
 RETURN !NetErr()
 
@@ -503,7 +489,7 @@ METHOD FUNCTION RawGet4Seek( direction, xVal, keyVal, indexName, softSeek ) CLAS
 
     IF ValType( xVal ) = "O"
         xVal := xVal:FieldReadBlock
-    END
+    END	
 
     IF keyVal = NIL
         keyVal := ""
@@ -512,7 +498,7 @@ METHOD FUNCTION RawGet4Seek( direction, xVal, keyVal, indexName, softSeek ) CLAS
     IF direction = 1
         RETURN (::workArea)->( Get4Seek( xVal, keyVal, indexName, softSeek ) )
     ENDIF
-
+    
 RETURN (::workArea)->( Get4SeekLast( xVal, keyVal, indexName, softSeek ) )
 
 /*

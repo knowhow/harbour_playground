@@ -1,5 +1,5 @@
 /*
- * $Id: wxhBrowse.prg 795 2012-01-27 20:00:11Z tfonrouge $
+ * $Id: wxhBrowse.prg 647 2010-09-27 20:17:26Z tfonrouge $
  */
 
 /*
@@ -24,7 +24,6 @@
 CLASS wxhBrowse FROM wxGrid
 PRIVATE:
     DATA FAlwaysShowSelectedRow INIT .T.
-    DATA FCreated INIT .F.
     DATA FColPos					INIT 0
     DATA FDataSource
     DATA FDataSourceType
@@ -99,7 +98,6 @@ PUBLIC:
     METHOD OnSelectCell( gridEvent )
     METHOD OnSetDataSource() VIRTUAL
     METHOD OnSize( size )
-    METHOD SetColCellChoiceEditor( col )
     METHOD SetColumnAlignment( nCol, align )
     METHOD ShowRow()
 
@@ -175,18 +173,18 @@ METHOD FUNCTION Down CLASS wxhBrowse
     LOCAL allowOnDataChange
 
     allowOnDataChange := ::SetAllowOnDataChange( .F. )
-
+    
     IF ::RowPos < ::RowCount
         ::RowPos += 1
     ELSE
         IF ::SkipBlock:Eval( 1 ) = 1
-            ::GetTable():GridBuffer_Delete( 1 )
+            ADel( ::GetTable():GridBuffer, 1 )
             ::GetTable():GetGridRowData( ::RowCount )
             ::ForceRefresh()
             ::SetGridCursor( ::GetGridCursorRow(), ::GetGridCursorCol() )
         ENDIF
     ENDIF
-
+    
     ::SetAllowOnDataChange( allowOnDataChange )
 
 RETURN Self
@@ -197,7 +195,7 @@ RETURN Self
 */
 METHOD FUNCTION End() CLASS wxhBrowse
     ::SetColPos( ::ColCount() )
-    ::MakeCellVisible( ::GetGridCursorRow(), ::GetNumberCols() )
+    ::MakeCellVisible( ::GetGridCursorRow(), ::GetNumberCols() - 1 )
 RETURN Self
 
 /*
@@ -255,7 +253,7 @@ RETURN
     Teo. Mexico 2009
 */
 METHOD FUNCTION GetRecNo CLASS wxhBrowse
-    IF ::FDataSourceType $ "OX"
+    IF ::FDataSourceType = "O"
         RETURN ::FDataSource:RecNo
     ENDIF
 RETURN ::FRecNo
@@ -266,7 +264,7 @@ RETURN ::FRecNo
 */
 METHOD FUNCTION GoBottom CLASS wxhBrowse
     LOCAL allowOnDataChange
-
+    
     allowOnDataChange := ::SetAllowOnDataChange( .F. )
 
     ::GoBottomBlock:Eval()
@@ -276,7 +274,7 @@ METHOD FUNCTION GoBottom CLASS wxhBrowse
     ::ForceRefresh()
 
     ::SetAllowOnDataChange( allowOnDataChange )
-
+    
 RETURN Self
 
 /*
@@ -338,7 +336,6 @@ METHOD PROCEDURE OnCreate() CLASS wxhBrowse
     ::EnableDragColMove( .T. )
     ::SetColLabelSize( 22 )
     ::SetRowLabelSize( 0 )
-    ::FCreated := .T.
 RETURN
 
 /*
@@ -373,7 +370,7 @@ METHOD PROCEDURE OnKeyDown( keyEvent ) CLASS wxhBrowse
             ENDIF
             RETURN
         ENDIF
-    ENDSWITCH
+    END
 
     SWITCH nKey
     CASE WXK_UP
@@ -422,7 +419,7 @@ METHOD PROCEDURE OnKeyDown( keyEvent ) CLASS wxhBrowse
         EXIT
     OTHERWISE
         keyEvent:Skip()
-    ENDSWITCH
+    END
 
 RETURN
 
@@ -439,11 +436,11 @@ METHOD PROCEDURE OnSelectCell( gridEvent ) CLASS wxhBrowse
     ENDIF
 
     row := gridEvent:GetRow()
-
+    
     IF ::FAlwaysShowSelectedRow
         ::ShowRow( row )
     ENDIF
-
+    
     ::GetTable():CurRowIndex := row
 
     ::FColPos := gridEvent:GetCol() + 1
@@ -468,40 +465,37 @@ METHOD FUNCTION OnSize( size ) CLASS wxhBrowse
     LOCAL n
     LOCAL column
 
-    IF ::FCreated
-        IF !::FillColumnsChecked .AND. ::AutoFill .AND. ::DataSource != NIL
-            IF ::ColCount = 0
-                ::FillColumns()
-            ENDIF
-            ::FillColumnsChecked := .T.
+    IF !::FillColumnsChecked .AND. ::AutoFill .AND. ::DataSource != NIL
+        IF ::ColCount = 0
+            ::FillColumns()
         ENDIF
+        ::FillColumnsChecked := .T.
+    ENDIF
 
-        rowCount := ::GetRowCount()
-        maxRows := ::CalcMaxRows()
+    rowCount := ::GetRowCount()
+    maxRows := ::CalcMaxRows()
 
-        height := size[ 2 ]
+    height := size[ 2 ]
 
-        IF ::FHeight != height .AND. maxRows != rowCount
+    IF ::FHeight != height .AND. maxRows != rowCount
 
-            IF rowCount > 0
-                IF rowCount < ::GetNumberRows()
-                    ::DeleteRows( rowCount, ::GetNumberRows() - rowCount )
-                ELSE
-                    ::AppendRows( rowCount - ::GetNumberRows() )
-                    FOR n:=1 TO ::GetNumberCols
-                        column := ::GetTable():ColumnList[ n ]
-                        ::SetColumnAlignment( n, column:Align )
-                    NEXT
-                ENDIF
+        IF rowCount > 0
+            IF rowCount < ::GetNumberRows()
+                ::DeleteRows( rowCount, ::GetNumberRows() - rowCount )
             ELSE
-                ::DeleteRows( 1, ::GetNumberRows() )
+                ::AppendRows( rowCount - ::GetNumberRows() )
+                FOR n:=1 TO ::GetNumberCols
+                    column := ::GetTable():ColumnList[ n ]
+                    ::SetColumnAlignment( n, column:Align )
+                NEXT
             ENDIF
-
-            ::GetTable():FillGridBuffer( 0 )
-
-            ::FHeight := height
-
+        ELSE
+            ::DeleteRows( 1, ::GetNumberRows() )
         ENDIF
+
+        ::GetTable():FillGridBuffer( 0 )
+
+        ::FHeight := height
 
     ENDIF
 
@@ -515,7 +509,7 @@ METHOD FUNCTION PageDown CLASS wxhBrowse
     LOCAL allowOnDataChange
 
     allowOnDataChange := ::SetAllowOnDataChange( .F. )
-
+    
     IF ::RowPos = ::RowCount
         ::GetTable():FillGridBuffer( ::RowCount )
         ::ForceRefresh()
@@ -535,7 +529,7 @@ METHOD FUNCTION PageUp CLASS wxhBrowse
     LOCAL allowOnDataChange
 
     allowOnDataChange := ::SetAllowOnDataChange( .F. )
-
+    
     IF ::RowPos = 1
         ::GetTable():FillGridBuffer( - ::RowCount )
         ::ForceRefresh()
@@ -563,7 +557,7 @@ METHOD FUNCTION RefreshAll() CLASS wxhBrowse
     ENDIF
 
     ::SetAllowOnDataChange( allowOnDataChange )
-
+    
     IF ::autoSizeColumnsOnRefresh
         ::AutoSizeColumns( .F. )
     ENDIF
@@ -613,15 +607,15 @@ RETURN
 */
 METHOD FUNCTION SetAllowOnDataChange( allowOnDataChange ) CLASS wxhBrowse
     LOCAL oldValue
-
-    IF ::DataSourceType = "OX"
+    
+    IF ::DataSourceType = "O"
         oldValue := ::DataSource:allowOnDataChange
         ::DataSource:allowOnDataChange := allowOnDataChange
         IF allowOnDataChange
             ::DataSource:OnDataChange()
         ENDIF
     ENDIF
-
+    
 RETURN oldValue
 
 /*
@@ -629,7 +623,7 @@ RETURN oldValue
     Teo. Mexico 2010
 */
 METHOD PROCEDURE SetColPos( colPos ) CLASS wxhBrowse
-    ::SetGridCursor( ::GetGridCursorRow(), colPos )
+    ::SetGridCursor( ::GetGridCursorRow(), colPos - 1 )
 RETURN
 
 /*
@@ -637,10 +631,10 @@ RETURN
     Teo. Mexico 2009
 */
 METHOD PROCEDURE SetColumnAlignment( nCol, align ) CLASS wxhBrowse
-    LOCAL nRow
+    LOCAL i
 
-    FOR nRow:=1 TO ::RowCount
-        ::SetCellAlignment( align, nRow, nCol )
+    FOR i:=0 TO ::RowCount - 1
+        ::SetCellAlignment( align, i, nCol - 1 )
     NEXT
 
 RETURN
@@ -682,7 +676,7 @@ METHOD PROCEDURE SetDataSource( dataSource ) CLASS wxhBrowse
         ELSE
             workArea := Select( dataSource )
         ENDIF
-
+        
         IF !Empty( workArea )
             ::FDataSource := workArea
             ::FDataSourceType := "D"
@@ -693,7 +687,7 @@ METHOD PROCEDURE SetDataSource( dataSource ) CLASS wxhBrowse
         ELSE
             wxhAlert( "Empty workarea on wxhBrowse" )
         ENDIF
-
+        
         EXIT
 
     CASE 'H'				/* Hash browse */
@@ -709,29 +703,17 @@ METHOD PROCEDURE SetDataSource( dataSource ) CLASS wxhBrowse
         EXIT
 
     CASE 'O'
-
-        IF dataSource:IsDerivedFrom("TObjectField")
-            dataSource := dataSource:DataObj
-        ENDIF
-
+    
         IF dataSource:IsDerivedFrom("TTable")
+            ::FDataSource := dataSource
             ::FDataSourceType := "O"
             ::RowParam := dataSource:GetDisplayFields()
-            ::GetTable():gridDataIsOEM := dataSource:dataIsOEM
-        ELSEIF dataSource:IsDerivedFrom("TListContainer")
-            ::FDataSourceType := "X"
-            ::RowParam := {|Self| ::DataSource:List[ ::DataSource:RecNo ] }
-        ELSE
-            ::FDataSourceType := "?"
-        ENDIF
-
-        IF ::FDataSourceType $ "OX"
-
-            ::FDataSource := dataSource
 
             ::GoTopBlock		:= {|| dataSource:DbGoTop() }
             ::GoBottomBlock := {|| dataSource:DbGoBottom() }
             ::SkipBlock			:= {|n| dataSource:SkipBrowse( n ) }
+            
+            ::GetTable():gridDataIsOEM := dataSource:dataIsOEM
 
         ELSE
             wxhAlert("Invalid object assigned to wxhBrowse...")
@@ -739,8 +721,8 @@ METHOD PROCEDURE SetDataSource( dataSource ) CLASS wxhBrowse
 
         EXIT
 
-    ENDSWITCH
-
+    END
+    
     ::OnSetDataSource()
 
 RETURN
@@ -757,8 +739,8 @@ METHOD PROCEDURE SetRowPos( rowPos ) CLASS wxhBrowse
     IF rowPos > ::RowCount
         rowPos := ::RowCount
     ENDIF
-    ::SetGridCursor( rowPos, ::GetGridCursorCol() )
-
+    ::SetGridCursor( rowPos - 1, ::GetGridCursorCol() )
+    
     ::SetAllowOnDataChange( allowOnDataChange )
 
 RETURN
@@ -776,13 +758,13 @@ METHOD FUNCTION Up CLASS wxhBrowse
         ::RowPos -= 1
     ELSE
         IF ::SkipBlock:Eval( -1 ) = -1
-            ::GetTable():GridBuffer_Insert( 1 )
+            AIns( ::GetTable():GridBuffer, 1 )
             ::GetTable():GetGridRowData( 1 )
             ::ForceRefresh()
             ::SetGridCursor( ::GetGridCursorRow(), ::GetGridCursorCol() )
         ENDIF
     ENDIF
-
+    
     ::SetAllowOnDataChange( allowOnDataChange )
 
 RETURN Self

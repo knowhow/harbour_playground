@@ -1,5 +1,5 @@
 /*
- * $Id: wx_StaticLine.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: wx_StaticLine.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -42,10 +42,10 @@ HB_FUNC( WXSTATICLINE_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-    wxWindowID id = HB_ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
-    const wxPoint& pos = HB_ISNIL( 3 ) ? wxDefaultPosition : wxh_par_wxPoint( 3 );
-    const wxSize& size = HB_ISNIL( 4 ) ? wxDefaultSize : wxh_par_wxSize( 4 );
-    long style = HB_ISNIL( 5 ) ? 0 : hb_parnl( 5 );
+    wxWindowID id = ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
+    const wxPoint& pos = ISNIL( 3 ) ? wxDefaultPosition : wxh_par_wxPoint( 3 );
+    const wxSize& size = ISNIL( 4 ) ? wxDefaultSize : wxh_par_wxSize( 4 );
+    long style = ISNIL( 5 ) ? 0 : hb_parnl( 5 );
     const wxString& name = wxh_parc( 6 );
     wx_StaticLine* staticLine = new wx_StaticLine( parent, id, pos, size, style, name );
 

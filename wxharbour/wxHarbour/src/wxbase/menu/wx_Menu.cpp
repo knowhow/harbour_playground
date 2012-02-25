@@ -1,5 +1,5 @@
 /*
- * $Id: wx_Menu.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: wx_Menu.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -108,7 +108,7 @@ HB_FUNC( WXMENU_GETMENUITEMS )
         wxMenuItemList::iterator it;
 
         PHB_ITEM pArray = hb_itemArrayNew( menuItemList.GetCount() );
-        HB_UINT index = 0;
+        UINT index = 0;
 
         for( it = menuItemList.begin(); it != menuItemList.end(); it++ )
         {

@@ -1,5 +1,5 @@
 /*
- * $Id: wx_Timer.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: wx_Timer.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -57,7 +57,7 @@ HB_FUNC( WXTIMER_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxEvtHandler* owner = (wxEvtHandler *) objParams.paramParent( 1 );
-    int id = HB_ISNIL( 2 ) ? -1 : hb_parni( 2 );
+    int id = ISNIL( 2 ) ? -1 : hb_parni( 2 );
 
     const char* clsName = hb_clsName( hb_objGetClass( objParams.pSelf ) );
 
@@ -145,7 +145,7 @@ HB_FUNC( WXTIMER_SETOWNER )
 
     if( timer && evtHandler )
     {
-        int id = HB_ISNIL( 2 ) ? -1 : hb_parni( 2 );
+        int id = ISNIL( 2 ) ? -1 : hb_parni( 2 );
         timer->SetOwner( evtHandler, id );
     }
 }
@@ -160,8 +160,8 @@ HB_FUNC( WXTIMER_START )
 
     if( timer )
     {
-        int milliseconds = HB_ISNIL( 1 ) ? -1 : hb_parni( 1 );
-        bool oneShot = HB_ISNIL( 2 ) ? false : hb_parnl( 2 );
+        int milliseconds = ISNIL( 1 ) ? -1 : hb_parni( 1 );
+        bool oneShot = ISNIL( 2 ) ? false : hb_parnl( 2 );
         hb_retl( timer->Start( milliseconds, oneShot ) );
     }
 }

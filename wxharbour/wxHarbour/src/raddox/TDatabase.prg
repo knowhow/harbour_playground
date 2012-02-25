@@ -1,5 +1,5 @@
 /*
- * $Id: TDatabase.prg 780 2011-11-01 19:07:57Z tfonrouge $
+ * $Id: TDatabase.prg 637 2010-06-26 15:56:06Z tfonrouge $
  * TDataBase
  */
 
@@ -27,16 +27,12 @@ PROTECTED:
     METHOD DefineRelations VIRTUAL
     METHOD SetDirectory( directory ) INLINE ::FDirectory := directory
 PUBLIC:
-
-    DATA Driver INIT "DBFCDX"
-    DATA netIO  INIT .F.
+    DATA Driver    INIT "DBFCDX"
     DATA OpenBlock
-
     CONSTRUCTOR New( databaseName )
+    METHOD AddParentChild( parentTableName, childTableName, indexName, virtual )
 
-    METHOD AddParentChild( parentTableName, childTableName, indexName, virtual, autoDelete )
-
-    METHOD cmdAddTable( tableName, indexName, virtual, autoDelete )
+    METHOD cmdAddTable( tableName, indexName, virtual )
     METHOD cmdDefineChild()
     METHOD cmdEndChild()
 
@@ -68,7 +64,7 @@ RETURN Self
     AddParentChild
     Teo. Mexico 2008
 */
-METHOD AddParentChild( parentTableName, childTableName, indexName, virtual, autoDelete ) CLASS TDataBase
+METHOD AddParentChild( parentTableName, childTableName, indexName, virtual ) CLASS TDataBase
 
     IF ! HB_HHasKey( ::FParentChildList, parentTableName )
         ::FParentChildList[ parentTableName ] := {}
@@ -79,9 +75,8 @@ METHOD AddParentChild( parentTableName, childTableName, indexName, virtual, auto
     ENDIF
 
     ::FTableList[ childTableName ] := HB_HSetCaseMatch( {=>}, .F. )
-    ::FTableList[ childTableName, "IndexName" ]  := indexName
-    ::FTableList[ childTableName, "Virtual"   ]  := virtual == .T.
-    ::FTableList[ childTableName, "AutoDelete" ] := autoDelete == .T.
+    ::FTableList[ childTableName, "IndexName" ] := indexName
+    ::FTableList[ childTableName, "Virtual"   ] := iif( virtual == NIL, .F., virtual )
 
     AAdd( ::FParentChildList[ parentTableName ], Upper( childTableName ) )
 
@@ -93,12 +88,12 @@ RETURN Self
     cmdAddTable
     Teo. Mexico 2008
 */
-METHOD PROCEDURE cmdAddTable( tableName, indexName, virtual, autoDelete ) CLASS TDataBase
+METHOD PROCEDURE cmdAddTable( tableName, indexName, virtual ) CLASS TDataBase
 
     ::cmdLevel[ Len( ::cmdLevel ) ] := { tableName, indexName, virtual }
 
     IF Len( ::cmdLevel ) > 1
-        ::AddParentChild( ::cmdLevel[ Len( ::cmdLevel ) - 1, 1 ], tableName, indexName, virtual, autoDelete )
+        ::AddParentChild( ::cmdLevel[ Len( ::cmdLevel ) - 1, 1 ], tableName, indexName, virtual )
     ENDIF
 
 RETURN

@@ -1,5 +1,5 @@
 /*
- * $Id: wx_StaticBoxSizer.cpp 746 2011-08-05 18:55:31Z tfonrouge $
+ * $Id: wx_StaticBoxSizer.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -39,7 +39,7 @@ HB_FUNC( WXSTATICBOXSIZER_NEW )
 
     wx_StaticBoxSizer* boxSizer;
 
-    if( HB_ISOBJECT( 1 ) )
+    if( ISOBJECT( 1 ) )
     {
         wxStaticBox* staticBox = (wxStaticBox *) objParams.paramParent( 1 );
         boxSizer = new wx_StaticBoxSizer( staticBox, hb_parni( 2 ) );
@@ -61,7 +61,7 @@ HB_FUNC( WXSTATICBOXSIZER_NEW )
 HB_FUNC( WXSTATICBOXSIZER_GETSTATICBOX )
 {
     wxStaticBoxSizer* sbSizer = (wxStaticBoxSizer *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( sbSizer )
     {
         xho_itemNewReturn( "wxStaticBox", sbSizer->GetStaticBox(), sbSizer );

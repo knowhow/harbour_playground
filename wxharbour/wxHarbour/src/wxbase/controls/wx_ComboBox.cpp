@@ -1,5 +1,5 @@
 /*
- * $Id: wx_ComboBox.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: wx_ComboBox.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -44,13 +44,13 @@ HB_FUNC( WXCOMBOBOX_NEW )
     //New( parent, id, value, pos, size, choices, style, validator, name )
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-    wxWindowID id = HB_ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
+    wxWindowID id = ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
     const wxString& value = wxh_parc( 3 );
     const wxPoint& pos = wxh_par_wxPoint( 4 );
     const wxSize& size = wxh_par_wxSize( 5 );
     const wxArrayString& choices = wxh_par_wxArrayString( 6 );
     long style = hb_parnl( 7 );
-    const wxValidator& validator = HB_ISNIL( 8 ) ? wxDefaultValidator : (*((wxValidator *) objParams.param( 8 ))) ;
+    const wxValidator& validator = ISNIL( 8 ) ? wxDefaultValidator : (*((wxValidator *) objParams.param( 8 ))) ;
     const wxString& name = wxh_parc( 9 );
 
     wx_ComboBox* comboBox = new wx_ComboBox( parent, id, value, pos, size, choices, style, validator, name );
@@ -195,7 +195,7 @@ HB_FUNC( WXCOMBOBOX_GETSELECTION )
 
     if( comboBox )
     {
-        //if( HB_ISBYREF( 1 ) && HB_ISBYREF( 2 ) )
+        //if( ISBYREF( 1 ) && ISBYREF( 2 ) )
         {
             //long from, to;
             //comboBox->GetSelection( &from, &to );

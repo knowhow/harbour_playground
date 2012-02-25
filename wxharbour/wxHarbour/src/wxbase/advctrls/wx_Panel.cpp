@@ -1,5 +1,5 @@
 /*
- * $Id: wx_Panel.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: wx_Panel.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -46,11 +46,11 @@ HB_FUNC( WXPANEL_NEW )
     if( hb_pcount() )
     {
         wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-        wxWindowID id = HB_ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
-        const wxPoint& pos = HB_ISNIL( 3 ) ? wxDefaultPosition : wxh_par_wxPoint( 3 );
-        const wxSize& size = HB_ISNIL( 4 ) ? wxDefaultSize : wxh_par_wxSize( 4 );
-        long style = HB_ISNIL( 5 ) ? wxTAB_TRAVERSAL : hb_parnl( 5 );
-        const wxString& name = HB_ISNIL( 6 ) ? wxString( _T("panel") ) : wxh_parc( 6 );
+        wxWindowID id = ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
+        const wxPoint& pos = ISNIL( 3 ) ? wxDefaultPosition : wxh_par_wxPoint( 3 );
+        const wxSize& size = ISNIL( 4 ) ? wxDefaultSize : wxh_par_wxSize( 4 );
+        long style = ISNIL( 5 ) ? wxTAB_TRAVERSAL : hb_parnl( 5 );
+        const wxString& name = ISNIL( 6 ) ? wxString( _T("panel") ) : wxh_parc( 6 );
         panel = new wx_Panel( parent, id, pos, size, style, name );
     }
     else

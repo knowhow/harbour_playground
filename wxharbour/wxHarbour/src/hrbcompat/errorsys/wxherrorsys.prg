@@ -1,5 +1,5 @@
 /*
- * $Id: wxherrorsys.prg 786 2011-11-28 16:46:31Z tfonrouge $
+ * $Id: wxherrorsys.prg 657 2010-10-19 04:15:46Z tfonrouge $
  */
 
 /*
@@ -34,10 +34,10 @@ STATIC FUNCTION wxhDefError( oError )
     LOCAL n
 
     // By default, division by zero results in zero
-//    IF oError:genCode == EG_ZERODIV .AND. ;
-//        oError:canSubstitute
-//        RETURN 0
-//    ENDIF
+    IF oError:genCode == EG_ZERODIV .AND. ;
+        oError:canSubstitute
+        RETURN 0
+    ENDIF
 
     // By default, retry on RDD lock error failure */
     IF oError:genCode == EG_LOCK .AND. ;
@@ -80,11 +80,16 @@ STATIC FUNCTION wxhDefError( oError )
         AAdd( aOptions, wxhLABEL_DEFAULT )
     ENDIF
 
-    IF ! HB_ISNIL( cDOSError )
+    IF ! ISNIL( cDOSError )
         cMessage += E"\n" + cDOSError
     ENDIF
 
-    nChoice := wxhShowError( cMessage, aOptions, oError )
+    nChoice := 0
+    DO WHILE nChoice == 0
+
+        nChoice := wxhShowError( cMessage, aOptions, oError )
+
+    ENDDO
 
     IF ! Empty( nChoice )
         DO CASE
@@ -97,14 +102,7 @@ STATIC FUNCTION wxhDefError( oError )
         ENDCASE
     ENDIF
 
-    OutErr( cMessage )
-
-    IF ValType( oError:cargo ) = "H" .AND. HB_HHasKey( oError:cargo, "ProcLine" )
-        n := oError:cargo[ "ProcLine" ]
-    ELSE
-        n := 1
-    ENDIF
-
+    n := 1
     DO WHILE ! Empty( ProcName( ++n ) )
 
         OutErr( hb_OSNewLine() )
@@ -171,7 +169,7 @@ FUNCTION wxhShowError( cMessage, aOptions, oErr )
     LOCAL dlg
     LOCAL itm
     LOCAL i,id
-    LOCAL aErrLst := {}
+    LOCAL aErrLst
     LOCAL brwErrObj,brwCallStack
     LOCAL aStack := {}
     LOCAL s
@@ -197,17 +195,10 @@ FUNCTION wxhShowError( cMessage, aOptions, oErr )
         AAdd( aStack, { s, ProcLine( i ), ProcFile( i ) } )
     ENDDO
 
-    //aErrLst := __objGetValueList( oErr, .T., 0 )
+    aErrLst := __objGetValueList( oErr, .T., 0 )
 
-    IF .T.
-        IF cMessage = NIL
-            s := oErr:Description + E"\n\n" + oErr:Operation
-        ELSE
-            s := cMessage + E":\n\n" + oErr:Description + ": " + oErr:Operation
-        ENDIF
-        
-        s += E"\n\n"
-        
+    IF .F.
+        s := cMessage + E":\n\n" + oErr:Description + ": " + oErr:Operation + E"\n\n"
         i := 3
         WHILE !Empty( ProcName( i ) )
             s += "Called from " + ProcName( i )	 + "(" + NTrim( ProcLine( i ) ) + E")\n"
@@ -216,17 +207,14 @@ FUNCTION wxhShowError( cMessage, aOptions, oErr )
         ? s
         ?
         //? HB_ValToExp( oErr )
-        wxMessageBox( s, "Error", HB_BitOr( wxOK, wxICON_ERROR ), 0 )
-
-        RETURN NIL
-        //BREAK oErr
-
+        wxMessageBox( s, "Error", HB_BitOr( wxOK, wxICON_ERROR ) )
+        BREAK( 0 )
     ENDIF
 
     IF Empty( cMessage )
         cMessage := oErr:Description + ": " + oErr:Operation
     ENDIF
-
+    
     CREATE DIALOG dlg ;
         WIDTH 640 HEIGHT 400 ;
         TITLE "Error System" ;
@@ -255,7 +243,7 @@ FUNCTION wxhShowError( cMessage, aOptions, oErr )
                 CASE itm == wxhLABEL_DEFAULT
                     id := wxID_DEFAULT
                     itm := NIL
-                CASE itm == wxhLABEL_ACCEPT
+        CASE itm == wxhLABEL_ACCEPT
                     id := wxID_OK
                     itm := NIL
                 OTHERWISE
@@ -275,11 +263,11 @@ FUNCTION wxhShowError( cMessage, aOptions, oErr )
     brwErrObj:DeleteAllColumns()
     ADD BCOLUMN TO brwErrObj "MsgName" BLOCK {|n| brwErrObj:DataSource[ n, 1 ] }
     ADD BCOLUMN TO brwErrObj "Value" BLOCK {|n| brwErrObj:DataSource[ n, 2 ] }
-
+    
     brwCallStack:AutoSizeColumns( .F. )
 
     SHOW WINDOW dlg MODAL CENTRE
-
+    
     DESTROY dlg
 
 RETURN retVal

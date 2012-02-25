@@ -1,5 +1,5 @@
 /*
- * $Id: wxhBrowseDbProvider.prg 794 2012-01-26 22:08:58Z tfonrouge $
+ * $Id: wxhBrowseDbProvider.prg 638 2010-06-28 21:15:32Z tfonrouge $
  */
 
 /*
@@ -22,8 +22,6 @@
 
 #include "wxh/grid.ch"
 
-#include "hbtrace.ch"
-
 /*
     wxhBrowseTableBase
     Teo. Mexico 2008
@@ -36,17 +34,13 @@ PRIVATE:
     DATA FColumnZero
     DATA FCurRowIndex //INIT 0
     DATA FGridBuffer
-    DATA FGridBufferCols INIT 0
-    DATA FGridBufferRows INIT 0
-    DATA FRowLabel INIT {}
+    DATA FGridBufferSize		 INIT 0
     DATA FIgnoreCellEvalError INIT .F.
     METHOD GetRowParam
     METHOD SetCurRowIndex( rowIndex )
-    METHOD SetGridBufferSize( rows )
+    METHOD SetGridBufferSize( size )
 PROTECTED:
 PUBLIC:
-
-    DATA dtPicture INIT "9999-99-99 99:99"
 
     METHOD ClearObjData INLINE ::FColumnList := NIL
 
@@ -57,8 +51,6 @@ PUBLIC:
     METHOD GetGridRowData( row )
     METHOD GetRowLabelValue( row )
     METHOD GetValue( row, col )
-    METHOD GridBuffer_Delete( row )
-    METHOD GridBuffer_Insert( row )
     METHOD Initialized INLINE ::FGridBuffer != NIL
     METHOD SetRowParam( rowParam )
     METHOD SetColumnList( columnList )
@@ -70,7 +62,6 @@ PUBLIC:
     PROPERTY ColumnList READ FColumnList WRITE SetColumnList
     PROPERTY ColumnZero READ FColumnZero WRITE SetColumnZero
     PROPERTY GridBuffer READ FGridBuffer
-    PROPERTY RowLabel READ FRowLabel
 
 PUBLISHED:
 ENDCLASS
@@ -88,17 +79,17 @@ METHOD PROCEDURE FillGridBuffer( start ) CLASS wxhBrowseTableBase
     LOCAL curRowPos
     LOCAL browse := ::GetView()
     LOCAL allowOnDataChange
-
+    
     IF browse:SkipBlock == NIL
         RETURN
     ENDIF
-
+    
     curRowPos := browse:RowPos
-
+    
     /* TODO: ask Harbour team if it's possible to have ++start -= curRowPos */
     ++start
     start -= curRowPos
-
+    
     IF browse:DataSourceType = "O"
         allowOnDataChange := browse:DataSource:allowOnDataChange
         browse:DataSource:allowOnDataChange := .F.
@@ -109,7 +100,7 @@ METHOD PROCEDURE FillGridBuffer( start ) CLASS wxhBrowseTableBase
     IF ::FCurRowIndex == NIL .OR. ( browse:DataSourceType = "O" .AND. browse:DataSource:Eof() )
         browse:GoFirstPos()
     ENDIF
-
+    
     IF start != 0
         browse:SkipBlock:Eval( start )
     ENDIF
@@ -118,33 +109,15 @@ METHOD PROCEDURE FillGridBuffer( start ) CLASS wxhBrowseTableBase
 
     n := browse:MaxRows()
 
-    SWITCH browse:DataSourceType
-    CASE "A"
-    CASE "H"
-        IF Len( browse:DataSource ) = 0
-            n := 0
-        ENDIF
-        EXIT
-    CASE "X"
-        IF Len( browse:DataSource:List ) = 0
-            n := 0
-        ENDIF
-        EXIT
-    ENDSWITCH
+    IF browse:DataSourceType $ "AH" .AND. Len( browse:DataSource ) = 0
+        n := 0
+    ENDIF
 
-    IF ::FGridBufferRows != n
+    IF ::FGridBufferSize != n
         ::SetGridBufferSize( n )
     ENDIF
 
     IF !Empty( ::FGridBuffer )
-
-        FOR EACH i IN ::FGridBuffer
-            IF i = NIL
-                i := {}
-            ELSE
-                AFill( i, NIL )
-            ENDIF
-        NEXT
 
         n := browse:SkipBlock:Eval( -1 )
         topRecord := n = 0
@@ -160,34 +133,31 @@ METHOD PROCEDURE FillGridBuffer( start ) CLASS wxhBrowseTableBase
         i := 2
 
         WHILE i <= browse:MaxRows()
-
             n := browse:SkipBlock:Eval( direction )
             totalSkipped += n
-
             IF n != direction
                 IF direction = 1
-                    /* check if we are filling right from after GoTop */
-                    IF topRecord
-                        ::SetGridBufferSize( i - 1 )
-                        EXIT
-                    ENDIF
-                    /* go to first record */
-                    IF totalSkipped != 0
-                        browse:SkipBlock:Eval( - totalSkipped )
-                    ENDIF
-                    direction := -1
-                    LOOP
-                ELSE /* we are at a premature bof */
+                /* check if we are filling from right after GoTop */
+                IF topRecord
                     ::SetGridBufferSize( i - 1 )
                     EXIT
                 ENDIF
+                /* go to first record */
+                IF totalSkipped != 0
+                    browse:SkipBlock:Eval( - totalSkipped )
+                ENDIF
+                direction := -1
+                LOOP
+                ELSE /* we are at a premature bof */
+                ::SetGridBufferSize( i - 1 )
+                EXIT
+                ENDIF
             ENDIF
-
             IF direction = 1
                 n := i
             ELSE
                 n := 1
-                ::GridBuffer_Insert( 1 )
+                AIns( ::FGridBuffer, 1 )
             ENDIF
 
             ::GetGridRowData( n )
@@ -195,20 +165,20 @@ METHOD PROCEDURE FillGridBuffer( start ) CLASS wxhBrowseTableBase
             i++
 
         ENDDO
-
+        
         /* normal fill (top-down) require repos at rowIndex 1 */
         IF direction = 1 .AND. totalSkipped != 0
             browse:SkipBlock:Eval( - totalSkipped )
         ENDIF
-
+        
         IF curRowPos > browse:RowCount
             browse:RowPos := browse:RowCount
         ELSE
             browse:RowPos := curRowPos
         ENDIF
-
+        
     ENDIF
-
+    
     IF allowOnDataChange != NIL
         browse:DataSource:allowOnDataChange := allowOnDataChange
     ENDIF
@@ -233,7 +203,7 @@ METHOD FUNCTION GetCellValueAtCol( nCol ) CLASS wxhBrowseTableBase
 
     picture := column:Picture
     width := column:Width
-
+    
     IF ::FIgnoreCellEvalError
         BEGIN SEQUENCE WITH {|oErr| Break( oErr ) }
             Result := column:GetValue( ::GetRowParam(), nCol )
@@ -243,7 +213,7 @@ METHOD FUNCTION GetCellValueAtCol( nCol ) CLASS wxhBrowseTableBase
     ELSE
         Result := column:GetValue( ::GetRowParam(), nCol )
     ENDIF
-
+    
     IF picture != NIL
         Result := Transform( Result, picture )
     ENDIF
@@ -263,7 +233,7 @@ METHOD FUNCTION GetCellValueAtCol( nCol ) CLASS wxhBrowseTableBase
         Result := RTrim( Result )
         EXIT
     CASE 'T'
-        Result := Trans( ::dtPicture, HB_TSToStr( Result ) )
+        Result := HB_TSToStr( Result )
         EXIT
     CASE 'O'
         IF Result:IsDerivedFrom( "TField" )
@@ -293,7 +263,7 @@ METHOD FUNCTION GetColLabelValue( col ) CLASS wxhBrowseTableBase
     IF ++col < 1
         RETURN value
     ENDIF
-
+    
     value := ::FColumnList[ col ]:Heading
 
 RETURN iif( value = NIL, "", value )
@@ -303,26 +273,23 @@ RETURN iif( value = NIL, "", value )
     Teo. Mexico 2008
 */
 METHOD PROCEDURE GetGridRowData( row ) CLASS wxhBrowseTableBase
-    LOCAL i
-    LOCAL cols := Len( ::FColumnList )
+    LOCAL itm
 
-    IF row <= ::FGridBufferRows
+    IF row <= Len( ::FGridBuffer )
 
-        IF Len( ::FGridBuffer[ row ] ) < cols
-            ASize( ::FGridBuffer[ row ], cols )
+        IF ::FGridBuffer[ row ] == NIL
+            ::FGridBuffer[ row ] := {=>}
         ENDIF
-
+        
         /* Column Zero */
         IF ::FColumnZero == NIL
-            ::FRowLabel[ row ] := LTrim( Str( ::GetView():RecNo ) )
+            ::FGridBuffer[ row, 0 ] := LTrim( Str( ::GetView():RecNo ) )
         ELSE
-            ::FRowLabel[ row ] := ::GetCellValueAtCol( 0 )
+            ::FGridBuffer[ row, 0 ] := ::GetCellValueAtCol( 0 )
         ENDIF
 
-        FOR i:=1 TO Len( ::FColumnList )
-            IF ::FGridBuffer[ row, i ] = NIL
-                ::FGridBuffer[ row, i ] := ::GetCellValueAtCol( i )
-            ENDIF
+        FOR EACH itm IN ::FColumnList
+            ::FGridBuffer[ row, itm:__enumIndex() ] := ::GetCellValueAtCol( itm:__enumIndex() )
         NEXT
 
     ENDIF
@@ -334,12 +301,26 @@ RETURN
     Teo. Mexico 2008
 */
 METHOD FUNCTION GetRowLabelValue( row ) CLASS wxhBrowseTableBase
+    LOCAL Result := ""
+    LOCAL oErr
 
-    IF ++row > ::FGridBufferRows
-        RETURN ""
+    IF ::FGridBuffer == NIL .OR. ++row > Len( ::FGridBuffer )
+        RETURN Result
     ENDIF
 
-RETURN ::FRowLabel[ row ]
+    BEGIN SEQUENCE WITH {|oErr| Break( oErr ) }
+
+        Result := ::FGridBuffer[ row, 0 ]
+
+    RECOVER USING oErr
+
+        ? "ERROR GetRowLabelValue: " + oErr:Description
+
+        Result := "ERR:" + NTrim( row )
+
+    END SEQUENCE
+
+RETURN Result
 
 /*
     GetRowParam
@@ -358,35 +339,22 @@ RETURN ::FRowParam
     Teo. Mexico 2008
 */
 METHOD GetValue( row, col ) CLASS wxhBrowseTableBase
+    LOCAL Result
 
     ++row
     ++col
 
-    IF ::FGridBuffer == NIL .OR. row > ::FGridBufferRows .OR. Empty( ::FGridBuffer[ row ] ) .OR. col > Len( ::FGridBuffer[ row ] )
+    IF ::FGridBuffer == NIL .OR. row > Len( ::FGridBuffer )
         RETURN ""
     ENDIF
 
-RETURN ::FGridBuffer[ row, col ]
+    BEGIN SEQUENCE WITH {|oErr| Break( oErr ) }
+        Result := ::FGridBuffer[ row, col ]
+    RECOVER
+        Result := ""
+    END SEQUENCE
 
-/*
-    GridBuffer_Delete
-    Teo. Mexico 2011
-*/
-METHOD PROCEDURE GridBuffer_Delete( row ) CLASS wxhBrowseTableBase
-    ADel( ::FGridBuffer, row )
-    ::FGridBuffer[ ::FGridBufferRows ] := Array( Len( ::FColumnList ) )
-    ADel( ::FRowLabel, row )
-RETURN
-
-/*
-    GridBuffer_Insert
-    Teo. Mexico 2011
-*/
-METHOD PROCEDURE GridBuffer_Insert( row ) CLASS wxhBrowseTableBase
-    AIns( ::FGridBuffer, row )
-    ::FGridBuffer[ row ] := Array( Len( ::FColumnList ) )
-    AIns( ::FRowLabel, row )
-RETURN
+RETURN Result
 
 /*
     SetRowParam
@@ -448,29 +416,18 @@ RETURN
     SetGridBufferSize
     Teo. Mexico 2008
 */
-METHOD PROCEDURE SetGridBufferSize( rows ) CLASS wxhBrowseTableBase
-    LOCAL start
-    LOCAL itm
+METHOD PROCEDURE SetGridBufferSize( size ) CLASS wxhBrowseTableBase
 
-    IF ::FGridBuffer = NIL
-        ::FGridBuffer := Array( rows )
-        FOR EACH itm IN ::FGridBuffer
-            itm := {}
-        NEXT
-    ELSEIF Len( ::FGridBuffer ) < rows
-        start := rows - Len( ::FGridBuffer ) + 1
-        ASize( ::FGridBuffer, rows )
-        FOR itm := start TO rows
-            ::FGridBuffer[ itm ] := {}
-        NEXT
+    IF ::FGridBuffer == NIL
+        ::FGridBuffer := Array( size )
+    ELSE
+        ASize( ::FGridBuffer, size )
     ENDIF
 
-    ASize( ::FRowLabel, rows )
+    ::FGridBufferSize := size
 
-    ::FGridBufferRows := rows
-
-    IF ::GetView():RowCount != rows
-        ::GetView():RowCount := rows
+    IF ::GetView():RowCount != size
+        ::GetView():RowCount := size
     ENDIF
 
     ::GetView():ForceRefresh()
@@ -484,7 +441,7 @@ RETURN
 METHOD PROCEDURE SetValue( row, col, value ) CLASS wxhBrowseTableBase
     LOCAL oCol
     oCol := ::GetView():GetColumn( col + 1 )
-
+    
     IF oCol:CanSetValue
 
         oCol:SetValue( ::GetRowParam(), value )
@@ -494,7 +451,7 @@ METHOD PROCEDURE SetValue( row, col, value ) CLASS wxhBrowseTableBase
                the loop trigger seems to be ::AutoSizeColumns inside ::RefreshCurrent
          However this is not needed here because an ::RefreshAll is done after
          ::HideCellEditControl()
-
+         
             Seems that ENTER key triggers twice the SetValue call here...
             anyway, this was solved by not allowing calling twice SetValue here
             an flag in oCol is setted when calling oCol:SetValue to avoid re-enter here
@@ -504,8 +461,7 @@ METHOD PROCEDURE SetValue( row, col, value ) CLASS wxhBrowseTableBase
 
     ELSE
 
-        HB_SYMBOL_UNUSED( row )
-        //? "Changing:","Row:", row, "Col:", col, "Value:",value
+        ? "Changing:","Row:", row, "Col:", col, "Value:",value
 
     ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: wx_SearchCtrl.cpp 743 2011-07-27 18:26:08Z tfonrouge $
+ * $Id: wx_SearchCtrl.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
@@ -42,12 +42,12 @@ HB_FUNC( WXSEARCHCTRL_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-    wxWindowID id = HB_ISNIL(2) ? wxID_ANY : hb_parni( 2 );
+    wxWindowID id = ISNIL(2) ? wxID_ANY : hb_parni( 2 );
     const wxString& value = wxh_parc( 3 );
     const wxPoint& pos = wxh_par_wxPoint( 4 );
     const wxSize& size = wxh_par_wxSize( 5 );
     long style = hb_parnl( 6 );
-    const wxValidator& validator = HB_ISNIL( 7 ) ? wxDefaultValidator : * ( (wxValidator *) objParams.paramChild( 7 ) );
+    const wxValidator& validator = ISNIL( 7 ) ? wxDefaultValidator : * ( (wxValidator *) objParams.paramChild( 7 ) );
     const wxString& name = wxh_parc( 8 );
     wx_SearchCtrl* searchCtrl = new wx_SearchCtrl( parent, id, value, pos, size, style, validator, name );
 

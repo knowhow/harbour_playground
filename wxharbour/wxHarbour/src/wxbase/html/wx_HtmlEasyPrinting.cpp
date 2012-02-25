@@ -1,16 +1,16 @@
 /*
- * $Id: wx_HtmlEasyPrinting.cpp 746 2011-08-05 18:55:31Z tfonrouge $
+ * $Id: wx_HtmlEasyPrinting.cpp 660 2010-11-04 04:18:08Z tfonrouge $
  */
 
 /*
  wxHarbour: a portable GUI for [x]Harbour Copyright (C) 2010 Teo Fonrouge
-
+ 
  This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
-
+ 
  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
-
+ 
  You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
+ 
  (C) 2010 Teo Fonrouge <teo@windtelsoft.com>
  */
 
@@ -40,8 +40,8 @@ wx_HtmlEasyPrinting::~wx_HtmlEasyPrinting()
 HB_FUNC( WXHTMLEASYPRINTING_NEW )
 {
     xho_ObjParams objParams = xho_ObjParams( NULL );
-
-    const wxString& name = HB_ISNIL( 1 ) ? wxString( _T("Printing") ) : wxh_parc( 1 );
+    
+    const wxString& name = ISNIL( 1 ) ? wxString( _T("Printing") ) : wxh_parc( 1 );
     wxWindow* parent = (wxWindow *) objParams.paramParent( 2 );
 
     objParams.Return( new wx_HtmlEasyPrinting( name, parent ) );
@@ -54,7 +54,7 @@ HB_FUNC( WXHTMLEASYPRINTING_NEW )
 HB_FUNC( WXHTMLEASYPRINTING_GETPARENTWINDOW )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         xho_itemReturn( htmlEasyPrinting->GetParentWindow() );
@@ -68,7 +68,7 @@ HB_FUNC( WXHTMLEASYPRINTING_GETPARENTWINDOW )
 HB_FUNC( WXHTMLEASYPRINTING_GETPRINTDATA )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         xho_itemReturn( htmlEasyPrinting->GetPrintData() );
@@ -82,7 +82,7 @@ HB_FUNC( WXHTMLEASYPRINTING_GETPRINTDATA )
 HB_FUNC( WXHTMLEASYPRINTING_GETPAGESETUPDATA )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         xho_itemReturn( htmlEasyPrinting->GetPageSetupData() );
@@ -96,7 +96,7 @@ HB_FUNC( WXHTMLEASYPRINTING_GETPAGESETUPDATA )
 HB_FUNC( WXHTMLEASYPRINTING_PREVIEWFILE )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         hb_retl( htmlEasyPrinting->PreviewFile( wxh_parc( 1 ) ) );
@@ -110,7 +110,7 @@ HB_FUNC( WXHTMLEASYPRINTING_PREVIEWFILE )
 HB_FUNC( WXHTMLEASYPRINTING_PREVIEWTEXT )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         hb_retl( htmlEasyPrinting->PreviewText( wxh_parc( 1 ), wxh_parc( 2 ) ) );
@@ -124,7 +124,7 @@ HB_FUNC( WXHTMLEASYPRINTING_PREVIEWTEXT )
 HB_FUNC( WXHTMLEASYPRINTING_PRINTFILE )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         hb_retl( htmlEasyPrinting->PrintFile( wxh_parc( 1 ) ) );
@@ -138,7 +138,7 @@ HB_FUNC( WXHTMLEASYPRINTING_PRINTFILE )
 HB_FUNC( WXHTMLEASYPRINTING_PRINTTEXT )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         hb_retl( htmlEasyPrinting->PrintText( wxh_parc( 1 ), wxh_parc( 2 ) ) );
@@ -152,7 +152,7 @@ HB_FUNC( WXHTMLEASYPRINTING_PRINTTEXT )
 HB_FUNC( WXHTMLEASYPRINTING_PAGESETUP )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         htmlEasyPrinting->PageSetup();
@@ -166,13 +166,13 @@ HB_FUNC( WXHTMLEASYPRINTING_PAGESETUP )
 HB_FUNC( WXHTMLEASYPRINTING_SETFONTS )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         const int len = 7;
         const int* sizes = NULL;
         int aInt[ len ] = { 0, 0, 0, 0, 0, 0, 0 };
-
+        
         if( hb_pcount() > 2 )
         {
             xho_par_arrayInt( 3, &aInt[ 0 ], len );
@@ -190,7 +190,7 @@ HB_FUNC( WXHTMLEASYPRINTING_SETFONTS )
 HB_FUNC( WXHTMLEASYPRINTING_SETHEADER )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         htmlEasyPrinting->SetHeader( wxh_parc( 1 ), hb_pcount() > 1 ? hb_parni( 2 ) : wxPAGE_ALL );
@@ -204,7 +204,7 @@ HB_FUNC( WXHTMLEASYPRINTING_SETHEADER )
 HB_FUNC( WXHTMLEASYPRINTING_SETFOOTER )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         htmlEasyPrinting->SetFooter( wxh_parc( 1 ), hb_pcount() > 1 ? hb_parni( 2 ) : wxPAGE_ALL );
@@ -218,7 +218,7 @@ HB_FUNC( WXHTMLEASYPRINTING_SETFOOTER )
 HB_FUNC( WXHTMLEASYPRINTING_SETPARENTWINDOW )
 {
     wxHtmlEasyPrinting* htmlEasyPrinting = (wxHtmlEasyPrinting *) xho_itemListGet_XHO( hb_stackSelfItem() );
-
+    
     if( htmlEasyPrinting )
     {
         htmlEasyPrinting->SetParentWindow( (wxWindow *) xho_par_XhoObject( 1 ) );
