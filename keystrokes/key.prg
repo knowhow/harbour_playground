@@ -36,17 +36,27 @@ next
 return
 
 static function check_test_vars(var_tests)
-local  _var_key := NIL
+local  _v1, _v2, _var_key := NIL
 
 for each _var_key in var_tests:Keys
       ? "var:", _var_key
-      if __g_test_vars[_var_key] != var_tests[_var_key]
-           ? "ERR: "
+      
+      _v1 := __g_test_vars[_var_key] 
+      _v2 := var_tests[_var_key]
+
+      if VALTYPE(_v1) == VALTYPE(_v2)
+
+            if _v1 == _v2
+                ??  " OK: "
+            else
+                ?? " ERR: "
+            endif
+
       else
-           ?  "OK: "
+            ? " ERR: tipovi razliciti:"
       endif
-      ?? " ocekivana vrijednost ", var_tests[_var_key]
-      ?? " dobijena vrijednost ", __g_test_vars[_var_key]
+      ?? " ocekivana vrijednost (" + VALTYPE(_v2) + ")",  _v2
+      ?? " dobijena vrijednost (" +  VALTYPE(_v1) + ")", _v1
 next
 
 alert("check test vars zavrsen")
@@ -66,6 +76,7 @@ local _keys := { ;
 
 local _vars := hb_hash()
 _vars["main_var_1"] := "1"
+_vars["main_var_3"] := "333"
 
 _ret["keys"] := _keys
 _ret["vars"] := _vars
