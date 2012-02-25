@@ -1,5 +1,5 @@
 /*
- * $Id: wx_TreeCtrl.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_TreeCtrl.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -43,11 +43,11 @@ HB_FUNC( WXTREECTRL_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-    wxWindowID id = ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
+    wxWindowID id = HB_ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
     const wxPoint& pos = wxh_par_wxPoint( 3 );
     const wxSize& size = wxh_par_wxSize( 4 );
-    long style = ISNIL( 5 ) ? wxTR_HAS_BUTTONS : hb_parnl( 5 );
-    const wxValidator& validator = ISNIL( 6 ) ? wxDefaultValidator : * ( (wxValidator *) objParams.paramChild( 6 ) );
+    long style = HB_ISNIL( 5 ) ? wxTR_HAS_BUTTONS : hb_parnl( 5 );
+    const wxValidator& validator = HB_ISNIL( 6 ) ? wxDefaultValidator : * ( (wxValidator *) objParams.paramChild( 6 ) );
     const wxString& name = wxh_parc( 7 );
     wx_TreeCtrl* treeCtrl = new wx_TreeCtrl( parent, id, pos, size, style, validator, name );
 
@@ -64,8 +64,8 @@ HB_FUNC( WXTREECTRL_ADDROOT )
     wxTreeCtrl* treeCtrl = (wxTreeCtrl *) objParams.Get_xhoObject();
 
     const wxString& text = wxh_parc( 1 );
-    int image = ISNIL( 2 ) ? -1 : hb_parni( 2 );
-    int selImage = ISNIL( 3 ) ? -1 : hb_parni( 3 );
+    int image = HB_ISNIL( 2 ) ? -1 : hb_parni( 2 );
+    int selImage = HB_ISNIL( 3 ) ? -1 : hb_parni( 3 );
     wxTreeItemData* data = (wxTreeItemData *) objParams.paramParent( 4 );
 
     if( treeCtrl )
@@ -89,8 +89,8 @@ HB_FUNC( WXTREECTRL_APPENDITEM )
 
     wxTreeItemId parent = wxTreeItemId( (void *) hb_parnl( 1 ) );
     const wxString& text = wxh_parc( 2 );
-    int image = ISNIL( 3 ) ? -1 : hb_parni( 3 );
-    int selImage = ISNIL( 4 ) ? -1 : hb_parni( 4 );
+    int image = HB_ISNIL( 3 ) ? -1 : hb_parni( 3 );
+    int selImage = HB_ISNIL( 4 ) ? -1 : hb_parni( 4 );
     wxTreeItemData* data = (wxTreeItemData *) objParams.paramParent( 5 );
 
     if( treeCtrl && parent )
@@ -280,7 +280,7 @@ HB_FUNC( WXTREECTRL_GETCHILDRENCOUNT )
 
     if( treeCtrl && item )
     {
-        bool recursively = ISNIL( 2 ) ? true : hb_parl( 2 );
+        bool recursively = HB_ISNIL( 2 ) ? true : hb_parl( 2 );
         hb_retnl( treeCtrl->GetChildrenCount( item, recursively ) );
     }
 }
@@ -313,13 +313,13 @@ HB_FUNC( WXTREECTRL_GETFIRSTCHILD )
 
     wxTreeItemIdValue cookie;
 
-    if( ( hb_pcount() != 2 ) || !( ISBYREF( 2 ) ) )
+    if( ( hb_pcount() != 2 ) || !( HB_ISBYREF( 2 ) ) )
     {
         hb_errRT_BASE( EG_ARG, 9999, NULL, HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
         return;
     }
 
-    if( !ISNUM( 2 ) )
+    if( !HB_ISNUM( 2 ) )
     {
         hb_stornl( 0, 2 );
     }
@@ -391,13 +391,13 @@ HB_FUNC( WXTREECTRL_GETNEXTCHILD )
 
     wxTreeItemIdValue cookie;
 
-    if( ( hb_pcount() != 2 ) || !( ISBYREF( 2 ) ) )
+    if( ( hb_pcount() != 2 ) || !( HB_ISBYREF( 2 ) ) )
     {
         hb_errRT_BASE( EG_ARG, 9999, NULL, HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
         return;
     }
 
-    if( !ISNUM( 2 ) )
+    if( !HB_ISNUM( 2 ) )
     {
         hb_stornl( 0, 2 );
     }

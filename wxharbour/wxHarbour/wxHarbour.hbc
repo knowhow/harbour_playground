@@ -1,12 +1,14 @@
 #
-# $Id: wxharbour.hbc 576 2010-04-11 03:32:58Z tfonrouge $
+# $Id: wxHarbour.hbc 778 2011-10-15 17:36:31Z tfonrouge $
 #
+
+prgflags=-w3 -es2
 
 incpaths=include/wxHarbour
 libpaths=lib/${hb_arch}/${hb_comp}
-libs=wxharbour hbct hbtip
+libs=hbct hbtip wxHarbour
 
-ldflags={unix&gcc}"`wx-config --libs`"
+ldflags={unix&gcc}"-lwxHarbour `wx-config --libs`"
 
 {allgcc}cpp=yes
 
@@ -17,10 +19,19 @@ ldflags={unix&gcc}"`wx-config --libs`"
 {win&watcom}libpaths=${HB_WITH_WX}\lib\wat_lib
 {bcc}libpaths=${HB_WITH_WX}\lib\bcc_lib
 
-{win&(allmsvc|mingw|bcc)}libs=wxbase28 wxbase28_net wxbase28_xml
-{win&(allmsvc|mingw|bcc)}libs=wxmsw28_adv wxmsw28_aui wxmsw28_core wxmsw28_html wxmsw28_richtext wxmsw28_xrc
-{win&allmsvc}libs=wxmsw28_qa
-{win&watcom}libs=wxmsw28
-{win}libs=wxjpeg wxpng wxtiff wxexpat wxregex wxzlib
+{win&(allmsvc|mingw|bcc)}libs=wxbase28u wxbase28u_net wxbase28u_xml
+{win&(allmsvc|mingw|bcc)}libs=wxmsw28u_adv wxmsw28u_aui wxmsw28u_core wxmsw28u_html wxmsw28u_richtext wxmsw28u_xrc
+{win&allmsvc}libs=wxmsw28u_qa
+{win&watcom}libs=wxmsw28u
+{win}libs=wxjpeg wxpng wxtiff wxexpat wxregexu wxzlib
 
 {win}libs=rpcrt4
+
+{win&allmsvc}ldflags="/NODEFAULTLIB:LIBCMT /FORCE:UNRESOLVED"
+
+{darwin}prgflags="-DHB_OS_MAC"
+{unix}prgflags="-DHB_OS_UNIX"
+{linux}prgflags="-DHB_OS_LINUX"
+{win}prgflags="-DHB_OS_WINDOWS -DHB_OS_WIN_32"
+
+gui=yes

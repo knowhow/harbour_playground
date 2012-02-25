@@ -1,5 +1,5 @@
 /*
- * $Id: wx_TaskBarIcon.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_TaskBarIcon.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -124,7 +124,7 @@ HB_FUNC( WXTASKBARICON_SETICON )
 
     if( taskBarIcon )
     {
-        if( ISNIL( 1 ) )
+        if( HB_ISNIL( 1 ) )
         {
             hb_retl( taskBarIcon->SetIcon( wxIcon( wxwin32x32_xpm ), wxh_parc( 2 ) ) );
         }

@@ -1,5 +1,5 @@
 /*
- * $Id: wx_Browse.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_Browse.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -140,21 +140,21 @@ HB_FUNC( WXHBROWSE_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxhBrowse* browse = ( wxhBrowse* ) objParams.paramParent( 1 );
-    wxWindowID id = ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
+    wxWindowID id = HB_ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
     wxPoint pos = wxh_par_wxPoint( 3 );
     wxSize size = wxh_par_wxSize( 4 );
-    long style = ISNIL( 5 ) ? wxWANTS_CHARS : hb_parnl( 5 );
-    const wxString& name = ISNIL( 6 ) ? wxString( _T("wxhBrowse") ) : wxh_parc( 6 );
+    long style = HB_ISNIL( 5 ) ? wxWANTS_CHARS : hb_parnl( 5 );
+    const wxString& name = HB_ISNIL( 6 ) ? wxString( _T("wxhBrowse") ) : wxh_parc( 6 );
 
     wxhBrowse* gridBrowse = new wxhBrowse( browse, id, pos, size, style, name );
-    
+
     gridBrowse->m_maxRows = 0;
     gridBrowse->m_gridWindowHeight = 0;
     gridBrowse->m_rowCount = 0;
     gridBrowse->m_selectedRow = 0;
 
     objParams.Return( gridBrowse );
-    
+
 }
 
 /*
@@ -175,7 +175,9 @@ HB_FUNC( WXHBROWSE_CALCMAXROWS )
 
         /* needed to calculate cell row height */
         if( gridBrowse->GetNumberRows() == 0 )
+        {
             gridBrowse->AppendRows( 1 );
+        }
 
         gridBrowse->m_gridWindowHeight = size.GetHeight();
 
@@ -190,6 +192,35 @@ HB_FUNC( WXHBROWSE_CALCMAXROWS )
     }
 
     hb_retni( maxRows );
+}
+
+/*
+    SetColCellChoiceEditor
+    Teo. Mexico 2011
+ */
+HB_FUNC( WXHBROWSE_SETCOLCELLCHOICEEDITOR )
+{
+    wxhBrowse* gridBrowse = (wxhBrowse *) xho_itemListGet_XHO( hb_stackSelfItem() );
+
+    if( gridBrowse )
+    {
+        int col;
+
+        if( hb_param( 1, HB_IT_NUMERIC ) )
+        {
+            col = hb_parni( 1 );
+        }
+        else
+        {
+            col = gridBrowse->GetNumberCols();
+        }
+
+        const wxArrayString& choices = wxh_par_wxArrayString( 2 );
+        wxGridCellChoiceEditor* choiceEditor = new wxGridCellChoiceEditor( choices );
+        wxGridCellAttr* gridCellAttr = new wxGridCellAttr;
+        gridCellAttr->SetEditor( choiceEditor );
+        gridBrowse->SetColAttr( col - 1, gridCellAttr );
+    }
 }
 
 /*
@@ -266,8 +297,8 @@ HB_FUNC( WXHBROWSE_SHOWROW )
 
     if( gridBrowse )
     {
-        int row = ISNIL( 1 ) ? gridBrowse->GetGridCursorRow() : hb_parni( 1 );
-        bool select = ISNIL( 2 ) ? true : hb_parl( 2 );
+        int row = HB_ISNIL( 1 ) ? gridBrowse->GetGridCursorRow() : hb_parni( 1 );
+        bool select = HB_ISNIL( 2 ) ? true : hb_parl( 2 );
 
         if( gridBrowse->m_selectedRow >= 0 && gridBrowse->m_selectedRow < gridBrowse->GetNumberRows() )
         {

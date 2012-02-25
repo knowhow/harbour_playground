@@ -1,5 +1,5 @@
 /*
- * $Id: wx_Dialog.h 637 2010-06-26 15:56:06Z tfonrouge $
+ * $Id: wx_Dialog.h 692 2011-03-31 06:07:15Z tfonrouge $
  */
 
 /*
@@ -27,4 +27,5 @@ public:
 
     wx_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT(""), const wxPoint& pos = wxPoint(-1,-1), const wxSize& size = wxSize(-1,-1), long style = wxDEFAULT_DIALOG_STYLE, const wxString& name = wxT("") );
 
+    virtual bool Validate();
 };

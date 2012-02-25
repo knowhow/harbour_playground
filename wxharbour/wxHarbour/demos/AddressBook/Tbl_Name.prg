@@ -1,5 +1,5 @@
 /*
-    $Id: Tbl_Name.prg 639 2010-06-30 18:09:09Z tfonrouge $
+    $Id: Tbl_Name.prg 685 2011-03-09 14:23:02Z tfonrouge $
     Tbl_Name : Table to contain names
 */
 
@@ -53,7 +53,7 @@ BEGIN FIELDS CLASS Tbl_Name
         LABEL "Day of birth"
         
     ADD OBJECT FIELD "Country" ;
-        OBJTYPE "Tbl_Country"
+        CLASS "Tbl_Country"
         
     ADD MEMO FIELD "Memo"
         

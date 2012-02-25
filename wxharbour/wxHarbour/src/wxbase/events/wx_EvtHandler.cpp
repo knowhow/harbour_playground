@@ -1,5 +1,5 @@
 /*
- * $Id: wx_EvtHandler.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_EvtHandler.cpp 775 2011-10-12 21:04:17Z tfonrouge $
  */
 
 /*
@@ -61,8 +61,8 @@ void hbEvtHandler<T>::__OnEvent( wxEvent &event )
         }
     }
 
-    //wxh_itemListDel_HB( pEvent );
-    hb_itemRelease( pEvent ); //this has to be done on above line
+    xho_itemListDel_XHO( &event );
+    hb_itemRelease( pEvent );
 }
 
 /*
@@ -303,7 +303,7 @@ static void Connect( int evtClass )
     PHB_ITEM pSelf = hb_stackSelfItem();
     PCONN_PARAMS pConnParams = new CONN_PARAMS;
     pConnParams->force = false;
-
+    
     ParseConnectParams( pConnParams );
 
     hbEvtHandler<wxEvtHandler>* evtHandler = (hbEvtHandler<wxEvtHandler> *) xho_itemListGet_XHO( pSelf );

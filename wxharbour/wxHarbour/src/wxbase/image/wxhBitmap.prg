@@ -1,5 +1,5 @@
 /*
- * $Id: wxhBitmap.prg 637 2010-06-26 15:56:06Z tfonrouge $
+ * $Id: wxhBitmap.prg 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -34,7 +34,7 @@ PUBLIC:
     wxBitmap( const wxString& name, long type )	  -> New( file/resourceName, type )
     */
     CONSTRUCTOR New()
-    
+
     METHOD AddHandler( handler )
     METHOD CleanUpHandlers()
     METHOD ConvertToImage()

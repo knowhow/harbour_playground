@@ -1,5 +1,5 @@
 /*
- * $Id: wx_SocketServer.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_SocketServer.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -50,7 +50,7 @@ HB_FUNC( WXSOCKETSERVER_NEW )
 
     wx_SocketServer* socketServer;
     wxSockAddress* address;
-    wxSocketFlags flags = ISNUM( 2 ) ? hb_parni( 2 ) : wxSOCKET_NONE;
+    wxSocketFlags flags = HB_ISNUM( 2 ) ? hb_parni( 2 ) : wxSOCKET_NONE;
 
     address = (wxSockAddress *) objParams.paramParent( 1 );
 
@@ -74,7 +74,7 @@ HB_FUNC( WXSOCKETSERVER_ACCEPT )
     wx_SocketServer* socketServer = (wx_SocketServer*) xho_itemListGet_XHO( pSelf );
     wxSocketBase* socketBase;
 
-    bool wait = ISLOG( 1 ) ? hb_parl( 1 ) : true;
+    bool wait = HB_ISLOG( 1 ) ? hb_parl( 1 ) : true;
 
     if( pSelf && socketServer )
     {
@@ -100,7 +100,7 @@ HB_FUNC( WXSOCKETSERVER_ACCEPTWITH )
 
     wxSocketBase* socket;
 
-    bool wait = ISLOG( 2 ) ? hb_parl( 2 ) : true;
+    bool wait = HB_ISLOG( 2 ) ? hb_parl( 2 ) : true;
 
     socket = (wxSocketBase *) objParams.paramParent( 1 );
 
@@ -127,8 +127,8 @@ HB_FUNC( WXSOCKETSERVER_WAITFORACCEPT )
 
     if( socketServer )
     {
-        long seconds = ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
-        long millisecond = ( ISNUM( 2 ) ) ? hb_parnl( 2 ) : 0;
+        long seconds = HB_ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
+        long millisecond = ( HB_ISNUM( 2 ) ) ? hb_parnl( 2 ) : 0;
         hb_retl( socketServer->WaitForAccept( seconds, millisecond ) );
     }
 }

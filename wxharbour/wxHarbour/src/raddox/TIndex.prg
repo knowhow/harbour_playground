@@ -1,5 +1,5 @@
 /*
- * $Id: TIndex.prg 646 2010-09-27 19:45:44Z tfonrouge $
+ * $Id: TIndex.prg 771 2011-09-30 20:41:23Z tfonrouge $
  */
 
 /*
@@ -82,14 +82,16 @@ PUBLIC:
     METHOD GetCurrentRecord()
     METHOD IndexExpression()
     METHOD InsideScope()
-    
+    METHOD KeyExpression()
+    METHOD MasterKeyExpression()
+
     METHOD OrdCondSet( ... ) INLINE ::FTable:OrdCondSet( ... )
     METHOD OrdCreate( ... ) INLINE ::FTable:OrdCreate( ... )
     METHOD OrdKeyNo() INLINE ::GetAlias():OrdKeyNo()
-    
+
     METHOD RawGet4Seek( direction, blk, keyVal, softSeek )
     METHOD RawSeek( Value )
-    
+
     METHOD SetKeyVal( keyVal )
 
     PROPERTY Filter READ FFilter
@@ -98,7 +100,7 @@ PUBLIC:
     PROPERTY Scope READ GetScope WRITE SetScope
     PROPERTY ScopeBottom READ GetScopeBottom WRITE SetScopeBottom
     PROPERTY ScopeTop READ GetScopeTop WRITE SetScopeTop
-    
+
     METHOD Seek( keyValue, lSoftSeek ) INLINE ::BaseSeek( 0, keyValue, lSoftSeek )
     METHOD SeekLast( keyValue, lSoftSeek ) INLINE ::BaseSeek( 1, keyValue, lSoftSeek )
 
@@ -126,6 +128,10 @@ ENDCLASS
 METHOD New( Table, tagName, name, indexType, curClass ) CLASS TIndex
 
     ::FTable := Table
+    
+    IF Len( tagName ) > 10
+        RAISE ERROR "TagName '" + tagName + "' exceeds lenght of 10..."
+    ENDIF
 
     ::FTagName := tagName
 
@@ -148,7 +154,7 @@ METHOD New( Table, tagName, name, indexType, curClass ) CLASS TIndex
     ::FTable:IndexList[ curClass, name ] := Self
 
     IF "PRIMARY" = indexType
-        ::FTable:PrimaryIndexList[ curClass ] := name
+        ::FTable:SetPrimaryIndexList( curClass, name )
         ::FTable:SetPrimaryIndex( Self )
     ENDIF
 
@@ -158,7 +164,7 @@ RETURN Self
     AddIndex
     Teo. Mexico 2008
 */
-METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, ForKey, cs, de, useIndex, temporary /*, cu*/ )
+METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, ForKey, cs, de, acceptEmptyUnique, useIndex, temporary /*, cu*/ )
 
     ::MasterKeyField := cMasterKeyField
 
@@ -181,6 +187,10 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, ForKey, cs, de, useIndex, t
         OTHERWISE
             ::KeyField := cKeyField
         ENDCASE
+    ENDIF
+
+    IF acceptEmptyUnique != NIL
+        ::UniqueKeyField:AcceptEmptyUnique := acceptEmptyUnique
     ENDIF
 
     ::ForKey := ForKey
@@ -227,7 +237,7 @@ METHOD FUNCTION BaseSeek( direction, keyValue, lSoftSeek ) CLASS TIndex
     ENDIF
 
     ::GetCurrentRecord()
-    
+
 RETURN ::FTable:Found()
 
 /*
@@ -319,9 +329,9 @@ RETURN ::FTable:Found()
     DbSkip
     Teo. Mexico 2007
 */
-METHOD PROCEDURE DbSkip( numRecs ) CLASS TIndex
+METHOD FUNCTION DbSkip( numRecs ) CLASS TIndex
     LOCAL table
-    
+
     IF ::associatedTable = NIL
         table := ::FTable
     ELSE
@@ -330,12 +340,10 @@ METHOD PROCEDURE DbSkip( numRecs ) CLASS TIndex
 
     IF ::FFilter = NIL .AND. !table:HasFilter
         ::GetAlias():DbSkip( numRecs, ::FTagName )
-        ::GetCurrentRecord()
-    ELSE
-        ::FTable:SkipFilter( numRecs, Self )
+        RETURN ::GetCurrentRecord()
     ENDIF
-    
-RETURN
+
+RETURN ::FTable:SkipFilter( numRecs, Self )
 
 /*
     ExistKey
@@ -345,11 +353,11 @@ METHOD FUNCTION ExistKey( keyValue ) CLASS TIndex
 RETURN ::GetAlias():ExistKey( ::MasterKeyVal + keyValue, ::FTagName, ;
         {||
             IF ::IdxAlias = NIL
-                RETURN ::FTable:RecNo 
+                RETURN ::FTable:RecNo
             ENDIF
             RETURN ( ::IdxAlias:workArea )->RecNo
         } )
-        
+
 /*
     Get4Seek
     Teo. Mexico 2009
@@ -380,8 +388,11 @@ RETURN ::IdxAlias
 */
 METHOD FUNCTION GetCurrentRecord() CLASS TIndex
     LOCAL result
+    LOCAL index := ::FTable:Index
 
+    ::FTable:Index := Self
     result := ::FTable:GetCurrentRecord( ::GetIdxAlias() )
+    ::FTable:Index := index
 
     IF ::associatedTable != NIL
         ::associatedTable:ExternalIndexList[ ::ObjectH ] := NIL
@@ -454,15 +465,11 @@ RETURN ::FMasterKeyField:GetKeyVal
     Teo. Mexico 2010
 */
 METHOD FUNCTION IndexExpression() CLASS TIndex
-    LOCAL exp := ""
+    LOCAL exp
 
-    IF ::FMasterKeyField != NIL
-        exp +=  iif( Len( exp ) = 0, "", "+" ) + ::FMasterKeyField:IndexExpression
-    ENDIF
+    exp := ::MasterKeyExpression
 
-    IF ::FKeyField != NIL
-        exp += iif( Len( exp ) = 0, "", "+" ) + ::FKeyField:IndexExpression
-    ENDIF
+    exp += iif( Len( exp ) = 0, "", "+" ) + ::KeyExpression
 
 RETURN exp
 
@@ -474,27 +481,51 @@ METHOD FUNCTION InsideScope() CLASS TIndex
     LOCAL masterKeyVal
     LOCAL scopeVal
     LOCAL keyValue
-    
+
     IF ::FTable:Alias:Eof() .OR. ::FTable:Alias:Bof()
         RETURN .F.
     ENDIF
-    
+
     keyValue := ::GetAlias():KeyVal( ::FTagName )
-    
+
     IF keyValue == NIL
         RETURN .F.
     ENDIF
 
     masterKeyVal := ::MasterKeyVal
-    
+
     scopeVal := ::GetScope()
-    
+
     IF scopeVal == NIL
         RETURN masterKeyVal == "" .OR. keyValue = masterKeyVal
     ENDIF
-    
+
 RETURN keyValue >= ( masterKeyVal + ::GetScopeTop() ) .AND. ;
              keyValue <= ( masterKeyVal + ::GetScopeBottom() )
+
+/*
+    KeyExpression
+    Teo. Mexico 2010
+*/
+METHOD FUNCTION KeyExpression() CLASS TIndex
+
+    IF ::FKeyField != NIL
+        RETURN ::FKeyField:IndexExpression
+    ENDIF
+
+RETURN ""
+
+/*
+    MasterKeyExpression
+    Teo. Mexico 2011
+*/
+METHOD FUNCTION MasterKeyExpression() CLASS TIndex
+
+    IF ::FMasterKeyField != NIL
+        RETURN ::FMasterKeyField:IndexExpression
+    ENDIF
+
+RETURN ""
 
 /*
     RawGet4Seek
@@ -603,7 +634,10 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
         EXIT
     CASE 1	 /* AutoIncrementKeyField */
         IF AField:FieldMethodType = 'A'
-            RAISE ERROR "Array of Fields Not Allowed as AutoIncrement Index Key..."
+            RAISE ERROR "Array of Fields are not Allowed as AutoIncrement Index Key..."
+        ENDIF
+        IF AField:IsDerivedFrom( "TObjectField" )
+            RAISE ERROR "TObjectField's are not Allowed as AutoIncrement Index Key..."
         ENDIF
         AField:AutoIncrementKeyIndex := Self
         ::FAutoIncrementKeyField := AField
@@ -614,11 +648,11 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
         IF AField:IsDerivedFrom( "TStringField" ) .AND. Len( AField ) = 0
             RAISE ERROR ::FTable:ClassName + ": Master key field <" + AField:Name + ">	needs a size > zero..."
         ENDIF
-        IF AField:KeyIndex != NIL
-            RAISE ERROR ::FTable:ClassName + ": Field <" + AField:Name + ">	already defined as Key Field..." 
-        ENDIF
         AField:KeyIndex := Self
         ::FKeyField := AField
+        IF ::FTable:BaseKeyField = NIL
+            ::FTable:SetBaseKeyField( AField )
+        ENDIF
         EXIT
     ENDSWITCH
 
@@ -652,7 +686,7 @@ RETURN Self
 */
 METHOD FUNCTION SetScope( value ) CLASS TIndex
     LOCAL oldValue := { ::FScopeTop, ::FScopeBottom }
-    
+
     IF ValType( value ) = "A" // scope by field
         ::FScopeTop := value[ 1 ]
         ::FScopeBottom := value[ 2 ]
@@ -669,7 +703,7 @@ RETURN oldValue
 */
 METHOD FUNCTION SetScopeBottom( value ) CLASS TIndex
     LOCAL oldValue := ::FScopeBottom
-    
+
     ::FScopeBottom := value
 
 RETURN oldValue
@@ -680,7 +714,7 @@ RETURN oldValue
 */
 METHOD FUNCTION SetScopeTop( value ) CLASS TIndex
     LOCAL oldValue := ::FScopeTop
-    
+
     ::FScopeTop := value
 
 RETURN oldValue

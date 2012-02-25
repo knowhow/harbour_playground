@@ -1,5 +1,5 @@
 /*
- * $Id: wx_ControlWithItems.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_ControlWithItems.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -78,7 +78,7 @@ HB_FUNC( WXCONTROLWITHITEMS_DELETE )
 
     if( ctrlWItms )
     {
-        ctrlWItms->Delete( UINT( hb_parni( 1 ) ) );
+        ctrlWItms->Delete( HB_UINT( hb_parni( 1 ) ) );
     }
 }
 
@@ -93,7 +93,7 @@ HB_FUNC( WXCONTROLWITHITEMS_FINDSTRING )
 
     if( ctrlWItms )
     {
-        bool caseSensitive = ISNIL( 2 ) ? false : hb_parl( 2 );
+        bool caseSensitive = HB_ISNIL( 2 ) ? false : hb_parl( 2 );
         hb_retni( ctrlWItms->FindString( wxh_parc( 1 ), caseSensitive ) );
     }
 }
@@ -156,7 +156,7 @@ HB_FUNC( WXCONTROLWITHITEMS_GETSTRINGS )
     {
         wxArrayString arrayString = ctrlWItms->GetStrings();
         PHB_ITEM pArray = hb_itemArrayNew( arrayString.GetCount() );
-        for( ULONG ulI = 0; ulI < arrayString.GetCount(); ulI++ )
+        for( HB_ULONG ulI = 0; ulI < arrayString.GetCount(); ulI++ )
         {
             hb_arraySetC( pArray, ulI + 1, arrayString[ ulI ].mb_str() );
         }

@@ -1,5 +1,5 @@
 /*
- * $Id: TRDOServer_c.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: TRDOServer_c.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -22,7 +22,7 @@
 
 #include "rdodefs.h"
 
-/* USHORT keys ( object handle ) */
+/* HB_USHORT keys ( object handle ) */
 WX_DECLARE_HASH_MAP( PHB_BASEARRAY, PHB_ITEM, wxPointerHash, wxPointerEqual, RDO_ITMOBJLIST );
 
 PHB_ITEM        rdo_ItmObjListAdd( RDO_ITMOBJLIST rdo_itmObjList, PHB_BASEARRAY pObjHandle, PHB_ITEM pItmObj );
@@ -101,7 +101,7 @@ HB_FUNC( TRDOSERVER_ACCEPT )
     wx_SocketServer* socketServer = (wx_SocketServer*) xho_itemListGet_XHO( pSelf );
     wxSocketBase* socketBase;
 
-    bool wait = ISLOG( 1 ) ? hb_parl( 1 ) : true;
+    bool wait = HB_ISLOG( 1 ) ? hb_parl( 1 ) : true;
 
     if( pSelf && socketServer )
     {
@@ -127,8 +127,8 @@ HB_FUNC( TRDOSOCKETBASE_PROCESSCLIENTREQUESTS )
 
     wx_SocketBase* socketBase = (wx_SocketBase*) xho_itemListGet_XHO( pSelf );
 
-    ULONG bufSize;
-    USHORT iPCount;
+    HB_ULONG bufSize;
+    HB_USHORT iPCount;
     char* nameClass;
     char* nameMsg;
 
@@ -137,7 +137,7 @@ HB_FUNC( TRDOSOCKETBASE_PROCESSCLIENTREQUESTS )
     struct
     {
         PHB_BASEARRAY pObjHandle;
-        BYTE   msgLen;
+        HB_BYTE   msgLen;
         char   pBuffer[ SND_BUFFERSIZE ];
     } bufHeader;
 
@@ -207,10 +207,10 @@ HB_FUNC( TRDOSOCKETBASE_PROCESSCLIENTREQUESTS )
                 /* the Params */
                 if( iPCount > 0 )
                 {
-                    ULONG ulNode,ulResult,uIndex;
+                    HB_ULONG ulNode,ulResult,uIndex;
                     PHB_ITEM pItm;
                     uIndex = bufHeader.msgLen + sizeof( iPCount );
-                    for( USHORT i = 0; i < iPCount; i++ )
+                    for( HB_USHORT i = 0; i < iPCount; i++ )
                     {
                         memcpy( &ulNode, bufHeader.pBuffer + uIndex, sizeof( ulNode ) );
                         ulResult = ulNode;

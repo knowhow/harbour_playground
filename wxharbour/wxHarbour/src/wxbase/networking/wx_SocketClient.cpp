@@ -1,5 +1,5 @@
 /*
- * $Id: wx_SocketClient.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_SocketClient.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -42,7 +42,7 @@ HB_FUNC( WXSOCKETCLIENT_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wx_SocketClient* socketClient;
-    wxSocketFlags flags = ISNUM( 1 ) ? hb_parni( 1 ) : wxSOCKET_NONE;
+    wxSocketFlags flags = HB_ISNUM( 1 ) ? hb_parni( 1 ) : wxSOCKET_NONE;
 
     socketClient = new wx_SocketClient( flags );
 
@@ -65,7 +65,7 @@ HB_FUNC( WXSOCKETCLIENT_CONNECT )
 
     wxSockAddress* address = (wxSockAddress *) objParams.paramParent( 1 );
 
-    if( ISLOG( 2 ) || ISNIL( 2 ) )
+    if( HB_ISLOG( 2 ) || HB_ISNIL( 2 ) )
     {
         callingMode = 1;
         paramFail = !address;
@@ -86,9 +86,9 @@ HB_FUNC( WXSOCKETCLIENT_CONNECT )
     if( socketClient )
     {
         if( callingMode == 1 )
-            hb_retl( socketClient->Connect( *address, ISLOG( 2 ) ? hb_parl( 2 ) : true ) );
+            hb_retl( socketClient->Connect( *address, HB_ISLOG( 2 ) ? hb_parl( 2 ) : true ) );
         else
-            hb_retl( socketClient->Connect( *address, *local, ISLOG( 3 ) ? hb_parl( 3 ) : true ) );
+            hb_retl( socketClient->Connect( *address, *local, HB_ISLOG( 3 ) ? hb_parl( 3 ) : true ) );
     }
 }
 
@@ -103,7 +103,7 @@ HB_FUNC( WXSOCKETCLIENT_WAITONCONNECT )
 
     if( socketClient )
     {
-        long seconds = ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
+        long seconds = HB_ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
         long millisecond = hb_parnl( 2 );
         hb_retl( socketClient->WaitOnConnect( seconds, millisecond ) );
     }

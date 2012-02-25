@@ -26,7 +26,7 @@ PROTECTED:
 PUBLIC:
 
     CONSTRUCTOR New( red, green, blue, alpha)
-    
+
 PUBLISHED:
 ENDCLASS
 

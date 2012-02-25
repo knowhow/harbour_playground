@@ -1,5 +1,5 @@
 /*
- * $Id: wx_StatusBar.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_StatusBar.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -43,8 +43,8 @@ HB_FUNC( WXSTATUSBAR_NEW )
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
     wxWindowID id = (wxWindowID) hb_parni( 2 );
-    long style = ISNIL( 3 ) ? wxST_SIZEGRIP : hb_parnl( 3 );
-    const wxString& name = ISNIL( 4 ) ? wxString( _T("statusBar") ) : wxh_parc( 4 );
+    long style = HB_ISNIL( 3 ) ? wxST_SIZEGRIP : hb_parnl( 3 );
+    const wxString& name = HB_ISNIL( 4 ) ? wxString( _T("statusBar") ) : wxh_parc( 4 );
 
     wx_StatusBar* statusBar = new wx_StatusBar( parent, id, style, name );
 
@@ -63,7 +63,7 @@ HB_FUNC( WXSTATUSBAR_SETFIELDSCOUNT )
     int number = hb_parni(1);
     int* widths = NULL;
 
-    if(ISARRAY(2) && hb_arrayLen( hb_param( 2, HB_IT_ARRAY ) ))
+    if(HB_ISARRAY(2) && hb_arrayLen( hb_param( 2, HB_IT_ARRAY ) ))
     {
         PHB_ITEM pArray = hb_param( 2, HB_IT_ARRAY );
         int* aInt = new int[ hb_arrayLen( pArray ) ];

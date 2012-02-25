@@ -1,5 +1,5 @@
 /*
- * $Id: wx_harbour.cpp 666 2010-12-03 15:11:52Z tfonrouge $
+ * $Id: wx_harbour.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -61,8 +61,8 @@ HB_FUNC( WXH_NULLOBJECT )
 HB_FUNC( WXH_DESTROYNULLOBJECT )
 {
     PHB_ITEM pSelf = hb_param( 1, HB_IT_OBJECT );
-    
-    if ( pSelf ) 
+
+    if ( pSelf )
     {
         pSelf->type = HB_IT_NIL;
     }
@@ -75,13 +75,13 @@ HB_FUNC( WXH_DESTROYNULLOBJECT )
 wxArrayString wxh_par_wxArrayString( int param )
 {
     wxArrayString arrayString;
-    
-    if( ISARRAY( param ) )
+
+    if( HB_ISARRAY( param ) )
     {
         PHB_ITEM pArray = hb_param( param, HB_IT_ARRAY );
         PHB_ITEM pItm;
-        ULONG ulLen = hb_arrayLen( pArray );
-        for( ULONG ulI = 1; ulI <= ulLen; ulI++ )
+        HB_ULONG ulLen = hb_arrayLen( pArray );
+        for( HB_ULONG ulI = 1; ulI <= ulLen; ulI++ )
         {
             pItm = hb_arrayGetItemPtr( pArray, ulI );
             if( hb_itemType( pItm ) && ( HB_IT_STRING || HB_IT_MEMO ) )
@@ -90,7 +90,7 @@ wxArrayString wxh_par_wxArrayString( int param )
             }
         }
     }
-    
+
     return arrayString;
 }
 
@@ -101,7 +101,7 @@ wxArrayString wxh_par_wxArrayString( int param )
 wxColour wxh_par_wxColour( int param )
 {
     PHB_ITEM pItem = hb_param( param, HB_IT_ANY );
-    
+
     switch ( hb_itemType( pItem ) )
     {
         case HB_IT_STRING:
@@ -119,9 +119,17 @@ wxColour wxh_par_wxColour( int param )
 wxDateTime wxh_par_wxDateTime( int param )
 {
     long lDate = hb_pardl( param );
-    int iYear, iMonth, iDay;
-    hb_dateDecode( lDate, &iYear, &iMonth, &iDay );
-    return wxDateTime( iDay, (wxDateTime::Month) (iMonth - 1), iYear, 0, 0, 0, 0 );
+    if( lDate )
+    {
+        int iYear, iMonth, iDay;
+        hb_dateDecode( lDate, &iYear, &iMonth, &iDay );
+        return wxDateTime( iDay, (wxDateTime::Month) (iMonth - 1), iYear, 0, 0, 0, 0 );
+    }
+    else
+    {
+        return wxDefaultDateTime;
+    }
+
 }
 
 /*
@@ -175,15 +183,15 @@ wxString wxh_CTowxString( const char * szStr, bool convOEM )
 
     if( convOEM && szStr )
     {
-        ULONG ulStrLen = strlen( szStr );
+        HB_ULONG ulStrLen = strlen( szStr );
         PHB_CODEPAGE pcp = hb_vmCDP();
 
         if( ulStrLen > 0 && pcp )
         {
             wxString wxStr;
-            ULONG ulUTF8Len = hb_cdpUTF8StringLength( szStr, ulStrLen );
+            HB_ULONG ulUTF8Len = hb_cdpUTF8StringLength( szStr, ulStrLen );
             char *strUTF8 = (char *) hb_xgrab( ulUTF8Len + 1 );
-            hb_cdpStrToUTF8( pcp, false, szStr, ulStrLen, (char *) strUTF8, ulUTF8Len + 1 );
+            hb_cdpStrToUTF8( pcp, szStr, ulStrLen, (char *) strUTF8, ulUTF8Len + 1 );
             wxStr = wxString( strUTF8, mbConv );
             hb_xfree( strUTF8 );
             return wxStr;
@@ -268,7 +276,7 @@ HB_FUNC( WXMUTEXGUILEAVE )
 HB_FUNC( WXH_ADDNAVIGATIONKEYEVENT )
 {
     wxEvtHandler* evtHandler = (wxEvtHandler *) xho_par_XhoObject( 1 );
-    bool bDirection = ISNIL( 2 ) ? true : hb_parl( 2 );
+    bool bDirection = HB_ISNIL( 2 ) ? true : hb_parl( 2 );
 
     wxNavigationKeyEvent navEvent;
     navEvent.SetEventObject( evtHandler );

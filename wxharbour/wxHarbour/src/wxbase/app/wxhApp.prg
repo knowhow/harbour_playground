@@ -1,5 +1,5 @@
 /*
- * $Id: wxhApp.prg 637 2010-06-26 15:56:06Z tfonrouge $
+ * $Id: wxhApp.prg 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -28,7 +28,7 @@ PUBLIC:
 
     /* wxh specific */
     DATA wxh_ContextListKey
-    /* wxh specific */  
+    /* wxh specific */
 
     CONSTRUCTOR New
 

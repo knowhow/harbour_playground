@@ -1,5 +1,5 @@
 /*
- * $Id: wx_MDIParentFrame.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_MDIParentFrame.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -48,11 +48,11 @@ HB_FUNC( WXMDIPARENTFRAME_NEW )
     if(hb_pcount())
     {
         wxWindow* parent = (wxFrame *) objParams.paramParent( 1 );
-        wxWindowID id = ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
+        wxWindowID id = HB_ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
         wxString title = wxh_parc( 3 );
         wxPoint point = wxh_par_wxPoint(4);
         wxSize size = wxh_par_wxSize(5);
-        long style = ISNIL(6) ? wxDEFAULT_FRAME_STYLE : hb_parnl(6);
+        long style = HB_ISNIL(6) ? wxDEFAULT_FRAME_STYLE : hb_parnl(6);
         wxString name = wxh_parc( 7 );
         frame = new wx_MDIParentFrame( parent, id, title, point, size, style, name );
     }

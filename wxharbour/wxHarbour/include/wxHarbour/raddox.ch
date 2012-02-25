@@ -1,5 +1,5 @@
 /*
- * $Id: raddox.ch 656 2010-10-15 01:31:16Z tfonrouge $
+ * $Id: raddox.ch 786 2011-11-28 16:46:31Z tfonrouge $
  */
 
 /*
@@ -20,6 +20,9 @@
 #define dssNone     0
 #define dssAdding   1
 #define dssPosting  2
+
+#define ftBase      0
+#define ftObject    1
 
 /* Events for TTable */
 #xtranslate EVENT ONAFTEROPEN => METHOD OnAfterOpen()
@@ -45,9 +48,9 @@
     => ;
     RETURN
 
-#xtranslate ADD TABLE <tableName> [ <vt: VIRTUAL> ] [ INDEX <indexName> ] ;
+#xtranslate ADD TABLE <tableName> [ <vt: VIRTUAL> ] [ INDEX <indexName> ] [ <auto: AUTODELETE> ] ;
             => ;
-            ::cmdAddTable( <tableName>, [ <indexName> ], <.vt.> )
+            ::cmdAddTable( <tableName>, [ <indexName> ], <.vt.>, <.auto.> )
 
 #xtranslate DEFINE CHILD ;
             => ;
@@ -73,10 +76,10 @@
                         ADD [<clauses0>] _NUMERIC FIELD <xFieldMethod> [<clauses1>] LEN <nLen> DEC <nDec> [<clauses2>]
 #xtranslate T_NumericField => TNumericField
 
-/* To REQUIRE OBJTYPE in TObjectField */
-#xtranslate ADD [<clauses0,...>] OBJECT FIELD <xFieldMethod> [<clauses1,...>] OBJTYPE <objValue> [<clauses2,...>] ;
+/* To REQUIRE CLASS in TObjectField */
+#xtranslate ADD [<clauses0,...>] OBJECT FIELD <xFieldMethod> [<clauses1,...>] CLASS <objClass> [<clauses2,...>] ;
                         => ;
-                        ADD [<clauses0>] _OBJECT FIELD <xFieldMethod> [<clauses1>] OBJTYPE <objValue> [<clauses2>]
+                        ADD [<clauses0>] _OBJECT FIELD <xFieldMethod> [<clauses1>] CLASS <objClass> [<clauses2>]
 #xtranslate T_ObjectField => TObjectField
 
 #xtranslate ADD [<calc: CALCULATED>] <type: _STRING, MEMO, _NUMERIC, FLOAT, INTEGER, LOGICAL, DATE, DATETIME, MODTIME, _OBJECT, VARIANT> FIELD [<xFieldMethod>] ;
@@ -97,25 +100,28 @@
                         [ <pv: PRIVATE> ] ;
                         [ INCREMENT <incrementBlock> ] ;
                         [ MASTERSOURCE <linkedTableMasterSource> ] ;
-                        [ OBJTYPE <objValue> ] ;
+                        [ CLASS <objClass> ] ;
                         [ ON GETTEXT <bOnGetText> ] ;
                         [ ON SETTEXT <bOnSetText> ] ;
                         [ ON SETVALUE <bOnSetValue> ] ;
-                        [ ON INDEXKEYVAL <bIndexKeyVal> ] ;
-                        [ ON VALIDATE <bOnValidate> ] ;
+                        [ ON VALIDATE <bOnValidate> [ WARN <warnMsg> ] ] ;
                         [ ON SEARCH <bOnSearch> ] ;
                         [ ON AFTER CHANGE <bOnAfterChange> ] ;
                         [ ON AFTER POST CHANGE <bOnAfterPostChange> ] ;
-                        [ VALIDVALUES <validValues> ] ;
+                        [ ON DATA CHANGE <bOnDataChange> ] ;
+                        [ VALIDVALUES [<vvl: LABEL>] <validValues> ] ;
                         [ USING <usingField> ] ;
                         [ <ruf: REUSEFIELD> ] ;
+                        [ ENABLED <enabled> ] ;
+                        [ EDITABLE <editable> ] ;
+                        [ INDEXEXPRESSION <indexExp> ] ;
                      => ;
                         WITH OBJECT T<type>Field():New( Self, ::curClassField ) ;;
                             [ :Name := <cName> ] ;;
                             [ :Label := <label> ] ;;
                             [ :ReadOnly := <.ro.> ] ;;
                             [ :ReUseField := <.ruf.> ] ;;
-                            [ :ObjType := <objValue> ] ;;
+                            [ :ObjClass := <objClass> ] ;;
                             [ :Size := <nSize> ] ;;
                             [ :SetFieldMethod( <xFieldMethod>, <.calc.> ) ] ;;
                             [ :ReadBlock := {|| <readblock> } ] ;;
@@ -134,13 +140,17 @@
                             [ :OnGetText := {|field,Text| <bOnGetText> } ] ;;
                             [ :OnSetText := {|field,Text| <bOnSetText> } ] ;;
                             [ :OnSetValue := {|field,Value| <bOnSetValue> } ] ;;
-                            [ :OnGetIndexKeyVal := <bIndexKeyVal> ] ;;
                             [ :OnValidate := <bOnValidate> ] ;;
+                            [ :OnValidateWarn := <warnMsg> ] ;;
                             [ :OnSearch := <bOnSearch> ] ;;
                             [ :OnAfterChange := <bOnAfterChange> ] ;;
                             [ :OnAfterPostChange := <bOnAfterPostChange> ] ;;
-                            [ :ValidValues := <validValues> ] ;;
+                            [ :OnDataChange := <bOnDataChange> ] ;;
+                            [ :SetValidValues( <validValues>, <.vvl.> ) ] ;;
                             [ :UsingField := <usingField> ] ;;
+                            [ :Enabled := <enabled> ] ;;
+                            [ :Editable := <editable> ] ;;
+                            [ :SetIndexExpression( <indexExp> ) ] ;;
                             :AddFieldMessage() ;;
                             :ValidateFieldInfo() ;;
                         ENDWITH
@@ -213,9 +223,10 @@
                         [ <ai: AUTOINCREMENT> ] ;
                         [ <tm: TEMPORARY> ] ;
                         [ USEINDEX <useIndex> ] ;
+                        [ <acceptEmptyUnique: ACCEPT_EMPTY_UNIQUE> ] ;
                         => ;
                         WITH OBJECT TIndex():New( Self , <tagName>, [<name>], <"type">, ::curClassIndex ) ;;
-                                :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<ForKey>], !<.ncs.>, [<.de.>], [<useIndex>], [<.tm.>], [<.cu.>] ) ;;
+                                :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.cu.>] ) ;;
                         ENDWITH
                         
 #xtranslate DEFINE EXTERNAL INDEX <name> WITH <table> GET_RECNO <getRecNo> SET_RECNO <setRecNo> ;

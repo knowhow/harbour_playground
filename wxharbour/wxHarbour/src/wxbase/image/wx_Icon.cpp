@@ -1,5 +1,5 @@
 /*
- * $Id: wx_Icon.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_Icon.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -83,7 +83,7 @@ HB_FUNC( WXICON_NEW )
 HB_FUNC( WXICON_COPYFROMBITMAP )
 {
     wxIcon* icon = (wxIcon *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( icon )
     {
     const wxBitmap& bitmap = *(wxBitmap *) xho_par_XhoObject( 1 );
@@ -98,7 +98,7 @@ HB_FUNC( WXICON_COPYFROMBITMAP )
 HB_FUNC( WXICON_GETDEPTH )
 {
     wxIcon* icon = (wxIcon *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( icon )
     {
         hb_retni( icon->GetDepth() );
@@ -112,7 +112,7 @@ HB_FUNC( WXICON_GETDEPTH )
 HB_FUNC( WXICON_GETHEIGHT )
 {
     wxIcon* icon = (wxIcon *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( icon )
     {
         hb_retni( icon->GetHeight() );
@@ -126,7 +126,7 @@ HB_FUNC( WXICON_GETHEIGHT )
 HB_FUNC( WXICON_GETWIDTH )
 {
     wxIcon* icon = (wxIcon *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( icon )
     {
         hb_retni( icon->GetWidth() );
@@ -140,7 +140,7 @@ HB_FUNC( WXICON_GETWIDTH )
 HB_FUNC( WXICON_ISOK )
 {
     wxIcon* icon = (wxIcon *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( icon )
     {
         hb_retl( icon->IsOk() );
@@ -171,7 +171,7 @@ HB_FUNC( WXICON_LOADFILE )
 HB_FUNC( WXICON_SETDEPTH )
 {
     wxIcon* icon = (wxIcon *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( icon )
     {
         icon->SetDepth( hb_parni( 1 ) );
@@ -185,7 +185,7 @@ HB_FUNC( WXICON_SETDEPTH )
 HB_FUNC( WXICON_SETHEIGHT )
 {
     wxIcon* icon = (wxIcon *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( icon )
     {
         icon->SetHeight( hb_parni( 1 ) );
@@ -199,7 +199,7 @@ HB_FUNC( WXICON_SETHEIGHT )
 HB_FUNC( WXICON_SETWIDTH )
 {
     wxIcon* icon = (wxIcon *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( icon )
     {
         icon->SetWidth( hb_parni( 1 ) );

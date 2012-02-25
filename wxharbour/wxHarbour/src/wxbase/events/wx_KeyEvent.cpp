@@ -1,5 +1,5 @@
 /*
- * $Id: wx_KeyEvent.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_KeyEvent.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -31,7 +31,7 @@ HB_FUNC( WXKEYEVENT_ALTDOWN )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wxKeyEvent * keyEvent = (wxKeyEvent *) xho_itemListGet_XHO( pSelf );
-    
+
     if( keyEvent )
         hb_retl( keyEvent->AltDown() );
 }
@@ -43,7 +43,7 @@ HB_FUNC( WXKEYEVENT_CMDDOWN )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wxKeyEvent * keyEvent = (wxKeyEvent *) xho_itemListGet_XHO( pSelf );
-    
+
     if( keyEvent )
         hb_retl( keyEvent->CmdDown() );
 }
@@ -55,7 +55,7 @@ HB_FUNC( WXKEYEVENT_CONTROLDOWN )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wxKeyEvent * keyEvent = (wxKeyEvent *) xho_itemListGet_XHO( pSelf );
-    
+
     if( keyEvent )
         hb_retl( keyEvent->ControlDown() );
 }
@@ -93,7 +93,7 @@ HB_FUNC( WXKEYEVENT_GETPOSITION )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wxKeyEvent * keyEvent = (wxKeyEvent *) xho_itemListGet_XHO( pSelf );
-    
+
     if( keyEvent )
         wxh_ret_wxPoint( keyEvent->GetPosition() );
 }
@@ -120,7 +120,7 @@ HB_FUNC( WXKEYEVENT_GETX )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wxKeyEvent * keyEvent = (wxKeyEvent *) xho_itemListGet_XHO( pSelf );
-    
+
     if( keyEvent )
         hb_retnl( keyEvent->GetX() );
 }
@@ -133,7 +133,7 @@ HB_FUNC( WXKEYEVENT_GETY )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wxKeyEvent * keyEvent = (wxKeyEvent *) xho_itemListGet_XHO( pSelf );
-    
+
     if( keyEvent )
         hb_retnl( keyEvent->GetY() );
 }
@@ -145,7 +145,7 @@ HB_FUNC( WXKEYEVENT_HASMODIFIERS )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wxKeyEvent * keyEvent = (wxKeyEvent *) xho_itemListGet_XHO( pSelf );
-    
+
     if( keyEvent )
         hb_retl( keyEvent->HasModifiers() );
 }
@@ -157,7 +157,7 @@ HB_FUNC( WXKEYEVENT_METADOWN )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wxKeyEvent * keyEvent = (wxKeyEvent *) xho_itemListGet_XHO( pSelf );
-    
+
     if( keyEvent )
         hb_retl( keyEvent->MetaDown() );
 }
@@ -170,7 +170,7 @@ HB_FUNC( WXKEYEVENT_SHIFTDOWN )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wxKeyEvent * keyEvent = (wxKeyEvent *) xho_itemListGet_XHO( pSelf );
-    
+
     if( keyEvent )
         hb_retl( keyEvent->ShiftDown() );
 }

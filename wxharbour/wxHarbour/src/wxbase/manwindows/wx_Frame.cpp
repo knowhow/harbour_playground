@@ -1,5 +1,5 @@
 /*
- * $Id: wx_Frame.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_Frame.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -44,15 +44,15 @@ wx_ToolBar* wx_Frame::OnCreateToolBar( long style, wxWindowID id, const wxString
     PHB_ITEM pStyle = hb_itemPutNL( NULL, style );
     PHB_ITEM pId = hb_itemPutNI( NULL, id );
     PHB_ITEM pName = hb_itemPutC( NULL, wxh_wxStringToC( name ) );
-        
+
     hb_objSendMsg( xho_itemListGet_HB( this ), "OnCreateToolBar", 3, pStyle, pId, pName );
 
     wx_ToolBar* toolBar = (wx_ToolBar *) xho_itemListGet_XHO( hb_stackReturnItem() );
-    
+
     hb_itemRelease( pStyle );
     hb_itemRelease( pId );
     hb_itemRelease( pName );
-    
+
     return toolBar;
 }
 
@@ -69,11 +69,11 @@ HB_FUNC( WXFRAME_NEW )
     if( hb_pcount() > 0 )
     {
         wxWindow* parent = (wxFrame *) objParams.paramParent( 1 );
-        wxWindowID id = ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
+        wxWindowID id = HB_ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
         const wxString& title = wxh_parc( 3 );
         wxPoint point = wxh_par_wxPoint( 4 );
         wxSize size = wxh_par_wxSize( 5 );
-        long style = ISNIL( 6 ) ? wxDEFAULT_FRAME_STYLE : hb_parnl( 6 );
+        long style = HB_ISNIL( 6 ) ? wxDEFAULT_FRAME_STYLE : hb_parnl( 6 );
         wxString name = wxh_parc( 7 );
         frame = new wx_Frame( parent, id, title, point, size, style, name );
     }
@@ -91,10 +91,10 @@ HB_FUNC( WXFRAME_NEW )
 HB_FUNC( WXFRAME_CENTRE )
 {
     wx_Frame* frame = (wx_Frame*) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( frame )
     {
-        int direction = ISNIL( 1 ) ? wxBOTH : hb_parni( 1 );
+        int direction = HB_ISNIL( 1 ) ? wxBOTH : hb_parni( 1 );
         frame->Centre( direction );
     }
 }
@@ -109,9 +109,9 @@ HB_FUNC( WXFRAME_CREATETOOLBAR )
 
     if( frame )
     {
-        long style = ISNIL( 1 ) ? wxTB_FLAT | wxTB_HORIZONTAL : hb_parnl( 1 );
-        wxWindowID id = ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
-        const wxString& name = ISNIL( 3 ) ? wxString( _T("toolBar") ) : wxh_parc( 3 );
+        long style = HB_ISNIL( 1 ) ? wxTB_FLAT | wxTB_HORIZONTAL : hb_parnl( 1 );
+        wxWindowID id = HB_ISNIL( 2 ) ? wxID_ANY : hb_parni( 2 );
+        const wxString& name = HB_ISNIL( 3 ) ? wxString( _T("toolBar") ) : wxh_parc( 3 );
         xho_itemReturn( frame->CreateToolBar( style, id, name ) );
     }
 }

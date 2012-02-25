@@ -1,16 +1,16 @@
 /*
- * $Id: wx_Bitmap.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_Bitmap.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
  wxHarbour: a portable GUI for [x]Harbour Copyright (C) 2009 Teo Fonrouge
- 
+
  This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
- 
+
  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- 
+
  You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- 
+
  (C) 2009 Teo Fonrouge <teo@windtelsoft.com>
  */
 
@@ -169,9 +169,9 @@ wx_Bitmap::~wx_Bitmap()
 HB_FUNC( WXBITMAP_NEW )
 {
     xho_ObjParams objParams = xho_ObjParams( NULL );
-    
+
     wx_Bitmap* bitmap;
-    
+
     switch( hb_pcount() )
     {
     case 0 :
@@ -181,7 +181,7 @@ HB_FUNC( WXBITMAP_NEW )
         break;
     case 1 :
         {
-        if( ISNUM( 1 ) )
+        if( HB_ISNUM( 1 ) )
         {
         bitmap = getDefaultBitmap( hb_parni( 1 ) );
         }
@@ -195,7 +195,7 @@ HB_FUNC( WXBITMAP_NEW )
     case 2:
         {
             const wxString& name = wxh_parc( 1 );
-            long type = hb_parnl( 2 );	  
+            long type = hb_parnl( 2 );
             bitmap = new wx_Bitmap( name, type );
         }
         break;
@@ -203,7 +203,7 @@ HB_FUNC( WXBITMAP_NEW )
         bitmap = new wx_Bitmap();
         break;
     }
-    
+
     objParams.Return( bitmap );
 }
 
@@ -214,7 +214,7 @@ HB_FUNC( WXBITMAP_NEW )
 HB_FUNC( WXBITMAP_ADDHANDLER )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
     bitmap->AddHandler( (wxBitmapHandler *) xho_par_XhoObject( 1 ) );
@@ -228,7 +228,7 @@ HB_FUNC( WXBITMAP_ADDHANDLER )
 HB_FUNC( WXBITMAP_CLEANUPHANDLERS )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
     bitmap->CleanUpHandlers();
@@ -242,7 +242,7 @@ HB_FUNC( WXBITMAP_CLEANUPHANDLERS )
 HB_FUNC( WXBITMAP_CONVERTTOIMAGE )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
     wxImage image = bitmap->ConvertToImage();
@@ -257,7 +257,7 @@ HB_FUNC( WXBITMAP_CONVERTTOIMAGE )
 HB_FUNC( WXBITMAP_COPYFROMICON )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
     const wxIcon& icon = *(wxIcon *) xho_par_XhoObject( 1 );
@@ -272,7 +272,7 @@ HB_FUNC( WXBITMAP_COPYFROMICON )
 HB_FUNC( WXBITMAP_GETDEPTH )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         hb_retni( bitmap->GetDepth() );
@@ -286,7 +286,7 @@ HB_FUNC( WXBITMAP_GETDEPTH )
 HB_FUNC( WXBITMAP_GETHEIGHT )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         hb_retni( bitmap->GetHeight() );
@@ -300,7 +300,7 @@ HB_FUNC( WXBITMAP_GETHEIGHT )
 HB_FUNC( WXBITMAP_GETMASK )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         xho_itemReturn( bitmap->GetMask() );
@@ -314,7 +314,7 @@ HB_FUNC( WXBITMAP_GETMASK )
 HB_FUNC( WXBITMAP_GETPALETTE )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         xho_itemReturn( bitmap->GetPalette() );
@@ -328,7 +328,7 @@ HB_FUNC( WXBITMAP_GETPALETTE )
 HB_FUNC( WXBITMAP_GETWIDTH )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         hb_retni( bitmap->GetWidth() );
@@ -342,7 +342,7 @@ HB_FUNC( WXBITMAP_GETWIDTH )
 HB_FUNC( WXBITMAP_INITSTANDARDHANDLERS )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         bitmap->InitStandardHandlers();
@@ -356,7 +356,7 @@ HB_FUNC( WXBITMAP_INITSTANDARDHANDLERS )
 HB_FUNC( WXBITMAP_INSERTHANDLER )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
     bitmap->InsertHandler( (wxBitmapHandler *) xho_par_XhoObject( 1 ) );
@@ -370,7 +370,7 @@ HB_FUNC( WXBITMAP_INSERTHANDLER )
 HB_FUNC( WXBITMAP_ISOK )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         hb_retl( bitmap->IsOk() );
@@ -384,7 +384,7 @@ HB_FUNC( WXBITMAP_ISOK )
 HB_FUNC( WXBITMAP_LOADFILE )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         if( HB_ISNIL( 2 ) )
@@ -401,7 +401,7 @@ HB_FUNC( WXBITMAP_LOADFILE )
 HB_FUNC( WXBITMAP_REMOVEHANDLER )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         hb_retl( bitmap->RemoveHandler( wxh_parc( 1 ) ) );
@@ -415,10 +415,10 @@ HB_FUNC( WXBITMAP_REMOVEHANDLER )
 HB_FUNC( WXBITMAP_SAVEFILE )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
-    wxPalette *palette = ISNIL( 3 ) ? NULL : (wxPalette *) xho_par_XhoObject( 3 );
+    wxPalette *palette = HB_ISNIL( 3 ) ? NULL : (wxPalette *) xho_par_XhoObject( 3 );
         hb_retl( bitmap->SaveFile( wxh_parc( 1 ), (wxBitmapType) hb_parni( 2 ), palette ) );
     }
 }
@@ -430,7 +430,7 @@ HB_FUNC( WXBITMAP_SAVEFILE )
 HB_FUNC( WXBITMAP_SETDEPTH )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         bitmap->SetDepth( hb_parni( 1 ) );
@@ -444,7 +444,7 @@ HB_FUNC( WXBITMAP_SETDEPTH )
 HB_FUNC( WXBITMAP_SETHEIGHT )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         bitmap->SetHeight( hb_parni( 1 ) );
@@ -458,7 +458,7 @@ HB_FUNC( WXBITMAP_SETHEIGHT )
 HB_FUNC( WXBITMAP_SETMASK )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         bitmap->SetMask( (wxMask *) xho_par_XhoObject( 1 ) );
@@ -472,7 +472,7 @@ HB_FUNC( WXBITMAP_SETMASK )
 HB_FUNC( WXBITMAP_SETPALETTE )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
     const wxPalette& palette = * (wxPalette *) xho_par_XhoObject( 1 );
@@ -487,7 +487,7 @@ HB_FUNC( WXBITMAP_SETPALETTE )
 HB_FUNC( WXBITMAP_SETWIDTH )
 {
     wxBitmap* bitmap = (wxBitmap *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( bitmap )
     {
         bitmap->SetWidth( hb_parni( 1 ) );

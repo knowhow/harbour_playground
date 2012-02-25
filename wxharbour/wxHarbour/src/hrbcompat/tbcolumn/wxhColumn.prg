@@ -1,5 +1,5 @@
 /*
- * $Id: wxhColumn.prg 637 2010-06-26 15:56:06Z tfonrouge $
+ * $Id: wxhColumn.prg 800 2012-02-01 00:09:56Z tfonrouge $
  */
 
 /*
@@ -35,7 +35,7 @@ PRIVATE:
     DATA FReadOnly INIT .F.
     DATA FValType
     DATA FWidth
-    
+
     METHOD GetCanSetValue()
     METHOD SetAlign( align ) INLINE ::FAlign := align
     METHOD SetAligned( aligned ) INLINE ::FAligned := aligned
@@ -49,19 +49,20 @@ PRIVATE:
     METHOD SetWidth( width ) INLINE ::FWidth := width
 
 PROTECTED:
+    DATA hashValue INIT .F.
 PUBLIC:
 
     CONSTRUCTOR New( browse, heading, block )
-    
+
     DATA colPos INIT 0
 
     DATA IsEditable INIT .F.
-    
+
     DATA OnSetValue
-    
+
     METHOD GetValue( rowParam, nCol )
     METHOD SetValue( rowParam, value )
-    
+
     PROPERTY Browse READ FBrowse
     PROPERTY CanSetValue READ GetCanSetValue
     PROPERTY Field READ FField WRITE SetField
@@ -116,13 +117,20 @@ METHOD FUNCTION GetValue( rowParam, nCol ) CLASS wxhBrowseColumn
     IF ::FField != NIL
         IF !rowParam:__FObj:Eof()
             result := ::FBlock:Eval( rowParam:__FObj ):GetAsVariant()
-        ELSE			
+            IF ::hashValue
+                IF HB_HHasKey( ::FField:ValidValues, result )
+                    result := ::FField:ValidValues[ result ]
+                ELSE
+                    result := "<Invalid Hash Key>"
+                ENDIF
+            ENDIF
+        ELSE
             result := ::FBlock:Eval( rowParam:__FObj ):EmptyValue()
         ENDIF
     ELSE
         result := ::FBlock:Eval( rowParam )
     ENDIF
-    
+
     IF HB_IsObject( rowParam )
         IF ::FHeading = NIL
             IF rowParam:__FLastLabel = NIL
@@ -143,7 +151,7 @@ METHOD FUNCTION GetValue( rowParam, nCol ) CLASS wxhBrowseColumn
             SWITCH ::ValType
             CASE 'N'
                 ::FAlign := wxALIGN_RIGHT
-                ::FBrowse:SetColFormatNumber( nCol - 1 )
+                ::FBrowse:SetColFormatNumber( nCol )
                 EXIT
             CASE 'C'
             CASE 'M'
@@ -152,13 +160,13 @@ METHOD FUNCTION GetValue( rowParam, nCol ) CLASS wxhBrowseColumn
             CASE 'L'
                 ::FAlign := wxALIGN_CENTRE
 //				 ::GetView():SetColFormatBool( nCol - 1 )
-                ::FBrowse:SetColumnAlignment( nCol - 1, ::FAlign )
+                ::FBrowse:SetColumnAlignment( nCol, ::FAlign )
                 EXIT
             OTHERWISE
                 ::FAlign := wxALIGN_CENTRE
             END
         ENDIF
-        ::FBrowse:SetColumnAlignment( nCol - 1, ::FAlign )
+        ::FBrowse:SetColumnAlignment( nCol, ::FAlign )
     ENDIF
 
 RETURN result
@@ -180,6 +188,12 @@ RETURN
 */
 METHOD PROCEDURE SetField( xfield ) CLASS wxhBrowseColumn
     LOCAL block := ::FBlock
+    LOCAL s
+    LOCAL ds
+    LOCAL i
+    LOCAL fld
+    LOCAL fldName
+    LOCAL nTokens
     LOCAL index
 
     SWITCH ValType( xfield )
@@ -192,8 +206,23 @@ METHOD PROCEDURE SetField( xfield ) CLASS wxhBrowseColumn
         ::FBlock := {|| xfield }
         EXIT
     CASE 'C'
-        ::FField := ::browse:DataSource:FieldByName( xfield, @index )
-        ::FBlock := {|Self| ::FieldList[ index ]  }
+        ds := ::browse:DataSource
+        nTokens := NumToken( xfield, ":" )
+        FOR i:=1 TO nTokens
+            fldName := Token( xfield, ":", i )
+            fld := ds:FieldByName( fldName, @index )
+            IF i = 1
+                s := "::FieldList[" + NTrim( index ) + "]"
+            ELSE
+                s += ":DataObj:FieldList[" + NTrim( index ) + "]"
+            ENDIF
+            IF fld:IsDerivedFrom( "TObjectField" )
+                ds := fld:DataObj
+            ENDIF
+        NEXT
+        ::FBlock := &("{|Self| " + s + " }")
+        ::FField := ::FBlock:Eval( ::browse:DataSource )
+        ::hashValue := HB_IsHash( ::FField:ValidValues )
         EXIT
     ENDSWITCH
 
@@ -213,21 +242,42 @@ RETURN
     Teo. Mexico 2009
 */
 METHOD FUNCTION SetValue( rowParam, value ) CLASS wxhBrowseColumn
+    LOCAL itm
+    LOCAL checkEditable
 
-    IF !::FOnSetValue
+    IF ::IsEditable .AND. !::FOnSetValue
 
         ::FOnSetValue := .T.
 
         IF !::ReadOnly
             IF ::Field != NIL
                 IF ::browse:DataSource:Eof()
+                    ::FOnSetValue := .F.
                     RETURN .F.
                 ENDIF
+                checkEditable := ::Field:CheckEditable( .T. )
                 IF ::browse:DataSource:State = dsBrowse .AND. !::browse:DataSource:autoEdit
+                    ::Field:CheckEditable( checkEditable )
                     wxhAlert( "Can't edit field '" + ::Field:Label + "' on table '" + ::browse:DataSource:ClassName() + "'" )
+                    ::FOnSetValue := .F.
                     RETURN .F.
+                ENDIF
+                IF !::browse:DataSource:OnBeforeLock()
+                    ::Field:CheckEditable( checkEditable )
+                    ::FOnSetValue := .F.
+                    RETURN .F.
+                ENDIF
+                IF  ::hashValue
+                    FOR EACH itm IN ::Field:ValidValues
+                        IF value == itm:__enumValue
+                            value := itm:__enumKey
+                            EXIT
+                        ENDIF
+                    NEXT
                 ENDIF
                 ::Field:AsString := value
+                ::browse:RefreshCurrent()
+                ::Field:CheckEditable( checkEditable )
             ELSE
                 ::FBlock:Eval( rowParam, value )
             ENDIF
@@ -236,7 +286,7 @@ METHOD FUNCTION SetValue( rowParam, value ) CLASS wxhBrowseColumn
         IF ::OnSetValue != NIL
             ::OnSetValue:Eval()
         ENDIF
-        
+
         ::FOnSetValue := .F.
 
     ENDIF

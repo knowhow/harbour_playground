@@ -1,5 +1,5 @@
 /*
- * $Id: wx_FocusEvent.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_FocusEvent.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -32,13 +32,13 @@
 HB_FUNC( WXFOCUSEVENT_GETEVENTOBJECT )
 {
     wxEvent *event = (wxEvent *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( event )
     {
         wxObject* wxObj = event->GetEventObject();
         wxWindow* wxWin = ( (wxWindow *) wxObj )->GetParent();
 
-        if( wxWin && wxWin->IsKindOf( CLASSINFO( wxGrid ) ) ) 
+        if( wxWin && wxWin->IsKindOf( CLASSINFO( wxGrid ) ) )
         {
             xho_itemReturn( wxWin );
         }

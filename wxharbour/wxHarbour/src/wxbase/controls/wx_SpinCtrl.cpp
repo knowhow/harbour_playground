@@ -1,5 +1,5 @@
 /*
- * $Id: wx_SpinCtrl.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_SpinCtrl.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -42,13 +42,13 @@ HB_FUNC( WXSPINCTRL_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-    wxWindowID id = ISNIL(2) ? wxID_ANY : hb_parni( 2 );
+    wxWindowID id = HB_ISNIL(2) ? wxID_ANY : hb_parni( 2 );
     const wxString& value = wxh_parc( 3 );
     const wxPoint& pos = wxh_par_wxPoint( 4 );
     const wxSize& size = wxh_par_wxSize( 5 );
-    long style = ISNIL( 6 ) ? wxSP_ARROW_KEYS : hb_parnl( 6 );
+    long style = HB_ISNIL( 6 ) ? wxSP_ARROW_KEYS : hb_parnl( 6 );
     int min = hb_parni( 7 );
-    int max = ISNIL( 8 ) ? 100 : hb_parni( 8 );
+    int max = HB_ISNIL( 8 ) ? 100 : hb_parni( 8 );
     int initial = hb_parni( 9 );
     const wxString& name = wxh_parc( 10 );
     wx_SpinCtrl* spinCtrl = new wx_SpinCtrl( parent, id, value, pos, size, style, min, max, initial, name );

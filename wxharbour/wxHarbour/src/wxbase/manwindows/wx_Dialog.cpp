@@ -1,5 +1,5 @@
 /*
- * $Id: wx_Dialog.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_Dialog.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -35,6 +35,23 @@ wx_Dialog::wx_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, co
     Create( parent, id, title, pos, size, style, name );
 }
 
+
+/*
+ Validate
+ Teo. Mexico 2011
+ */
+bool wx_Dialog::Validate()
+{
+    PHB_ITEM pSelf = xho_itemListGet_HB( this );
+
+    if( pSelf )
+    {
+        hb_objSendMsg( pSelf, "Validate", 0 );
+        return hb_itemGetL( hb_stackReturnItem() );
+    }
+    return wxDialog::Validate();
+}
+
 /*
     Constructor: Object
     Teo. Mexico 2006
@@ -48,11 +65,11 @@ HB_FUNC( WXDIALOG_NEW )
     if(hb_pcount())
     {
         wxWindow* parent = (wxDialog *) objParams.paramParent( 1 );
-        wxWindowID id = ISNIL(2) ? wxID_ANY : hb_parni( 2 );
+        wxWindowID id = HB_ISNIL(2) ? wxID_ANY : hb_parni( 2 );
         const wxString& title = wxh_parc( 3 );
         wxPoint point = wxh_par_wxPoint(4);
         wxSize size = wxh_par_wxSize(5);
-        long style = ISNIL( 6 ) ? wxDEFAULT_DIALOG_STYLE : hb_parnl( 6 );
+        long style = HB_ISNIL( 6 ) ? wxDEFAULT_DIALOG_STYLE : hb_parnl( 6 );
         wxString name = wxh_parc( 7 );
         dialog = new wx_Dialog( parent, id, title, point, size, style, name );
     }
@@ -73,7 +90,7 @@ HB_FUNC( WXDIALOG_CENTRE )
 
     if( dialog )
     {
-        int direction = ISNIL( 1 ) ? wxBOTH : hb_parni( 1 );
+        int direction = HB_ISNIL( 1 ) ? wxBOTH : hb_parni( 1 );
         dialog->Centre( direction );
     }
 }
@@ -140,7 +157,7 @@ HB_FUNC( WXDIALOG_ENDMODAL )
 HB_FUNC( WXDIALOG_GETAFFIRMATIVEID )
 {
     wx_Dialog* dialog = (wx_Dialog *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( dialog )
         hb_retni( dialog->GetAffirmativeId() );
 }
@@ -152,7 +169,7 @@ HB_FUNC( WXDIALOG_GETAFFIRMATIVEID )
 HB_FUNC( WXDIALOG_GETESCAPEID )
 {
     wx_Dialog* dialog = (wx_Dialog *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( dialog )
         hb_retni( dialog->GetEscapeId() );
 }
@@ -176,7 +193,7 @@ HB_FUNC( WXDIALOG_GETRETURNCODE )
 HB_FUNC( WXDIALOG_SETAFFIRMATIVEID )
 {
     wx_Dialog* dialog = (wx_Dialog *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( dialog )
         dialog->SetAffirmativeId( hb_parni( 1 ) );
 }
@@ -188,7 +205,7 @@ HB_FUNC( WXDIALOG_SETAFFIRMATIVEID )
 HB_FUNC( WXDIALOG_SETESCAPEID )
 {
     wx_Dialog* dialog = (wx_Dialog *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( dialog )
         dialog->SetEscapeId( hb_parni( 1 ) );
 }

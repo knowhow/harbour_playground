@@ -1,5 +1,5 @@
 /*
- * $Id: wx_SocketBase.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_SocketBase.cpp 743 2011-07-27 18:26:08Z tfonrouge $
  */
 
 /*
@@ -270,7 +270,7 @@ HB_FUNC( WXSOCKETBASE_PEEK )
     PHB_ITEM pBuffer = hb_param( 1, HB_IT_STRING );
     wxUint32 nbytes = hb_parnl( 2 );
 
-    if( pBuffer == NULL || !ISBYREF( 1 ) )
+    if( pBuffer == NULL || !HB_ISBYREF( 1 ) )
     {
 //     hb_errRT_BASE_SubstR( EG_ARG, 3012, NULL, &hb_errFuncName, HB_ERR_ARGS_BASEPARAMS );
         return;
@@ -289,14 +289,14 @@ HB_FUNC( WXSOCKETBASE_PEEK )
     wxSocketBase_ReadBase
     Teo. Mexico 2009
 */
-void wxSocketBase_ReadBase( BYTE type )
+void wxSocketBase_ReadBase( HB_BYTE type )
 {
     PHB_ITEM pSelf = hb_stackSelfItem();
     wx_SocketBase* socketBase = (wx_SocketBase*) xho_itemListGet_XHO( pSelf );
 
     PHB_ITEM pBuffer = hb_param( 1, HB_IT_STRING );
 
-    if( pBuffer == NULL || !ISBYREF( 1 ) )
+    if( pBuffer == NULL || !HB_ISBYREF( 1 ) )
     {
         hb_errRT_BASE_SubstR( EG_ARG, WXH_ERRBASE + 10, NULL, HB_ERR_FUNCNAME, HB_ERR_ARGS_BASEPARAMS );
         return;
@@ -306,7 +306,7 @@ void wxSocketBase_ReadBase( BYTE type )
     {
         pBuffer = hb_itemUnShareString( pBuffer );
 
-        wxUint32 nbytes = ISNIL( 2 ) ?  hb_itemGetCLen( pBuffer ) : hb_parnl( 2 );
+        wxUint32 nbytes = HB_ISNIL( 2 ) ?  hb_itemGetCLen( pBuffer ) : hb_parnl( 2 );
 
         if( nbytes > 0 )
         {
@@ -398,7 +398,7 @@ HB_FUNC( WXSOCKETBASE_SETEVENTHANDLER )
 
     if( socketBase && evtHandler )
     {
-        int id = ISNUM( 2 ) ? hb_parni( 2 ) : -1 ;
+        int id = HB_ISNUM( 2 ) ? hb_parni( 2 ) : -1 ;
         socketBase->SetEventHandler( *evtHandler, id );
     }
 }
@@ -475,7 +475,7 @@ HB_FUNC( WXSOCKETBASE_UNREAD )
     PHB_ITEM pBuffer = hb_param( 1, HB_IT_STRING );
     wxUint32 nbytes = hb_parnl( 2 );
 
-    if( pBuffer == NULL || !ISBYREF( 1 ) )
+    if( pBuffer == NULL || !HB_ISBYREF( 1 ) )
     {
 //     hb_errRT_BASE_SubstR( EG_ARG, 3012, NULL, &hb_errFuncName, HB_ERR_ARGS_BASEPARAMS );
         return;
@@ -500,7 +500,7 @@ HB_FUNC( WXSOCKETBASE_WAIT )
 
     if( socketBase )
     {
-        long seconds = ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
+        long seconds = HB_ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
         long millisecond = hb_parnl( 2 );
         hb_retl( socketBase->Wait( seconds, millisecond ) );
     }
@@ -516,7 +516,7 @@ HB_FUNC( WXSOCKETBASE_WAITFORLOST )
 
     if( socketBase )
     {
-        long seconds = ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
+        long seconds = HB_ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
         long millisecond = hb_parnl( 2 );
         hb_retl( socketBase->WaitForLost( seconds, millisecond ) );
     }
@@ -532,7 +532,7 @@ HB_FUNC( WXSOCKETBASE_WAITFORREAD )
 
     if( socketBase )
     {
-        long seconds = ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
+        long seconds = HB_ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
         long millisecond = hb_parnl( 2 );
         hb_retl( socketBase->WaitForRead( seconds, millisecond ) );
     }
@@ -548,7 +548,7 @@ HB_FUNC( WXSOCKETBASE_WAITFORWRITE )
 
     if( socketBase )
     {
-        long seconds = ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
+        long seconds = HB_ISNUM( 1 ) ? hb_parnl( 1 ) : -1;
         long millisecond = hb_parnl( 2 );
         hb_retl( socketBase->WaitForWrite( seconds, millisecond ) );
     }
@@ -566,7 +566,7 @@ HB_FUNC( WXSOCKETBASE_WRITE )
     if( socketBase )
     {
         PHB_ITEM pBuffer = hb_param( 1, HB_IT_STRING );
-        wxUint32 nbytes = ISNIL( 2 ) ? hb_itemGetCLen( pBuffer ) : hb_parnl( 2 );
+        wxUint32 nbytes = HB_ISNIL( 2 ) ? hb_itemGetCLen( pBuffer ) : hb_parnl( 2 );
         socketBase->Write( (char *) hb_itemGetCPtr( pBuffer ), nbytes );
         hb_itemReturn( pSelf );
     }
@@ -584,7 +584,7 @@ HB_FUNC( WXSOCKETBASE_WRITEMSG )
     if( socketBase )
     {
         PHB_ITEM pBuffer = hb_param( 1, HB_IT_STRING );
-        wxUint32 nbytes = ISNIL( 2 ) ? hb_itemGetCLen( pBuffer ) : hb_parnl( 2 );
+        wxUint32 nbytes = HB_ISNIL( 2 ) ? hb_itemGetCLen( pBuffer ) : hb_parnl( 2 );
         socketBase->WriteMsg( (char *) hb_itemGetCPtr( pBuffer ), nbytes );
         hb_itemReturn( pSelf );
     }

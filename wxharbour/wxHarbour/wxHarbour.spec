@@ -1,7 +1,6 @@
 #
-# wxharbour.spec
 #
-# $Id: wxharbour.spec 642 2010-07-20 20:25:52Z tfonrouge $
+# $Id: wxHarbour.spec 721 2011-05-26 21:57:02Z tfonrouge $
 #
 # (C) Teo Fonrouge 2008
 #
@@ -52,4 +51,4 @@ make DESTDIR=$RPM_BUILD_ROOT prefix=/usr  install
 /usr/include/wxHarbour/*.h
 /usr/include/wxHarbour/*.ch
 /usr/include/wxHarbour/wxh/*.ch
-/usr/lib/libwxHarbour_unicode.a
+/usr/lib/libwxHarbour.a

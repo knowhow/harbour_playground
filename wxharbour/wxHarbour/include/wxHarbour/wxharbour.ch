@@ -1,5 +1,5 @@
 /*
- * $Id: wxharbour.ch 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wxharbour.ch 799 2012-01-31 16:22:17Z tfonrouge $
  */
 
 /*
@@ -53,9 +53,13 @@
     Validator macro
     Teo. Mexico 2009
 */
-#xcommand @ PUSHVALIDATOR [<dataVar>] [ PICTURE <picture> ] [ WARNING [<warnMsg>] WHEN <warnBlk> ][ ACTION <bAction> ] ;
+#xcommand @ PUSHVALIDATOR [<dataVar>] [ PICTURE <picture> ] [ VALIDATE <bValidate> ] [ WARN <warnMsg> ] [ ACTION <bAction> ] ;
             => ;
-            containerObj():LastItem()\[ "wxhHBValidator" \] := wxhHBValidator():New( [<"dataVar">], [<dataVar>], [{|__localVal| iif( PCount()>0, <dataVar> := __localVal, <dataVar> ) }], [<picture>], [<warnBlk>], [<{warnBlk}>], [<warnMsg>], [<{bAction}>] )
+            containerObj():LastItem()\[ "wxhHBValidator" \] := wxhHBValidator():New( [<"dataVar">], [<dataVar>], NIL, [{|__localVal| iif( PCount() > 0, <dataVar> := __localVal, <dataVar> ) }], [<picture>], [<bValidate>], [<{bValidate}>], [<warnMsg>], [<{bAction}>] )
+
+#xcommand @ PUSHVALIDATOR [<dataVar>] FIELD <fld> [ PICTURE <picture> ] [ VALIDATE <bValidate> ] [ WARN <warnMsg> ] [ ACTION <bAction> ] ;
+            => ;
+            containerObj():LastItem()\[ "wxhHBValidator" \] := wxhHBValidator():New( [<"dataVar"> + ":DataObj:" + <"fld">], [<dataVar>]:DataObj:<fld>, <dataVar>, [{|__localVal| iif( PCount() > 0, <dataVar>:DataObj:<fld> := __localVal, <dataVar>:DataObj:<fld> ) }], [<picture>], [<bValidate>], [<{bValidate}>], [<warnMsg>], [<{bAction}>] )
 
 /*
     Calls ::__Destroy() to remove xho_Item associated to objects
@@ -325,11 +329,11 @@
 */
 #xcommand ADD BCOLUMN [<zero: ZERO>] TO <wxBrw> [ [TITLE] <title>] BLOCK <block> [PICTURE <picture>] [WIDTH <width>] [AS <asBool: BOOL,NUMBER,FLOAT> [<width>,<precision>] ] [ COLOUR <colour> ] [ ONSETVALUE <onSetValue> ] ;
                     => ;
-                    __wxh_BrowseAddColumn( <.zero.>, <wxBrw>, <title>, <block>, [<picture>], [<width>], [<"asBool">], [{<width>,<precision>}], [<colour>], [<onSetValue>] )
+                    __wxh_BrowseAddColumn( <wxBrw>, <.zero.>, <title>, <block>, [<picture>], [<width>], [<"asBool">], [{<width>,<precision>}], [<colour>], [<onSetValue>] )
 
-#xcommand ADD BCOLUMN TO <wxBrw> FIELD <field> [<editable: EDITABLE>] [ COLOUR <colour> ] [ ONSETVALUE <onSetValue> ] ;
+#xcommand ADD BCOLUMN TO <wxBrw> FIELD <field> [<noEditable: NOEDITABLE>] [ COLOUR <colour> ] [ ONSETVALUE <onSetValue> ] ;
                     => ;
-            __wxh_BrowseAddColumnFromField( <wxBrw>, <field>, <.editable.>, [<colour>], [<onSetValue>] )
+            __wxh_BrowseAddColumnFromField( <wxBrw>, <field>, !<.noEditable.>, [<colour>], [<onSetValue>] )
             
 /*
  * Button
@@ -534,11 +538,12 @@
                         [ STYLE <style> ] ;
                         [ NAME <name> ] ;
                         [ PICTURE <picture> ] ;
-                        [ WARNING [<warnMsg>] WHEN <warnBlk> ] ;
+                        [ WARN <warnMsg> ] [ VALIDATE <bValidate> ] ;
                         [ TOOLTIP <toolTip> ] ;
                         [ ACTION <bAction> ] ;
+                        [ ENABLED <enabled> ] ;
                     => ;
-                    @ PUSHVALIDATOR [<dataVar>] [ PICTURE <picture> ] [ WARNING <warnMsg> WHEN <warnBlk> ] [ ACTION <{bAction}> ] ;;
+                    @ PUSHVALIDATOR [<dataVar>] [ PICTURE <picture> ] [ VALIDATE <bValidate> ] [ WARN <warnMsg> ] [ ACTION <{bAction}> ] ;;
                     [<var> :=] __wxh_DatePickerCtrl(;
                         [<parent>],;
                         [<id>],;
@@ -546,6 +551,7 @@
                         [{<nWidth>,<nHeight>}],;
                         [<style>],;
                         [<name>],;
+                        [<enabled>],;
                         [<{toolTip}>] )
                         
 #xcommand @ DATEPICKERCTRL [<clauses,...>] SIZERINFO [<sizerClauses,...>] ;
@@ -559,6 +565,7 @@
 #xcommand @ GRID [ VAR <grid> ] ;
                         [ PARENT <parent> ] ;
                         [ ID <id> ] ;
+                        [ CLASS <fromClass> ] ;
                         [ WIDTH <nWidth> ] [ HEIGHT <nHeight> ] ;
                         [ STYLE <style> ] ;
                         [ NAME <name> ] ;
@@ -567,6 +574,7 @@
                         [ <readOnly: READONLY> ] ;
                     => ;
                         [<grid>:=]__wxh_Grid( ;
+                            [<fromClass>], ;
                             [<parent>],;
                             [<id>],;
                             ,;
@@ -728,6 +736,7 @@
  */
 #xcommand @ GET [<dataVar>] ;
                         [ VAR <var> ] ;
+                        [ FIELD <fld> ] ;
                         [ PARENT <parent> ] ;
                         [ ID <id> ] ;
                         [ WIDTH <nWidth> ] [ HEIGHT <nHeight> ] ;
@@ -738,10 +747,10 @@
                         [ TOOLTIP <toolTip> ] ;
                         [ ENABLED <enabled> ] ;
                         [ PICTURE <picture> ] ;
-                        [ WARNING [<warnMsg>] WHEN <warnBlk> ] ;
+                        [ VALIDATE <bValidate> ] [ WARN <warnMsg> ]  ;
                         [ ACTION <bAction> ] ;
                     => ;
-                    @ PUSHVALIDATOR [<dataVar>] [ PICTURE <picture> ] [ WARNING <warnMsg> WHEN <warnBlk> ] [ ACTION <{bAction}> ] ;;
+                    @ PUSHVALIDATOR [<dataVar>] [ FIELD <fld> ] [ PICTURE <picture> ] [ VALIDATE <bValidate> ] [ WARN <warnMsg> ] [ ACTION <{bAction}> ] ;;
                         [<var> :=] __wxh_TextCtrl(;
                         [<parent>],;
                         [<id>],;
@@ -829,10 +838,10 @@
                         [ MIN <min> ] ;
                         [ MAX <max> ] ;
                         [ NAME <name> ] ;
-                        [ WARNING [<warnMsg>] WHEN <warnBlk> ] ;
+                        [ VALIDATE <bValidate> ] [ WARN <warnMsg> ]  ;
                         [ ACTION <bAction> ] ;
                     => ;
-                    @ PUSHVALIDATOR [<dataVar>] [ WARNING <warnMsg> WHEN <warnBlk> ] [ ACTION <{bAction}>] ;;
+                    @ PUSHVALIDATOR [<dataVar>] [ VALIDATE <bValidate> ] [ WARN <warnMsg> ] [ ACTION <{bAction}>] ;;
                         [ <spinCtrl> := ]__wxh_SpinCtrl( ;
                         [<parent>],;
                         [<id>],;
@@ -955,10 +964,10 @@
                         [ ON SEARCH <onSearch> ] ;
                         [ ON CANCEL <onCancel> ] ;
                         [ PICTURE <picture> ] ;
-                        [ WARNING [<warnMsg>] WHEN <warnBlk> ] ;
+                        [ VALIDATE <bValidate> ] [ WARN <warnMsg> ]  ;
                         [ ACTION <bAction> ] ;
                     => ;
-                    @ PUSHVALIDATOR [<dataVar>] [ PICTURE <picture> ] [ WARNING <warnMsg> WHEN <warnBlk> ] [ ACTION <{bAction}> ] ;;
+                    @ PUSHVALIDATOR [<dataVar>] [ PICTURE <picture> ] [ VALIDATE <bValidate> ] [ WARN <warnMsg> ] [ ACTION <{bAction}> ] ;;
                         [ <searchCtrl> := ]__wxh_SearchCtrl( ;
                         [<parent>],;
                         [<id>],;

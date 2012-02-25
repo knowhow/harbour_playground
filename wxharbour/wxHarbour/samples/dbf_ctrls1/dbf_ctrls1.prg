@@ -216,7 +216,6 @@ RETURN ::FHtmlEasyPrinting
     Teo. Mexico 2010
 */
 METHOD FUNCTION Preview() CLASS MyApp
-    wxhAltD()
 RETURN ::htmlEasyPrinting:PreviewText( ::htmlData )
 
 /*

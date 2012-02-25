@@ -1,5 +1,5 @@
 /*
- * $Id: sysdefs.cpp 637 2010-06-26 15:56:06Z tfonrouge $
+ * $Id: sysdefs.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -215,7 +215,7 @@ HB_FUNC( WXH_TRANSLATE_EVT_DEFS )
                 // Help events
         case 1050 : evtNumber = wxEVT_HELP; break;
         case 1051 : evtNumber = wxEVT_DETAILED_HELP; break;
-        
+
         /* datePickerCtrl events */
         case wxdllimpexp_adv + 1101 : evtNumber = wxEVT_DATE_CHANGED; break;
 

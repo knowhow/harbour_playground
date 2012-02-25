@@ -1,5 +1,5 @@
 /*
- * $Id: wx_TextCtrl.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_TextCtrl.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -43,12 +43,12 @@ HB_FUNC( WXTEXTCTRL_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-    wxWindowID id = ISNIL(2) ? wxID_ANY : hb_parni( 2 );
+    wxWindowID id = HB_ISNIL(2) ? wxID_ANY : hb_parni( 2 );
     const wxString& value = wxh_parc( 3 );
     const wxPoint& pos = wxh_par_wxPoint( 4 );
     const wxSize& size = wxh_par_wxSize( 5 );
     long style = hb_parnl( 6 );
-    const wxValidator& validator = ISNIL( 7 ) ? wxDefaultValidator : *( (wxValidator *) objParams.paramChild( 7 ) ) ;
+    const wxValidator& validator = HB_ISNIL( 7 ) ? wxDefaultValidator : *( (wxValidator *) objParams.paramChild( 7 ) ) ;
     const wxString& name = wxh_parc( 8 );
     wx_TextCtrl* textCtrl = new wx_TextCtrl( parent, id, value, pos, size, style, validator, name );
 
@@ -77,7 +77,7 @@ HB_FUNC( WXTEXTCTRL_APPENDTEXT )
 HB_FUNC( WXTEXTCTRL_CHANGEVALUE )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
     textCtrl->ChangeValue( wxh_parc( 1 ) );
 }
@@ -103,7 +103,7 @@ HB_FUNC( WXTEXTCTRL_CLEAR )
 HB_FUNC( WXTEXTCTRL_DISCARDEDITS )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         textCtrl->DiscardEdits();
 }
@@ -115,7 +115,7 @@ HB_FUNC( WXTEXTCTRL_DISCARDEDITS )
 HB_FUNC( WXTEXTCTRL_GETINSERTIONPOINT )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
     hb_retnl( textCtrl->GetInsertionPoint() );
 }
@@ -127,7 +127,7 @@ HB_FUNC( WXTEXTCTRL_GETINSERTIONPOINT )
 HB_FUNC( WXTEXTCTRL_GETLASTPOSITION )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
     hb_retnl( textCtrl->GetLastPosition() );
 }
@@ -139,7 +139,7 @@ HB_FUNC( WXTEXTCTRL_GETLASTPOSITION )
 HB_FUNC( WXTEXTCTRL_GETLINELENGTH )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         hb_parni( textCtrl->GetLineLength( hb_parnl( 1 ) ) );
 }
@@ -151,7 +151,7 @@ HB_FUNC( WXTEXTCTRL_GETLINELENGTH )
 HB_FUNC( WXTEXTCTRL_GETLINETEXT )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         wxh_retc( textCtrl->GetLineText( hb_parnl( 1 ) ) );
 }
@@ -163,7 +163,7 @@ HB_FUNC( WXTEXTCTRL_GETLINETEXT )
 HB_FUNC( WXTEXTCTRL_GETNUMBEROFLINES )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         hb_parni( textCtrl->GetNumberOfLines() );
 }
@@ -175,7 +175,7 @@ HB_FUNC( WXTEXTCTRL_GETNUMBEROFLINES )
 HB_FUNC( WXTEXTCTRL_GETRANGE )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         wxh_retc( textCtrl->GetRange( hb_parnl( 1 ), hb_parnl( 2 ) ) );
 }
@@ -187,7 +187,7 @@ HB_FUNC( WXTEXTCTRL_GETRANGE )
 HB_FUNC( WXTEXTCTRL_GETSTRINGSELECTION )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         wxh_retc( textCtrl->GetStringSelection() );
 }
@@ -199,7 +199,7 @@ HB_FUNC( WXTEXTCTRL_GETSTRINGSELECTION )
 HB_FUNC( WXTEXTCTRL_GETVALUE )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         wxh_retc( textCtrl->GetValue() );
 }
@@ -211,7 +211,7 @@ HB_FUNC( WXTEXTCTRL_GETVALUE )
 HB_FUNC( WXTEXTCTRL_ISEDITABLE )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
     hb_retl( textCtrl->IsEditable() );
 }
@@ -223,7 +223,7 @@ HB_FUNC( WXTEXTCTRL_ISEDITABLE )
 HB_FUNC( WXTEXTCTRL_ISEMPTY )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         hb_retl( textCtrl->IsEmpty() );
 }
@@ -235,7 +235,7 @@ HB_FUNC( WXTEXTCTRL_ISEMPTY )
 HB_FUNC( WXTEXTCTRL_ISMODIFIED )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         hb_retl( textCtrl->IsModified() );
 }
@@ -259,7 +259,7 @@ HB_FUNC( WXTEXTCTRL_ISMULTILINE )
 HB_FUNC( WXTEXTCTRL_ISSINGLELINE )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
     hb_retl( textCtrl->IsSingleLine() );
 }
@@ -271,7 +271,7 @@ HB_FUNC( WXTEXTCTRL_ISSINGLELINE )
 HB_FUNC( WXTEXTCTRL_LOADFILE )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         hb_retl( textCtrl->LoadFile( wxh_parc( 1 ), hb_parni( 2 ) ) );
 }
@@ -283,7 +283,7 @@ HB_FUNC( WXTEXTCTRL_LOADFILE )
 HB_FUNC( WXTEXTCTRL_MARKDIRTY )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         textCtrl->MarkDirty();
 }
@@ -295,7 +295,7 @@ HB_FUNC( WXTEXTCTRL_MARKDIRTY )
 HB_FUNC( WXTEXTCTRL_SAVEFILE )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         hb_retl( textCtrl->SaveFile( wxh_parc( 1 ), hb_parni( 2 ) ) );
 }
@@ -307,7 +307,7 @@ HB_FUNC( WXTEXTCTRL_SAVEFILE )
 HB_FUNC( WXTEXTCTRL_SETEDITABLE )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
     {
     bool editable = hb_pcount() == 0 ? true : hb_parl( 1 );
@@ -322,7 +322,7 @@ HB_FUNC( WXTEXTCTRL_SETEDITABLE )
 HB_FUNC( WXTEXTCTRL_SETINSERTIONPOINT )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         textCtrl->SetInsertionPoint( hb_parnl( 1 ) );
 }
@@ -334,7 +334,7 @@ HB_FUNC( WXTEXTCTRL_SETINSERTIONPOINT )
 HB_FUNC( WXTEXTCTRL_SETINSERTIONPOINTEND )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         textCtrl->SetInsertionPointEnd();
 }
@@ -346,9 +346,9 @@ HB_FUNC( WXTEXTCTRL_SETINSERTIONPOINTEND )
 HB_FUNC( WXTEXTCTRL_SETMAXLENGTH )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
-        textCtrl->SetMaxLength( ( ULONG ) hb_parnl( 1 ) );
+        textCtrl->SetMaxLength( ( HB_ULONG ) hb_parnl( 1 ) );
 }
 
 /*
@@ -358,7 +358,7 @@ HB_FUNC( WXTEXTCTRL_SETMAXLENGTH )
 HB_FUNC( WXTEXTCTRL_SETMODIFIED )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
     {
     bool modified = hb_pcount() == 0 ? true : hb_parl( 1 );
@@ -373,9 +373,9 @@ HB_FUNC( WXTEXTCTRL_SETMODIFIED )
 HB_FUNC( WXTEXTCTRL_SETSELECTION )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
-    textCtrl->SetSelection( ISNIL( 1 ) ? -1 : hb_parnl( 1 ), ISNIL( 2 ) ? -1 : hb_parnl( 2 ) );
+    textCtrl->SetSelection( HB_ISNIL( 1 ) ? -1 : hb_parnl( 1 ), HB_ISNIL( 2 ) ? -1 : hb_parnl( 2 ) );
 }
 
 /*
@@ -400,7 +400,7 @@ HB_FUNC( WXTEXTCTRL_SETVALUE )
 HB_FUNC( WXTEXTCTRL_SHOWPOSITION )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         textCtrl->ShowPosition( hb_parnl( 1 ) );
 }
@@ -412,7 +412,7 @@ HB_FUNC( WXTEXTCTRL_SHOWPOSITION )
 HB_FUNC( WXTEXTCTRL_WRITETEXT )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( textCtrl )
         textCtrl->WriteText( wxh_parc( 1 ) );
 }
@@ -424,7 +424,7 @@ HB_FUNC( WXTEXTCTRL_WRITETEXT )
 HB_FUNC( WXTEXTCTRL_SETBACKGROUNDCOLOUR )
 {
     wxTextCtrl* textCtrl = (wxTextCtrl *) xho_itemListGet_XHO( hb_stackSelfItem() );
- 
+
     if( textCtrl )
     {
         if (hb_pcount() == 3)
@@ -439,7 +439,7 @@ HB_FUNC( WXTEXTCTRL_SETBACKGROUNDCOLOUR )
             color = new wxColour((unsigned char)hb_parni( 1 ),(unsigned char)hb_parni( 2 ),(unsigned char)hb_parni( 3 ), (unsigned char)hb_parni( 4 ) );
             textCtrl->SetBackgroundColour( *color );
         }
-        else if (hb_pcount() == 1 && ISARRAY(1) )
+        else if (hb_pcount() == 1 && HB_ISARRAY(1) )
         {
             PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
             if (hb_arrayLen( pArray ) == 3)
@@ -464,7 +464,7 @@ HB_FUNC( WXTEXTCTRL_SETBACKGROUNDCOLOUR )
                 textCtrl->SetBackgroundColour( *color );
             }
         }
-        else if (hb_pcount() == 1 && ISOBJECT(1) )			
+        else if (hb_pcount() == 1 && HB_ISOBJECT(1) )
         {
             const wxColour& color = * (wxColour *) xho_par_XhoObject( 1 );
             textCtrl->SetBackgroundColour( color );
@@ -495,7 +495,7 @@ HB_FUNC( WXTEXTCTRL_SETFOREGROUNDCOLOUR )
             color = new wxColour((unsigned char)hb_parni( 1 ),(unsigned char)hb_parni( 2 ),(unsigned char)hb_parni( 3 ), (unsigned char)hb_parni( 4 ) );
             textCtrl->SetForegroundColour( *color );
         }
-        else if (hb_pcount() == 1 && ISARRAY(1) )
+        else if (hb_pcount() == 1 && HB_ISARRAY(1) )
         {
             PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
             if (hb_arrayLen( pArray ) == 3)
@@ -520,7 +520,7 @@ HB_FUNC( WXTEXTCTRL_SETFOREGROUNDCOLOUR )
                 textCtrl->SetForegroundColour( *color );
             }
         }
-        else if (hb_pcount() == 1 && ISOBJECT(1) )			
+        else if (hb_pcount() == 1 && HB_ISOBJECT(1) )
         {
             const wxColour& color = * (wxColour *) xho_par_XhoObject( 1 );
             textCtrl->SetForegroundColour( color );

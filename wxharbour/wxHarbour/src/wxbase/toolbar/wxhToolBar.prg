@@ -1,5 +1,5 @@
 /*
- * $Id: wxhToolBar.prg 637 2010-06-26 15:56:06Z tfonrouge $
+ * $Id: wxhToolBar.prg 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -37,12 +37,12 @@ PUBLIC:
     METHOD AddCheckTool( toolId, label, bitmap1, bitmap2, shortHelpString, longHelpString, clientData )
     METHOD AddControl( control )
     METHOD AddSeparator()
-    
+
     /*
     wxToolBarToolBase* AddTool(int toolId, const wxString& label, const wxBitmap& bitmap1, const wxString& shortHelpString = "", wxItemKind kind = wxITEM_NORMAL)
-    
+
     wxToolBarToolBase* AddTool(int toolId, const wxString& label, const wxBitmap& bitmap1, const wxBitmap& bitmap2 = wxNullBitmap, wxItemKind kind = wxITEM_NORMAL, const wxString& shortHelpString = "", const wxString& longHelpString = "", wxObject* clientData = NULL)
-    
+
     wxToolBarToolBase* AddTool(wxToolBarToolBase* tool)
     */
     METHOD AddTool()
@@ -68,7 +68,7 @@ PUBLIC:
     METHOD GetToolState( toolId )
     METHOD InsertControl( pos, control )
     METHOD InsertSeparator( pos )
-    
+
     //METHOD OnLeftClick( toolId, toggleDown )
     //METHOD OnMouseEnter( toolId )
     //METHOD OnRightClick( toolId, x, y )

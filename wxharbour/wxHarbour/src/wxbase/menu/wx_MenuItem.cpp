@@ -1,5 +1,5 @@
 /*
- * $Id: wx_MenuItem.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_MenuItem.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -100,7 +100,7 @@ HB_FUNC( WXMENUITEM_GETITEMLABELTEXT )
 HB_FUNC( WXMENUITEM_SETBITMAP )
 {
     wx_MenuItem* menuItem = (wx_MenuItem *) xho_itemListGet_XHO( hb_stackSelfItem() );
-    
+
     if( menuItem )
     {
         const wxBitmap& bitmap = * (wxBitmap *) xho_par_XhoObject( 1 );

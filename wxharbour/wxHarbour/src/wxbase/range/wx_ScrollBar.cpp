@@ -1,5 +1,5 @@
 /*
- * $Id: wx_ScrollBar.cpp 660 2010-11-04 04:18:08Z tfonrouge $
+ * $Id: wx_ScrollBar.cpp 746 2011-08-05 18:55:31Z tfonrouge $
  */
 
 /*
@@ -42,11 +42,11 @@ HB_FUNC( WXSCROLLBAR_NEW )
     xho_ObjParams objParams = xho_ObjParams( NULL );
 
     wxWindow* parent = (wxWindow *) objParams.paramParent( 1 );
-    wxWindowID id = ISNIL(2) ? wxID_ANY : hb_parni( 2 );
+    wxWindowID id = HB_ISNIL(2) ? wxID_ANY : hb_parni( 2 );
     wxPoint pos = wxh_par_wxPoint( 3 );
     wxSize size = wxh_par_wxSize( 4 );
-    long style = ISNIL( 5 ) ? wxSB_HORIZONTAL : hb_parni( 5 );
-    const wxValidator& validator = ISNIL( 7 ) ? wxDefaultValidator : * ( (wxValidator *) objParams.paramChild( 7 ) );
+    long style = HB_ISNIL( 5 ) ? wxSB_HORIZONTAL : hb_parni( 5 );
+    const wxValidator& validator = HB_ISNIL( 7 ) ? wxDefaultValidator : * ( (wxValidator *) objParams.paramChild( 7 ) );
     const wxString& name = wxh_parc( 7 );
 
     wx_ScrollBar* sb = new wx_ScrollBar( parent, id, pos, size, style, validator, name );
@@ -95,7 +95,7 @@ HB_FUNC( WXSCROLLBAR_GETTHUMBPOSITION )
     PHB_ITEM pSelf = hb_stackSelfItem();
 
     wx_ScrollBar* sb = (wx_ScrollBar *) xho_itemListGet_XHO( pSelf );
-    
+
     if( sb )
     {
         hb_retni( sb->GetThumbPosition() );
@@ -151,7 +151,7 @@ HB_FUNC( WXSCROLLBAR_SETSCROLLBAR )
         int thumbSize = hb_parni( 2 );
         int range = hb_parni( 3 );
         int pageSize = hb_parni( 4 );
-        const bool refresh = ISNIL( 5 ) ? true : hb_parnl( 5 );
+        const bool refresh = HB_ISNIL( 5 ) ? true : hb_parnl( 5 );
 
         sb->SetScrollbar( position, thumbSize, range, pageSize, refresh );
     }

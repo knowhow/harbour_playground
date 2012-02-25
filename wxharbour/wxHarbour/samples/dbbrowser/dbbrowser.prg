@@ -1,5 +1,5 @@
 /*
- * $Id: dbbrowser.prg 637 2010-06-26 15:56:06Z tfonrouge $
+ * $Id: dbbrowser.prg 752 2011-09-02 15:55:41Z tfonrouge $
  * DbBrowser: Simple browser
  *
  * (C) 2008 Teo Fonrouge <teo@windtelsoft.com>
@@ -182,6 +182,11 @@ METHOD FUNCTION OnInit() CLASS MyApp
             @ BUTTON ID wxID_EXIT ACTION oWnd:Close() SIZERINFO ALIGN RIGHT
         END SIZER
     END SIZER
+
+    DEFINE POPUPMENU PARENT oWnd FIRST_ID 900
+        ADD MENUITEM "Uno"
+        ADD MENUITEM "Dos"
+    ENDMENU
 
     b:OnSelectCellBlock := ;
         {|gridEvent| 

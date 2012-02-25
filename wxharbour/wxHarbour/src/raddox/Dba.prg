@@ -1,5 +1,5 @@
 /*
- * $Id: Dba.prg 637 2010-06-26 15:56:06Z tfonrouge $
+ * $Id: Dba.prg 760 2011-09-17 22:54:23Z tfonrouge $
  */
 
 /*
@@ -17,7 +17,7 @@ STATIC aws:={}                  // stack de PushWS/PopWS
 */
 FUNCTION AddRec(nrec,index)
     LOCAL rn:=RecNo()
-    
+
     IF GetNextEmpty(index)
         nrec := RecNo()
         RETURN .T.
@@ -210,7 +210,9 @@ STATIC FUNCTION GetNextEmpty( index )
     LOCAL rec:=RecNo(),key
 
     IF index == NIL
-        IF OrdNumber( "X01" ) > 0
+        IF OrdNumber( "Primary" ) > 0
+            index := "Primary"
+        ELSEIF OrdNumber( "X01" ) > 0
             index := "X01"
         ELSE
             index := OrdName()

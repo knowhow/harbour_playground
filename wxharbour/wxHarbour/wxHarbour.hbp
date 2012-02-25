@@ -1,5 +1,5 @@
 #
-# $Id: wxharbour.hbp 606 2010-05-29 06:00:41Z tfonrouge $
+# $Id: wxHarbour.hbp 725 2011-05-30 20:57:03Z tfonrouge $
 #
 
 # On Windows + msvc, build wx with this:
@@ -20,24 +20,43 @@
 -n1 -es2 -w3
 -hblib
 -inc
--olib/${hb_arch}/${hb_comp}/wxharbour
+-olib/${hb_arch}/${hb_comp}/wxHarbour
 -nohbc
 
--i{mingw}${HB_WITH_WX}\lib\gcc_lib\msw
--i{msvc}${HB_WITH_WX}\lib\vc_lib\msw
--i{msvc64}${HB_WITH_WX}\lib\vc_amd64_lib\msw
--i{msvcia64}${HB_WITH_WX}\lib\vc_ia64_lib\msw
+-i{mingw}${HB_WITH_WX}\lib\gcc_lib\mswu
+-i{msvc}${HB_WITH_WX}\lib\vc_lib\mswu
+-i{msvc64}${HB_WITH_WX}\lib\vc_amd64_lib\mswu
+-i{msvcia64}${HB_WITH_WX}\lib\vc_ia64_lib\mswu
 -i{win&watcom}${HB_WITH_WX}\include
--i{win&watcom}${HB_WITH_WX}\lib\wat_lib\msw
--i{bcc}${HB_WITH_WX}\lib\bcc_lib\msw
--i${HB_WITH_WX}/include
+-i{win&watcom}${HB_WITH_WX}\lib\wat_lib\mswu
+-i{bcc}${HB_WITH_WX}\lib\bcc_lib\mswu
+-i${HB_WITH_WX}\include
 -iinclude/wxHarbour
 
 -cflag={win}-DWIN32
 -cflag={win}-D__WXMSW__
+-cflag={win}-D_WINDOWS
+-cflag={win}-D_UNICODE
+-cflag={win&allmsvc}/MD
+-cflag={win&allmsvc}/GR
 -cflag={win&allmsvc}/EHsc
 -cflag={watcom}-xs
 "-cflag={unix&gcc}`wx-config --cflags`"
+
+{darwin}-DHB_OS_MAC
+{unix}-DHB_OS_UNIX
+{linux}-DHB_OS_LINUX
+{win}-DHB_OS_WINDOWS
+{win}-DHB_OS_WIN_32
+
+-instpath=${hb_lib}/
+
+-instfile=inc:include/wxHarbour/*
+-instfile=inc_wxh:include/wxHarbour/wxh/*
+-instpath=inc:${hb_inc}/wxHarbour/
+-instpath=inc_wxh:${hb_inc}/wxHarbour/wxh/
+
+-instforce
 
 src/common/*.cpp
 src/common/*.prg
