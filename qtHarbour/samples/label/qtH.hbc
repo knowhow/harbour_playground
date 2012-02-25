@@ -22,6 +22,8 @@ incpaths=/Library/Frameworks/QtCore.framework/Versions/4/Headers
 incpaths=/usr/include/QtCore /Library/Frameworks/QtNetwork.framework/Versions/4/Headers /usr/include/QtNetwork /Library/Frameworks/QtGui.framework/Versions/4/Headers /usr/include/QtGui /Library/Frameworks/QtXml.framework/Versions/4/Headers /usr/include/QtXml /Library/Frameworks/QtXmlPatterns.framework/Versions/4/Headers /usr/include/QtXmlPatterns/Library/Frameworks/QtWebKit.framework/Versions/4/Headers /usr/include/QtWebKit /usr/include 
 
 incpaths=/Library/Frameworks/QtScript.framework/Versions/4/Headers/
+incpaths=/Library/Frameworks/QtScriptTools.framework/Versions/4/Headers/
+incpaths=/Library/Frameworks/QtDesigner.framework/Versions/4/Headers/
 
 libs=qtHarbour
 

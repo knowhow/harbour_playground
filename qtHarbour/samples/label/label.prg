@@ -64,6 +64,17 @@ RETURN NIL
 #include <QWidget>
 #include <QScriptEngine>
 
+#include <QtGui>
+#include <QtScript>
+
+//#include <QUiLoader>
+
+#ifndef QT_NO_SCRIPTTOOLS
+ #include <QtScriptTools>
+#endif
+
+
+
 enum QTHI_FLAG {
     QTHI_NONE,
     QTHI_TRANSFER,
@@ -97,6 +108,44 @@ Q* qth_parPtr( const int iParam, QTHI_FLAG qthiFlag = QTHI_NONE )
 //PQTH_ITEM   qth_itemListGet_PQTH_ITEM( PCPP_OBJECT cppObj );
 //PQTH_ITEM   qth_itemListGet_PQTH_ITEM( PHB_ITEM pSelf );
 
+static QScriptValue evaluateFile(QScriptEngine &engine, const QString &fileName)
+{
+     QFile file(fileName);
+     file.open(QIODevice::ReadOnly);
+     return engine.evaluate(file.readAll(), fileName);
+}
+
+struct QtMetaObject : private QObject
+{
+ public:
+     static const QMetaObject *get()
+         { return &static_cast<QtMetaObject*>(0)->staticQtMetaObject; }
+};
+
+/*
+class TetrixUiLoader : public QUiLoader
+{
+ 
+  public:
+     TetrixUiLoader(QObject *parent = 0)
+         : QUiLoader(parent)
+         { }
+     virtual QWidget *createWidget(const QString &className, QWidget *parent = 0,
+                                   const QString &name = QString())
+     {
+         if (className == QLatin1String("TetrixBoard")) {
+             QWidget *board = new TetrixBoard(parent);
+             board->setObjectName(name);
+             return board;
+         }
+         return QUiLoader::createWidget(className, parent, name);
+     }
+};
+*/
+
+
+
+
 HB_FUNC( SCRIPT_1 )
 {
 
@@ -115,11 +164,8 @@ args << hb_parnd(2) << hb_parnd(3);
  
 QScriptValue ret = fun.call(QScriptValue(), args);
 
-QScriptValue fun2 = engine.evaluate("(function(a,b) { button.text = a * b; })");
+QScriptValue fun2 = evaluateFile(engine, "./script_1.js");
 QScriptValue ret2 = fun2.call(QScriptValue(), args);
-
-engine.evaluate("button.styleSheet = 'font-style: italic'");
-engine.evaluate("button.show()");
 
 hb_retnd(ret.toNumber());
 
