@@ -15,11 +15,11 @@
 static nInfo, cInfo := "FileXLS Library Ramón Avendaño (c) 1999"
 
 // Cell alignament
-#define ALING_NULL       0
-#define ALING_LEFT       1
-#define ALING_CENTER     2
-#define ALING_RIGHT      3
-#define ALING_FILL       4
+#define ALIGN_NULL       0
+#define ALIGN_LEFT       1
+#define ALIGN_CENTER     2
+#define ALIGN_RIGHT      3
+#define ALIGN_FILL       4
 
 // Cell border
 #define BORDER_NONE      0
@@ -206,7 +206,6 @@ METHOD New( cFileName, lAutomatic, nIterations,;
    FWrite( ::hFile, Chr( 16 ) + Chr( 00 ), 2 )      // DELTA
    FWrite( ::hFile, Chr( 08 ) + Chr( 00 ), 2 )      // 0.001
    FWrite( ::hFile, D2Bin( 0.001 ), 8 )
-
    FWrite( ::hFile, Chr( 14 ) + Chr( 00 ), 2 )      // PRECISION
    FWrite( ::hFile, Chr( 02 ) + Chr( 00 ), 2 )      // full
    FWrite( ::hFile, Chr( 01 ) + Chr( 00 ), 2 )
@@ -528,7 +527,7 @@ METHOD Blank( nRow, nCol, ;
   DEFAULT nFormat := 0
   DEFAULT lShaded := .f.
   DEFAULT nBorder := BORDER_NONE
-  DEFAULT nAlignament := ALING_NULL
+  DEFAULT nAlignament := ALIGN_NULL
 
   FWrite( ::hFile, Chr( 01 ) + Chr( 00 ), 2 )
   FWrite( ::hFile, Chr( 07 ) + Chr( 00 ), 2 )
@@ -553,7 +552,7 @@ METHOD Number( nRow, nCol, nNumber, ;
   DEFAULT nFormat := 0
   DEFAULT lShaded := .f.
   DEFAULT nBorder := BORDER_NONE
-  DEFAULT nAlignament := ALING_NULL
+  DEFAULT nAlignament := ALIGN_NULL
 
   if lInteger
      FWrite( ::hFile, Chr( 02 ) + Chr( 00 ), 2 )
@@ -589,7 +588,7 @@ METHOD String( nRow, nCol, cString, ;
   DEFAULT nFormat := 0
   DEFAULT lShaded := .f.
   DEFAULT nBorder := BORDER_NONE
-  DEFAULT nAlignament := ALING_NULL
+  DEFAULT nAlignament := ALIGN_NULL
 
   FWrite( ::hFile, Chr( 04 ) + Chr( 00 ), 2 )
   FWrite( ::hFile, I2Bin( 08 + nLen ), 2 )
@@ -617,7 +616,7 @@ METHOD _Date( nRow, nCol, dDate, ;
   DEFAULT nFormat := 0
   DEFAULT lShaded := .f.
   DEFAULT nBorder := BORDER_NONE
-  DEFAULT nAlignament := ALING_NULL
+  DEFAULT nAlignament := ALIGN_NULL
 
   FWrite( ::hFile, Chr( 02 ) + Chr( 00 ), 2 )
   FWrite( ::hFile, Chr( 09 ) + Chr( 00 ), 2 )
@@ -644,7 +643,7 @@ METHOD Boolean( nRow, nCol, lBoolean, ;
   DEFAULT nFormat := 0
   DEFAULT lShaded := .f.
   DEFAULT nBorder := BORDER_NONE
-  DEFAULT nAlignament := ALING_NULL
+  DEFAULT nAlignament := ALIGN_NULL
 
   FWrite( ::hFile, Chr( 05 ) + Chr( 00 ), 2 )
   FWrite( ::hFile, Chr( 09 ) + Chr( 00 ), 2 )
@@ -676,7 +675,7 @@ METHOD Formula( nRow, nCol, nNumber, lRecalc, cFormula, ;
   DEFAULT nFormat := 0
   DEFAULT lShaded := .f.
   DEFAULT nBorder := BORDER_NONE
-  DEFAULT nAlignament := ALING_NULL
+  DEFAULT nAlignament := ALIGN_NULL
 
   FWrite( ::hFile, Chr( 06 ) + Chr( 00 ), 2 )
   FWrite( ::hFile, I2Bin( 17 + nLen ), 2 )
@@ -753,7 +752,7 @@ METHOD Error( nRow, nCol, nError, ;
   DEFAULT nFormat := 0
   DEFAULT lShaded := .f.
   DEFAULT nBorder := BORDER_NONE
-  DEFAULT nAlignament := ALING_NULL
+  DEFAULT nAlignament := ALIGN_NULL
 
   FWrite( ::hFile, Chr( 05 ) + Chr( 00 ), 2 )
   FWrite( ::hFile, Chr( 09 ) + Chr( 00 ), 2 )
@@ -811,8 +810,10 @@ METHOD PutCoors( nRow, nCol ) CLASS TFileXLS
   local cWord
 
   cWord := I2Bin( nRow - 1 )
-  FWrite( ::hFile, @cWord, 2 ) //  Byte Offset 0-1
 
+  ? Bin2I(cWord)
+  FWrite( ::hFile, @cWord, 2 ) //  Byte Offset 0-1
+  ? Bin2I(cWord)
   cWord := I2Bin( nCol - 1 )
   FWrite( ::hFile, @cWord, 2 ) //  Byte Offset 2-3
 

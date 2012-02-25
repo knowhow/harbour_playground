@@ -16,9 +16,9 @@ local _i, _tmp
 
 // do 6 decimala
 for _i := 0 to 6
-  _tmp := num * 10 ** _i
+  _tmp := num * (10 ** _i)
   if round( round(_tmp, 0) - round(_tmp, 7), 8) == 0
-      return STR( num, _i)
+      return ALLTRIM(STR( num, num, _i))
   endif
 next
 

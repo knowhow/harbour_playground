@@ -2,11 +2,11 @@
 	#define _XLS_CH
 #endif
 // Cell alignament
-#define ALING_NULL       0
-#define ALING_LEFT       1
-#define ALING_CENTER     2
-#define ALING_RIGHT      3
-#define ALING_FILL       4
+#define ALIGN_NULL       0
+#define ALIGN_LEFT       1
+#define ALIGN_CENTER     2
+#define ALIGN_RIGHT      3
+#define ALIGN_FILL       4
 
 // Cell border
 #define BORDER_NONE      0
