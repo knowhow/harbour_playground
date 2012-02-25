@@ -120,7 +120,7 @@ _WL_STARTGROUP = $(shell if gcc --version | grep apple >/dev/null ; then echo ""
 	echo "-Wl,--start-group" ; fi)
 _WL_ENDGROUP = $(shell if gcc --version | grep apple >/dev/null ; then echo "" ; else echo \
 	"-Wl,--end-group" ; fi)
-BUTTON_CFLAGS = -I/usr/include/harbour -I/usr/local/include/harbour \
+BUTTON_CFLAGS = -I/usr/include/harbour -I/opt/harbour/include/harbour \
 	-I/usr/include -I/usr/local/include -W -Wall -O2 $(__D_WX_UNICODE_p) \
 	$(__D_WX_DEBUG_p) $(__WX_DEBUG_INFO) -Iinclude/wxHarbour \
 	-I/usr/include/wxHarbour -I/usr/local/include/wxHarbour \
@@ -129,7 +129,7 @@ BUTTON_OBJECTS =  \
 	$(__BUILDDIR__)/button_button.o
 BUTTON_HBFLAGS = $(HBFLAGS) -gc$(HBOUTSRCLEVEL) -w$(HBWARNL) -es$(HBEXITSL) \
 	$(__HBDEBUG__) $(__HBMTFLAG__) -dHB_OS_UNIX $(HBOSUNIXDEF) \
-	-I/usr/include/harbour -I/usr/local/include/harbour -I/usr/include \
+	-I/usr/include/harbour -I/opt/harbour/include/harbour -I/usr/include \
 	-I/usr/local/include $(__D_WX_UNICODE_p) $(__D_WX_DEBUG_p) \
 	-Iinclude/wxHarbour -I/usr/include/wxHarbour \
 	-I/usr/local/include/wxHarbour -I../../include/wxHarbour
