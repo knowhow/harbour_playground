@@ -1,0 +1,758 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass scrbook
+\begin_preamble
+% DO NOT ALTER THIS PREAMBLE!!!
+%
+% This preamble is designed to ensure that the User's Guide prints
+% out as advertised. If you mess with this preamble,
+% parts of the User's Guide may not print out as expected.  If you
+% have problems LaTeXing this file, please contact 
+% the documentation team
+% email: lyx-docs@lists.lyx.org
+
+\usepackage{ifpdf} % part of the hyperref bundle
+\ifpdf % if pdflatex is used
+
+ % set fonts for nicer pdf view
+ \IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}
+
+\fi % end if pdflatex is used
+
+% for correct jump positions whe clicking on a link to a float
+\usepackage[figure]{hypcap}
+
+% the pages of the TOC is numbered roman
+% and a pdf-bookmark for the TOC is added
+\let\myTOC\tableofcontents
+\renewcommand\tableofcontents{%
+  \frontmatter
+  \pdfbookmark[1]{\contentsname}{}
+  \myTOC
+  \mainmatter }
+
+% redefine the \LyX macro for PDF bookmarks
+\def\LyX{\texorpdfstring{%
+  L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+  {LyX}}
+
+% define a short command for \textvisiblespace
+\newcommand{\spce}{\textvisiblespace}
+
+% macro for italic page numbers in the index
+\newcommand{\IndexDef}[1]{\textit{#1}}
+
+% redefine the greyed out note
+%\renewenvironment{lyxgreyedout}
+ %{\textcolor{blue}\bgroup}{\egroup}
+
+% workaround for a makeindex bug,
+% see sec. "Index Entry Order"
+% only uncomment this when you are using makindex
+%\let\OrgIndex\index 
+%\renewcommand*{\index}[1]{\OrgIndex{#1}}
+\end_preamble
+\options intoc,bibtotoc,idxtotoc,BCOR7mm,tablecaptionabove
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_title "wxHarbour doc"
+\pdf_author "Teo Fonrouge"
+\pdf_subject "wxHarbour library documentation"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered true
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=black, citecolor=black, urlcolor=blue, filecolor=blue,pdfpagelayout=OneColumn, pdfnewwindow=true,pdfstartview=XYZ, plainpages=false, pdfpagelabels,pdftex"
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+wxHarbour doc
+\end_layout
+
+\begin_layout Author
+by Teo Fonrouge (teo/at/windtelsoft/com)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Version 0.5.0
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part
+GUI Reference
+\end_layout
+
+\begin_layout Chapter
+Commands
+\end_layout
+
+\begin_layout Standard
+Please keep in mind that wxHarbour does not try to make a 'compatible' (at
+ any level) set of Clipper commands
+\end_layout
+
+\begin_layout Section
+@ BROWSE ...
+\end_layout
+
+\begin_layout Subsection*
+Description.
+\end_layout
+
+\begin_layout Standard
+Creates a new wxhBrowse object
+\end_layout
+
+\begin_layout Subsection*
+Syntax
+\end_layout
+
+\begin_layout Standard
+@ BROWSE [VAR <
+\emph on
+oVar
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[DATASOURCE <
+\emph on
+ds
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[CLASS <
+\emph on
+cClassName
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[LABEL <
+\emph on
+cLabel
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[PARENT <
+\emph on
+oParentWindow
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[ID <
+\emph on
+nId
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[WIDTH <
+\emph on
+nWidth
+\emph default
+>] [HEIGHT <
+\emph on
+nHeight
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[MINSIZE <
+\emph on
+nMinWidth
+\emph default
+>, <
+\emph on
+nMinHeight
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[STYLE <
+\emph on
+nStyle
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[NAME <
+\emph on
+cName
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[ONKEY <
+\emph on
+bOnKey
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[ONSELECTCELL <
+\emph on
+bOnSelectCell
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[READONLY]
+\end_layout
+
+\begin_layout Subsection*
+Arguments
+\end_layout
+
+\begin_layout Subsection*
+Description
+\end_layout
+
+\begin_layout Subsection*
+Examples
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+@ PUSHVALIDATOR ...
+\end_layout
+
+\begin_layout Subsection*
+Description.
+\end_layout
+
+\begin_layout Standard
+Creates a new wxhValidator object and assign it to the last control added.
+ Normally the user doesn't need to call this command directly since it is
+ called automatically on almost all control creation commands.
+\end_layout
+
+\begin_layout Subsection*
+Syntax
+\end_layout
+
+\begin_layout Standard
+@ PUSHVALIDATOR [<
+\emph on
+dataVar
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[PICTURE <
+\emph on
+cPicture
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[WARNING <
+\emph on
+bWarning
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[ACTION <
+\emph on
+bAction
+\emph default
+>]
+\end_layout
+
+\begin_layout Subsection*
+Arguments
+\end_layout
+
+\begin_layout Standard
+<
+\emph on
+dataVar
+\emph default
+> specifies the variable to assign to the control
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+<
+\emph on
+cPicture
+\emph default
+> contains the picture value to be used when displaying the control value
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+<
+\emph on
+bWarning
+\emph default
+> contains an expression to be evaluated in order to validate the control
+ value
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+<
+\emph on
+bAction
+\emph default
+> contains an expression to be executed when the control value is changed
+\end_layout
+
+\begin_layout Subsection*
+Description
+\end_layout
+
+\begin_layout Subsection*
+Examples
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+BEGIN BOXSIZER
+\end_layout
+
+\begin_layout Subsection*
+Description.
+\end_layout
+
+\begin_layout Standard
+Begins a box sizer section, it can be either of vertical or horizontal
+\begin_inset Newline newline
+\end_inset
+
+the END SIZER command indicates the end of the sizer section.
+\end_layout
+
+\begin_layout Subsection*
+Syntax
+\end_layout
+
+\begin_layout Standard
+BEGIN BOXSIZER 
+\emph on
+VERTICAL | HORIZONTAL
+\end_layout
+
+\begin_layout Standard
+[VAR <
+\emph on
+var
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[ [LABEL] <
+\emph on
+cLabel
+\emph default
+>]
+\end_layout
+
+\begin_layout Standard
+[ SIZERINFO clauses, ...
+ ]
+\end_layout
+
+\begin_layout Subsection*
+Arguments
+\end_layout
+
+\begin_layout Subsection*
+Description
+\end_layout
+
+\begin_layout Standard
+The basic idea behind a wxBoxSizer is that windows will most often be laid
+ out in rather simple basic geometry, typically in a row or a column or
+ several hierarchies of either.
+\end_layout
+
+\begin_layout Standard
+As an example, we will construct a dialog that will contain a text field
+ at the top and two buttons at the bottom.
+ This can be seen as a top-hierarchy column with the text at the top and
+ buttons at the bottom and a low-hierarchy row with an OK button to the
+ left and a Cancel button to the right.
+ In many cases (particularly dialogs under Unix and normal frames) the main
+ window will be resizable by the user and this change of size will have
+ to get propagated to its children.
+ In our case, we want the text area to grow with the dialog, whereas the
+ button shall have a fixed size.
+ In addition, there will be a thin border around all controls to make the
+ dialog look nice and - to make matter worse - the buttons shall be centred
+ as the width of the dialog changes.
+\end_layout
+
+\begin_layout Standard
+It is the unique feature of a box sizer, that it can grow in both directions
+ (height and width) but can distribute its growth in the main direction
+ (horizontal for a row) unevenly among its children.
+ In our example case, the vertical sizer is supposed to propagate all its
+ height changes to only the text area, not to the button area.
+ This is determined by the proportion parameter when adding a window (or
+ another sizer) to a sizer.
+ It is interpreted as a weight factor, i.e.
+ it can be zero, indicating that the window may not be resized at all, or
+ above zero.
+ If several windows have a value above zero, the value is interpreted relative
+ to the sum of all weight factors of the sizer, so when adding two windows
+ with a value of 1, they will both get resized equally much and each half
+ as much as the sizer owning them.
+ Then what do we do when a column sizer changes its width? This behaviour
+ is controlled by flags (the second parameter of the Add() function): Zero
+ or no flag indicates that the window will preserve it is original size,
+ wxGROW flag (same as wxEXPAND) forces the window to grow with the sizer,
+ and wxSHAPED flag tells the window to change it is size proportionally,
+ preserving original aspect ratio.
+ When wxGROW flag is not used, the item can be aligned within available
+ space.
+ wxALIGN_LEFT, wxALIGN_TOP, wxALIGN_RIGHT, wxALIGN_BOTTOM, wxALIGN_CENTER_HORIZO
+NTAL and wxALIGN_CENTER_VERTICAL do what they say.
+ wxALIGN_CENTRE (same as wxALIGN_CENTER) is defined as (wxALIGN_CENTER_HORIZONTA
+L | wxALIGN_CENTER_VERTICAL).
+ Default alignment is wxALIGN_LEFT | wxALIGN_TOP.
+\end_layout
+
+\begin_layout Standard
+As mentioned above, any window belonging to a sizer may have border, and
+ it can be specified which of the four sides may have this border, using
+ the wxTOP, wxLEFT, wxRIGHT and wxBOTTOM constants or wxALL for all directions
+ (and you may also use wxNORTH, wxWEST etc instead).
+ These flags can be used in combination with the alignment flags above as
+ the second parameter of the Add() method using the binary or operator |.
+ The sizer of the border also must be made known, and it is the third parameter
+ in the Add() method.
+ This means, that the entire behaviour of a sizer and its children can be
+ controlled by the three parameters of the Add() method.
+\end_layout
+
+\begin_layout Subsection*
+Examples
+\end_layout
+
+\begin_layout Standard
+The following section of sample code creates a vertical sizer with two buttons
+ vertically aligned:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+BEGIN BOXSIZER VERTICAL
+\end_layout
+
+\begin_layout Plain Layout
+
+	@ BUTTON
+\end_layout
+
+\begin_layout Plain Layout
+
+	@ BUTTON
+\end_layout
+
+\begin_layout Plain Layout
+
+END SIZER
+\end_layout
+
+\end_inset
+
+The following section of sample code creates a horizontal sizer with two
+ buttons horizontally aligned:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=C"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+BEGIN BOXSIZER HORIZONTAL
+\end_layout
+
+\begin_layout Plain Layout
+
+	@ BUTTON
+\end_layout
+
+\begin_layout Plain Layout
+
+	@ BUTTON
+\end_layout
+
+\begin_layout Plain Layout
+
+END SIZER
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part
+RADOX Reference
+\end_layout
+
+\begin_layout Chapter
+Commands
+\end_layout
+
+\begin_layout Chapter
+Classes
+\end_layout
+
+\begin_layout Section
+TField
+\end_layout
+
+\begin_layout Section
+TIndex
+\end_layout
+
+\begin_layout Section
+TTable
+\end_layout
+
+\begin_layout Standard
+This class that give functionality to hold a table info; fields, indexes
+\end_layout
+
+\begin_layout Subsection
+Properties
+\end_layout
+
+\begin_layout Description
+Active (
+\emph on
+ReadOnly
+\emph default
+).
+ Returns .T.
+ if the database has been opened.
+\end_layout
+
+\begin_layout Description
+AutoCreate If .T.
+ the table is created if it 
+\bar under
+not exist
+\bar default
+ already, otherwise an error is raised when trying to open an not existent
+ table
+\end_layout
+
+\begin_layout Description
+autoEdit When .T.
+ it allows to automatically call ::Edit() when any TField is required to
+ write data to the database
+\end_layout
+
+\begin_layout Description
+autoOpen When .F.
+ it allows to open the database in two steps by calling explicitly ::Open()
+ after instantiating the class.
+\end_layout
+
+\begin_layout Description
+TableFileName Contains the table file name.
+\end_layout
+
+\begin_layout Subsection
+Events
+\end_layout
+
+\begin_layout Description
+OnCreate() Procedure executed on the object creation.
+ 
+\end_layout
+
+\begin_layout Description
+OnAfterCancel() Procedure executed after the Cancel() operation.
+ 
+\end_layout
+
+\begin_layout Description
+OnAfterChange() Procedure executed after the Post() operation and only if
+ any field was changed (TField:Changed) 
+\end_layout
+
+\begin_layout Description
+OnAfterDelete() Procedure executed after a successful Delete() operation.
+ 
+\end_layout
+
+\begin_layout Description
+OnAfterInsert() Procedure executed after a successful Insert() operation.
+ 
+\end_layout
+
+\begin_layout Description
+OnAfterOpen() Procedure executed after the Open() operation.
+ 
+\end_layout
+
+\begin_layout Description
+OnAfterPost() Procedure executed after a successful Post() operation.
+ Is executed before OnAfterChange().
+\end_layout
+
+\begin_layout Description
+OnBeforeInsert Function executed just before the adding record operation,
+ it must return a logical value.
+\end_layout
+
+\begin_layout Description
+OnBeforePost() Function executed just before the Post() operation, it must
+ return a logical value.
+\end_layout
+
+\begin_layout Description
+OnDataChange() Procedure executed after change is detected on record position.
+\end_layout
+
+\begin_layout Description
+OnPickList(
+\begin_inset space ~
+\end_inset
+
+param
+\begin_inset space ~
+\end_inset
+
+) Function executed when a TField requires a call to the table selection
+ mode.
+ 
+\end_layout
+
+\begin_layout Description
+OnStateChange(
+\begin_inset space ~
+\end_inset
+
+oldState
+\begin_inset space ~
+\end_inset
+
+) Procedure executed right after a change in the State() property.
+\end_layout
+
+\begin_layout Description
+OnSyncFromMasterSource() Procedure executed when the Table is synched with
+ his MasterSource (if any).
+ 
+\end_layout
+
+\begin_layout Subsection
+Methods
+\end_layout
+
+\begin_layout Standard
+BuildTable
+\end_layout
+
+\end_body
+\end_document

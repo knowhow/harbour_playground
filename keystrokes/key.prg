@@ -53,7 +53,7 @@ for each _var_key in var_tests:Keys
             endif
 
       else
-            ? " ERR: tipovi razliciti:"
+            ?? " ERR: tipovi razliciti:"
       endif
       ?? " ocekivana vrijednost (" + VALTYPE(_v2) + ")",  _v2
       ?? " dobijena vrijednost (" +  VALTYPE(_v1) + ")", _v1

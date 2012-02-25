@@ -1,0 +1,44 @@
+	wxHarbour - [x]Harbour bindings for wxWidgets a portable GUI
+	
+Last Revised: 12 aug 2007
+
+Requeriments:
+
+Windows[95][2000][XP]:
+  MinGW: is recommended to install the package with the "Automated MinGW
+    Installer" (MinGW-5.1.3-exe) , select the full option.
+  MSYS: This provides a convenient shell and tools needed for compilation.
+	MinGW & MSYS packages can be obtained from:
+        http://sourceforge.net/project/showfiles.php?group_id=2435
+  wxWidgets: This package can be obtained from:
+	http://www.wxwidgets.org/downloads/
+	Last stable version (currently 2.8.4) is ok.
+  Harbour: this package can be obtained from:
+	http://sourceforge.net/project/showfiles.php?group_id=681
+
+Linux:
+  wxWidgets: Depends of the distro used you can install from the package manager
+    (yum, yast, apt-get, synaptics).
+  Harbour: Depens of the distro used you have builded packages availables from
+    the web.    
+
+MAC:
+  - Need one to make tests :) , but theoretically wxHarbour can be builded here
+
+
+1. First at all, you must have Harbour installed and working ok.
+2. The same as above with wxWidgets.
+    You can check this by running the following command in a shell:
+    $ wx-config --version
+    this must return the wxWidgets version used (2.6.3 , 2.4.8).
+2. Unpack the wxharbour package file to a directory
+3. run "make all" on the wxharbour/samples dir
+4. If all the above is correct you now have the binary samples builded.
+
+To get support, please contact me at teo@windtelsoft.com or visit wxharbour
+at soruceforge.net at:
+    http://sourceforge.net/projects/wxharbour/
+and follow the instructions to join the mailing list.
+
+
+Teo Fonrouge
