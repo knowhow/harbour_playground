@@ -1,0 +1,127 @@
+<html>
+
+<script>
+var canvas;	
+var ctx; // context	
+var row, col; // say coordinates
+var socket;
+
+function connect()
+{
+   try
+   {
+      socket = new WebSocket( "ws://localhost:2000/harbour" );
+
+      Say( "Connecting to the Harbour WebSockets server..." );
+
+      socket.onopen = function( event )
+      {
+         Say( "Connected" );
+      }
+
+      socket.onmessage = function( msg )
+      {
+         Say( msg.data );
+      }
+
+      socket.onclose = function( event )
+      {
+         Say( "connection closed from the server" );
+      }
+
+      socket.onerror = function()
+      {
+         Say( "Error: " + socket.readyState );
+      }
+   }
+   catch( exception )
+   {
+      Say( "Exception ocurred" );
+   }
+}
+
+function Send( text )
+{
+   try
+   {
+      socket.send( text );
+      Say( "sending request to the server..." );
+   }
+   catch( exception )
+   {
+      Say( "can't send to the server" );
+   }
+}
+	
+function Say( cText )
+{
+   if( row > canvas.height - 22 )
+   {
+   	  var oldCanvas = canvas.toDataURL();
+   	  var img = new Image();
+   	  var container = document.getElementById( "canvasContainer" );
+   	  
+      canvas.height += 22;
+      ctx = canvas.getContext( '2d' );
+      ctx.fillStyle = '#0f0';
+      ctx.font      = '20px verdana';
+      ctx.textBaseline = 'top';
+   	  img.src = oldCanvas; 
+      img.onload = function() { ctx.drawImage( img, 0, 0 ); };   
+      container.scrollTop = container.scrollHeight;
+   }   	 
+   ctx.fillText( cText, col, row );
+   row += 22;
+}   		
+	
+function init()
+{
+   canvas = document.getElementById( 'canvas' );
+   
+   ctx = canvas.getContext( '2d' );
+   ctx.fillStyle = '#0f0';
+   ctx.font      = '20px verdana';
+   ctx.textBaseline = 'top';
+   row = 0;
+   col = 0;
+      
+   Say( "Initializing..." );
+   Say( new Date() );
+   Say( "ready" );
+
+   connect();
+   
+   document.getElementById( "command" ).focus();
+}
+
+function ProcessCommand( event )
+{
+   if( event.keyCode == 13 )
+   {
+   	  var edit = document.getElementById( "command" );
+
+      if( edit.value.length == 0 )
+         return; 
+   	    
+   	  Say( edit.value );  
+   	  Send( edit.value );  
+      edit.value = "";
+   }   
+}
+
+window.onload = init;
+</script>
+
+<head>
+</head>
+<body>
+<h1>HTML5 WebSockets Harbour server demo</h1>
+<div id="canvasContainer" style="width: 820px; height: 510px; overflow: auto;">
+<canvas id="canvas" width="800" height="570" style="background-color:#000"></canvas>
+</div>
+<br>
+<b>Command:</b> <input id="command" type="text" name="command" style="width:750px; 
+                 background-color:#000; color:#0f0; font-size: 20px;"
+                 onkeypress="ProcessCommand( event )">
+</body>
+</html>
