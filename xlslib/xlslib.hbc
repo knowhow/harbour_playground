@@ -1,0 +1,22 @@
+incpaths=.
+
+#incpaths=/usr/local/include/xlslib
+
+
+libs=hbvm hbrtl hblang hbrdd hbrtl hbmacro hbpp rddcdx rddfpt rddntx
+libs=hbsqlit3 sqlite3
+libs=hbcommon hbct hbclipsm
+
+libs=xlslib
+
+{unix}libs=pq
+{!unix}libs=libpq
+{darwin}libpaths=/Library/PostgreSQL/9.1/lib
+#{darwin}libpaths=/opt/local/lib/postgresql84
+#{darwin}libpaths=/opt/local/lib/postgresql83
+
+#cflag=" -DCPP_BRIDGE_XLS "
+
+#cflag="-std=gnu99 -g -O2 -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers"
+#"-g -O2 -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers"
+
