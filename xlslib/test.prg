@@ -60,11 +60,11 @@ myFormat = xlsWorkbookFormat(wb, "##.000");
 
 x_myFormat = xlsWorkbookxFormat(wb);
 
-c1 =  xlsWorksheetNumberDbl(ws, 3, 1, 1.03414234, x_myFormat);
+c1 =  xlsWorksheetNumberDbl(ws, 1, 5, 1.03414234, x_myFormat);
 
-format_number_t fmtnum = FMT_CURRENCY8;
+// format_number_t fmtnum = FMT_CURRENCY8;
 
-xlsCellFormat(c1, fmtnum);
+//xlsCellFormat(c1, fmtnum);
 
 ret = xlsWorkbookDump(wb, "xls_1.xls");
 
