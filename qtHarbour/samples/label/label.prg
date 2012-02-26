@@ -173,6 +173,7 @@ QScriptValue fun2 = evaluateFile(engine, "./script_1.js");
 QScriptValue ret2 = fun2.call(QScriptValue(), args);
 
 
+evaluateFile(engine, "./pre.js");
 evaluateFile(engine, "./pdf.js");
 evaluateFile(engine, "./pdf_1.js");
 
