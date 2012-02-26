@@ -38,14 +38,16 @@ FUNCTION Main()
   btn := QPushButton():New( mainWindow )
   btn:setText("button 1")
   boxLayout:addWidget( btn)
-  ? "scrit_1 ret", script_1(btn, 2, 3.5)
-  _txt := btn:text()
+  _txt := script_1(btn, 2, 3.5)
 
   _handle := FCREATE("test.pdf")
  
   FWRITE(_handle, _txt)
- 
-  Alert(_txt)
+  FCLOSE(_handle)
+  hb_run("open test.pdf")
+
+
+  //Alert(_txt)
  
   //btn := QPushButton():New( mainWindow )
   //btn:setText("button 2")
@@ -184,10 +186,13 @@ QScriptValue ret2 = fun2.call(QScriptValue(), args);
 
 evaluateFile(engine, "./pre.js");
 evaluateFile(engine, "./jspdf.js");
-evaluateFile(engine, "./pdf_1.js");
+
+QScriptValueList args2;
+QScriptValue ret3 = evaluateFile(engine, "./pdf_1.js");
+QScriptValue ret4 = ret3.call(QScriptValue(), args2);
 
 
-hb_retnd(ret.toNumber());
+hb_retc(ret4.toString().toLocal8Bit().data());
 
 //QString x = "abc";
 //qth_retPtr<QString>( x, "QString" );

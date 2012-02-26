@@ -1,8 +1,10 @@
+(function (){
+
 button.text += ' pocetak pdf_1';
 
 var doc = new jsPDF();
 
-doc.text(20, 20, 'hello, I am PDF.');
+doc.text(20, 20, 'hello, I am Ernad Husremovic.');
 doc.text(20, 30, 'i was created in the browser using javascript.');
 doc.text(20, 40, 'i can also be created from node.js');
 
@@ -16,7 +18,7 @@ doc.setProperties({
 });
 
 
-for (i=1; i<=10; i++) {
+for (i=1; i<=99999; i++) {
 
     doc.addPage();
 
@@ -37,8 +39,7 @@ for (i=1; i<=10; i++) {
 //var fileName = "testFile" + new Date().getSeconds()+".pdf";
 //var pdfAsDataURI = doc.output('datauri', {"fileName":fileName});
 
-button.text = doc.output();
-
-//'kkkkkk pdf_1';
+return doc.output();
 
 
+})
