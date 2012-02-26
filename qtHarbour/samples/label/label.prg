@@ -41,7 +41,7 @@ FUNCTION Main()
   btn := QPushButton():New( mainWindow )
   btn:setText("button 2")
   boxLayout:addWidget( btn)
-  ? "scrit_1 ret", script_1(btn, 7, 8)
+  //? "scrit_1 ret", script_1(btn, 7, 8)
   
   mainWindow:setLayout( boxLayout )
 
@@ -63,9 +63,10 @@ RETURN NIL
 #include <QPushButton>
 #include <QWidget>
 #include <QScriptEngine>
+#include <QScriptEngineDebugger>
 
 #include <QtGui>
-#include <QtScript>
+//#include <QtScript>
 
 //#include <QUiLoader>
 
@@ -162,10 +163,19 @@ QScriptValue fun = engine.evaluate("(function(a, b) { return a * b; })");
 QScriptValueList args;
 args << hb_parnd(2) << hb_parnd(3);
  
+     
+QScriptEngineDebugger debugger;
+debugger.attachTo(&engine);
+
 QScriptValue ret = fun.call(QScriptValue(), args);
 
 QScriptValue fun2 = evaluateFile(engine, "./script_1.js");
 QScriptValue ret2 = fun2.call(QScriptValue(), args);
+
+
+evaluateFile(engine, "./pdf.js");
+evaluateFile(engine, "./pdf_1.js");
+
 
 hb_retnd(ret.toNumber());
 

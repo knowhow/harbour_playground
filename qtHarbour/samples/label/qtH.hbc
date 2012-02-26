@@ -15,7 +15,7 @@ incpaths=include
 {win}libpaths=debug C:\Qt\2010.05\qt\lib
 
 {darwin}libpaths=/Library/Frameworks
-{darwin}ldflags="-framework QtCore -framework QtGui -framework QtScript"
+{darwin}ldflags="-framework QtCore -framework QtGui -framework QtScript -framework QtScriptTools"
 
 incpaths=/usr/local/Qt4.7/mkspecs/macx-g++ -I
 incpaths=/Library/Frameworks/QtCore.framework/Versions/4/Headers 
