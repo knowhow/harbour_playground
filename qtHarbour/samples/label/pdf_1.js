@@ -1,9 +1,6 @@
 button.text += ' pocetak pdf_1';
 
-var doc = new pdf();
-
-button.text += ' pocetak pdf_1+1';
-
+var doc = new jsPDF();
 
 doc.text(20, 20, 'hello, I am PDF.');
 doc.text(20, 30, 'i was created in the browser using javascript.');
@@ -17,24 +14,31 @@ doc.setProperties({
         keywords: 'pdf.js, javascript, Marak, Marak Squires',
         creator: 'pdf.js'
 });
-doc.addPage();
 
-doc.setFontSize(22);
-doc.text(20, 20, 'This is a title');
 
-doc.setFontSize(16);
-doc.text(20, 30, 'This is some normal sized text underneath.');
+for (i=1; i<=10; i++) {
 
-doc.drawLine(100, 100, 100, 120, 1.0, 'dashed');
-doc.drawLine(100, 100, 120, 100, 1.2, 'dotted');
-doc.drawLine(120, 120, 100, 120, 1.4, 'dashed');
-doc.drawLine(120, 120, 120, 100, 1.6, 'solid');
+    doc.addPage();
 
-doc.drawRect(140, 140, 10, 10, 'solid');
+    doc.setFontSize(22);
+    doc.text(20, 20, 'This is a title' + i);
 
-var fileName = "testFile" + new Date().getSeconds()+".pdf";
-var pdfAsDataURI = doc.output('datauri', {"fileName":fileName});
+    doc.setFontSize(16);
+    doc.text(20, 30, 'This is some normal sized text underneath.');
 
-button.text += 'kkkkkk pdf_1';
+    doc.line(100, 100, 100, 120, 1.0, 'dashed');
+    doc.line(100, 100, 120, 100, 1.2, 'dotted');
+    doc.line(120, 120, 100, 120, 1.4, 'dashed');
+    doc.line(120, 120, 120, 100, 1.6, 'solid');
+
+    doc.rect(140, 140, 10, 10, 'solid');
+}
+
+//var fileName = "testFile" + new Date().getSeconds()+".pdf";
+//var pdfAsDataURI = doc.output('datauri', {"fileName":fileName});
+
+button.text = doc.output();
+
+//'kkkkkk pdf_1';
 
 

@@ -8,6 +8,8 @@ FUNCTION Main()
   LOCAL label
   local btn
   LOCAL n
+  local _txt
+  local _handle
 
   app := QApplication():New()
 
@@ -37,12 +39,19 @@ FUNCTION Main()
   btn:setText("button 1")
   boxLayout:addWidget( btn)
   ? "scrit_1 ret", script_1(btn, 2, 3.5)
+  _txt := btn:text()
+
+  _handle := FCREATE("test.pdf")
  
-  btn := QPushButton():New( mainWindow )
-  btn:setText("button 2")
-  boxLayout:addWidget( btn)
+  FWRITE(_handle, _txt)
+ 
+  Alert(_txt)
+ 
+  //btn := QPushButton():New( mainWindow )
+  //btn:setText("button 2")
+  //boxLayout:addWidget( btn)
   //? "scrit_1 ret", script_1(btn, 7, 8)
-  
+
   mainWindow:setLayout( boxLayout )
 
   
@@ -174,7 +183,7 @@ QScriptValue ret2 = fun2.call(QScriptValue(), args);
 
 
 evaluateFile(engine, "./pre.js");
-evaluateFile(engine, "./pdf.js");
+evaluateFile(engine, "./jspdf.js");
 evaluateFile(engine, "./pdf_1.js");
 
 
