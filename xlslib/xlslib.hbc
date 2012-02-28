@@ -1,0 +1,19 @@
+incpaths=.
+
+incpaths=/usr/local/include/xlslib
+
+
+libs=hbvm hbrtl hblang hbrdd hbrtl hbmacro hbpp rddcdx rddfpt rddntx
+libs=hbsqlit3 sqlite3
+libs=hbcommon hbct hbclipsm
+
+libs=xls
+
+{unix}libs=pq
+{!unix}libs=libpq
+
+{darwin}libpaths=/usr/local/lib
+{darwin}libpaths=/Library/PostgreSQL/9.1/lib
+
+
+

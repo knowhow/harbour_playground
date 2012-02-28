@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+
+<!-- $Id: mkdirstempl.bkl 459 2009-11-13 21:13:47Z tfonrouge $ -->
+
+<makefile>
+
+	<include file="../../config/tmpl_hrb.bkl"/>
+
+	<wxharbour-exe id="__SAMPLE_NAME__">
+		<include>../../include/wxHarbour</include>
+		<sources-at>
+			.
+		</sources-at>
+		<lib-path>../../$(__BUILDDIR__)</lib-path>
+	</wxharbour-exe>
+
+	<action id="run">
+		<if cond="TOOLSET=='win32'">
+			<command>
+				.\__SAMPLE_NAME__.exe
+			</command>
+		</if>
+		<if cond="TOOLSET=='unix'">
+			<command>
+				../../bin/run_App.sh __SAMPLE_NAME__
+			</command>
+		</if>
+		<depends>
+			all
+		</depends>
+	</action>
+
+</makefile>

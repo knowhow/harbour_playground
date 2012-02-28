@@ -1,0 +1,137 @@
+
+
+Building the wxWidgets library from sources.
+============================================
+
+The following section asumes that you have installed
+the wxWidgets sources in the following path: 
+
+C:\wxWidgets-2.8.10
+
+So you may need to change this setting according to
+your own installation settings.
+
+
+In order to build wxWidgets you need to execute the
+following for the MinGW, MSVC & BCC55 C/C++ compilers:
+
+	-----
+	MinGW
+	-----
+
+	1. Change to the wxWidgets "build\msw" directory: 
+
+	cd C:\wxWidgets-2.8.10\build\msw
+
+	2. Enter the following in the command line (is a single line):
+
+	mingw32-make.exe -f makefile.gcc INCLUDE="C:\MinGW/include" LIB="C:\MinGW/lib" USE_XRC=1 BUILD=release UNICODE=1 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_MEDIA=0 USE_RICHTEXT=1 USE_HTML=1 USE_XRC=1 USE_AUI=1 USE_GUI=1 RUNTIME_LIBS=dynamic SHARED=0 all
+
+
+	----
+	MSVC
+	----
+
+	1. Change to the wxWidgets "build\msw" directory: 
+
+	cd C:\wxWidgets-2.8.10\build\msw
+
+	2. Enter the following in the command line (is a single line):
+
+	nmake /nologo -f makefile.vc INCLUDE="C:\Program Files\Microsoft SDKs\Windows\v6.0A\include;C:\Program Files\Microsoft Visual Studio 9.0\vc\include" LIB="C:\Program Files\Microsoft SDKs\Windows\v6.0A\lib;C:\Program Files\Microsoft Visual Studio 9.0\vc\lib" USE_XRC=1 BUILD=release UNICODE=1 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_MEDIA=0 USE_RICHTEXT=1 USE_HTML=1 USE_XRC=1 USE_AUI=1 USE_GUI=1 RUNTIME_LIBS=dynamic SHARED=0 all
+
+
+Note that the above settings are based on an MSVC 9
+installation directories, so change this according
+to your own MSVC installed version. 
+
+	
+	-----
+	BCC55
+	-----
+
+	1. Change to the wxWidgets "build\msw" directory: 
+
+	cd C:\wxWidgets-2.8.10\build\msw
+
+	2. Enter the following in the command line (is a single line):
+
+	make -f makefile.bcc INCLUDE="C:\Borland\BCC55\include" LIB="C:\Borland\BCC55\lib;C:\Borland\BCC55\lib\psdk" USE_XRC=1 BUILD=release UNICODE=1 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_MEDIA=0 USE_RICHTEXT=1 USE_HTML=1 USE_XRC=1 USE_AUI=1 USE_GUI=1 RUNTIME_LIBS=dynamic SHARED=0 all
+
++++++++++++++++++++++++++++++++++++++++
+
+
+Building the wxHarbour library.
+===============================
+
+	MinGW
+	-----
+
+	1. Change to the wxHarbour installed directory.
+
+	2. Enter the following in the command line (is a single line):
+
+	mingw32-make.exe -f makefile.gcc
+
+
+	MSVC
+	-----
+
+	1. Change to the wxHarbour installed directory.
+
+	2. Enter the following in the command line (is a single line):
+
+	nmake -f makefile.vc
+
+
+	BCC55
+	-----
+
+	1. Change to the wxHarbour installed directory.
+
+	2. Enter the following in the command line (is a single line):
+
+	make -f makefile.bcc
+
+
+
++++++++++++++++++++++++++++++++++++++++
+
+
+Building the wxHarbour samples.
+===============================
+
+First you need to change to the directory containing
+the sample, i.e.:
+
+cd samples\dbf_ctrls1
+
+To build the sample you need to:
+
+
+	MinGW
+	-----
+
+	1. Enter the following in the command line (is a single line):
+
+	mingw32-make.exe -f makefile.gcc
+
+
+	MSVC
+	-----
+
+	1. Enter the following in the command line (is a single line):
+
+	nmake -f makefile.vc
+
+
+	BCC55
+	-----
+	1. Enter the following in the command line (is a single line):
+
+	make -f makefile.bcc
+
+
+Optionally you can add the "run" parameter to the
+build command in order to run the sample as soon
+it's builded.
