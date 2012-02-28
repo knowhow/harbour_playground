@@ -14,7 +14,6 @@ MAINTAINERCLEANFILES 	= Makefile.in aclocal.m4 acinclude.m4 configure sic/config
 #ACLOCAL				= aclocal
 ACLOCAL_AMFLAGS			= -I m4 ${ACLOCAL_FLAGS}
 
-
 ##dist-hook:
 ##	(cd $(distdir) && mkdir $(auxdir))
 ##	for file in $(AUX_DIST) $(AUX_DIST_EXTRA); do \
