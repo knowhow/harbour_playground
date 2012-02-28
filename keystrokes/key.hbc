@@ -1,0 +1,16 @@
+#
+# $Id: hbpgsql.hbc 16263 2011-02-10 11:20:55Z vszakats $
+#
+
+incpaths=.
+
+
+libs=hbvm hbrtl hblang hbrdd hbrtl hbmacro hbpp rddcdx rddfpt rddntx
+libs=hbsqlit3 sqlite3
+libs=hbcommon hbct hbclipsm
+
+{unix}libs=pq
+{!unix}libs=libpq
+{darwin}libpaths=/Library/PostgreSQL/9.1/lib
+#{darwin}libpaths=/opt/local/lib/postgresql84
+#{darwin}libpaths=/opt/local/lib/postgresql83

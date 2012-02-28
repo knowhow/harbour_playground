@@ -1,0 +1,23 @@
+#
+# $Id: qtH.hbc 99 2011-03-23 22:48:37Z tfonrouge $
+#
+# conf file for hbmk2
+#
+
+prgflags=-w3 -es2
+
+gui=yes
+cpp=yes
+comp=gcc
+
+incpaths=include
+{unix}libpaths=.
+{win}libpaths=debug C:\Qt\2010.05\qt\lib
+
+{darwin}libpaths=/Library/Frameworks
+{darwin}ldflags="-framework QtCore -framework QtGui"
+
+libs=qtHarbour
+
+{unix&!darwin}libs=QtGui QtCore
+{win}libs=qtmaind QtGuid4 QtCored4

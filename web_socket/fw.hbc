@@ -1,0 +1,15 @@
+incpaths=.
+mt=yes
+
+#libs=hbvm hbrtl hblang hbrdd hbrtl hbmacro hbpp rddcdx rddfpt rddntx
+libs=xhb
+libs=hbcommon hbct hbclipsm
+
+{unix}libs=pq
+{!unix}libs=libpq
+{darwin}libpaths=/Library/PostgreSQL/9.1/lib
+#{darwin}libpaths=/opt/local/lib/postgresql84
+#{darwin}libpaths=/opt/local/lib/postgresql83
+
+#ldflags=" --allow-multiple-definition"
+

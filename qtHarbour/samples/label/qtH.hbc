@@ -1,0 +1,31 @@
+#
+# $Id: qtH.hbc 99 2011-03-23 22:48:37Z tfonrouge $
+#
+# conf file for hbmk2
+#
+
+prgflags=-w3 -es2
+
+gui=yes
+cpp=yes
+comp=gcc
+
+incpaths=include
+{unix}libpaths=.
+{win}libpaths=debug C:\Qt\2010.05\qt\lib
+
+{darwin}libpaths=/Library/Frameworks
+{darwin}ldflags="-framework QtCore -framework QtGui -framework QtScript -framework QtScriptTools"
+
+incpaths=/usr/local/Qt4.7/mkspecs/macx-g++ -I
+incpaths=/Library/Frameworks/QtCore.framework/Versions/4/Headers 
+incpaths=/usr/include/QtCore /Library/Frameworks/QtNetwork.framework/Versions/4/Headers /usr/include/QtNetwork /Library/Frameworks/QtGui.framework/Versions/4/Headers /usr/include/QtGui /Library/Frameworks/QtXml.framework/Versions/4/Headers /usr/include/QtXml /Library/Frameworks/QtXmlPatterns.framework/Versions/4/Headers /usr/include/QtXmlPatterns/Library/Frameworks/QtWebKit.framework/Versions/4/Headers /usr/include/QtWebKit /usr/include 
+
+incpaths=/Library/Frameworks/QtScript.framework/Versions/4/Headers/
+incpaths=/Library/Frameworks/QtScriptTools.framework/Versions/4/Headers/
+incpaths=/Library/Frameworks/QtDesigner.framework/Versions/4/Headers/
+
+libs=qtHarbour
+
+{unix&!darwin}libs=QtGui QtCore
+{win}libs=qtmaind QtGuid4 QtCored4
