@@ -76,6 +76,7 @@ PROCEDURE Main( ... )
    LOCAL lTruncate := .F.
    LOCAL lUseTrans := .F.
    LOCAL cPath := "public"
+   LOCAL _total_rec_count := 0
 
    SET CENTURY ON
    SET DATE ANSI
@@ -176,10 +177,12 @@ PROCEDURE Main( ... )
       ? "Cannot create log file"
       QUIT
    ENDIF
-
    
    ? "USE ( " + cFile +")" 
-   USE (cFile) SHARED 
+   USE (cFile) SHARED
+
+   _total_dbf_rec := RECCOUNT()
+ 
    aDbfStruct := _change_dbf_struct( DBStruct() )
 
    oServer := TPQServer():New( cHostName, cDatabase, cUser, cPassWord, nPort, cPath )
@@ -306,8 +309,9 @@ PROCEDURE Main( ... )
       dbSkip()
 
       IF ( nCount % nCommit ) == 0
+
          DevPos( Row(), 1 )
-         DevOut( "imported recs: " + Str( nCount ) )
+         DevOut( "imported recs: " + Str( _total_dbf_rec ) + " / " + Str( nCount ) )
 
          IF lUseTrans
             oServer:commit()
@@ -322,7 +326,7 @@ PROCEDURE Main( ... )
       ENDIF
    ENDIF
 
-   FWrite( nHandle, "End: " + Time() + ", records in dbf: " + hb_ntos( RecNo() ) + ", imported recs: " + hb_ntos( nCount ) + hb_eol() )
+   FWrite( nHandle, "End: " + Time() + ", records in dbf: " + hb_ntos( RecNo() - 1 ) + ", imported recs: " + hb_ntos( nCount ) + hb_eol() )
 
    ? "End: ", Time()
    ?
