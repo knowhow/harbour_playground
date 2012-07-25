@@ -8,7 +8,10 @@ mt=yes
 
 libs=hbrtl hblang hbrdd hbrtl hbmacro hbpp rddcdx rddfpt rddntx
 libs=hbsqlit3 sqlite3
-libs=hbcommon hbct hbclipsm
+libs=hbcommon hbct
+#hbclipsm
+
+{unix}gt=gtxwc
 
 {unix}libs=pq
 {!unix}libs=libpq

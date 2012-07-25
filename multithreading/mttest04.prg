@@ -55,6 +55,8 @@ proc main()
    ? "Unprotected item result.....:", s_nVar1, "*"
    ? " * - can be different then local sum on real multi-CPU systems"
    ? "End of main"
+
+   inkey(0)
 return
 
 proc thFunc( nThread, lEnd )
