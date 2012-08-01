@@ -13,8 +13,64 @@ REQUEST HB_GT_XWC_DEFAULT
 REQUEST HB_CODEPAGE_SL852
 REQUEST HB_CODEPAGE_SLISO
 
+
+/*
+#xcommand MENU [<oMenu>] => [ <oMenu> := ] HBDbMenu():New()
+#xcommand MENUITEM [ <oMenuItem> PROMPT ] <cPrompt> ;
+          [ IDENT <nIdent> ] [ ACTION <uAction,...> ] ;
+         [ CHECKED <bChecked> ] => ;
+    [ <oMenuItem> := ] HBDbMenu():AddItem( MenuItem():New( <cPrompt>,;
+    [{||<uAction>}], [<bChecked>], [<nIdent>] ) )
+#xcommand SEPARATOR => HBDbMenu():AddItem( HBDbMenuItem():New( "-" ) )
+#xcommand ENDMENU => ATail( HBDbMenu():aMenus ):Build()
+
+
+private oMenu
+
+   MENU oMenu
+      MENUITEM " ~File "
+      MENU
+         MENUITEM " ~Open..."         ACTION oDebugger:Open()
+         MENUITEM " ~Resume"          ACTION oDebugger:Resume()
+         MENUITEM " O~S Shell"        ACTION oDebugger:OSShell()
+         SEPARATOR
+         MENUITEM " e~Xit    Alt-X "  ACTION oDebugger:Quit()
+      ENDMENU
+
+      MENUITEM " ~Locate "
+      MENU
+         MENUITEM " ~Find"            ACTION oDebugger:Locate()
+         MENUITEM " ~Next"            ACTION oDebugger:FindNext()
+         MENUITEM " ~Previous"        ACTION oDebugger:FindPrevious()
+         MENUITEM " ~Goto line..."    ACTION oDebugger:SearchLine()
+         SEPARATOR
+         MENUITEM " ~Case sensitive " IDENT "CASE" ;
+            ACTION oDebugger:ToggleCaseSensitive() ;
+            CHECKED oDebugger:lCaseSensitive
+      ENDMENU
+
+      MENUITEM " ~View "
+      MENU
+         MENUITEM " ~Sets"            ACTION oDebugger:ViewSets()
+         MENUITEM " ~WorkAreas   F6"  ACTION oDebugger:ShowWorkAreas()
+         MENUITEM " ~App Screen  F4 " ACTION oDebugger:ShowAppScreen()
+         SEPARATOR
+         MENUITEM " ~CallStack" IDENT "CALLSTACK";
+            ACTION oDebugger:Stack() ;
+            CHECKED oDebugger:lShowCallStack
+      ENDMENU
+ 
+
+
+oPop := Popup(10, 10, 20, 20)
+oPop:
+oPop:open()
+
+*/
+
 _thread[1] := hb_threadStart(@t1())
-_thread[2] := hb_threadStart(@t2())
+
+
 
 
 /*
@@ -26,8 +82,6 @@ get_1()
 
 */
 
-set key K_F1 to t1()
-set key K_F2 to t2()
 
 
 
@@ -35,9 +89,20 @@ set key K_F2 to t2()
 
 inkey(0)
 
+
+// ---------------------------
+proc skoci_t2()
+
+_thread[2] := hb_threadStart(@t2())
+//alert("skacem na t2")
+//hb_GtSelect(w2)
+
 //-----------------------------------
 //-----------------------------------
 proc t1()
+
+//set key K_F2 to skoci_t2()
+set key K_F2 to skoci_t2()
 
 Alert("t1")
 
@@ -73,6 +138,7 @@ return
 //-----------------------------------
 proc t2()
 
+set key K_F1 to t1()
 if w2 == NIL
    w2 := hb_gtCreate("XWC")
 endif
