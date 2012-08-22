@@ -1,0 +1,11 @@
+#
+# $Id: wip.hbp 89 2011-03-16 07:35:50Z tfonrouge $
+#
+
+wip.prg
+
+-o../bin/wip
+
+-es2 -w3
+
+-lhbct

@@ -1,0 +1,111 @@
+#
+# $Id: wxHarbour.hbp 725 2011-05-30 20:57:03Z tfonrouge $
+#
+
+# On Windows + msvc, build wx with this:
+#   build\msw\nmake -f makefile.vc BUILD=release RUNTIME_LIBS=static
+# On Windows + msvc64, build wx with this:
+#   build\msw\nmake -f makefile.vc BUILD=release RUNTIME_LIBS=static TARGET_CPU=AMD64
+# On Windows + msvcia64, build wx with this:
+#   build\msw\nmake -f makefile.vc BUILD=release RUNTIME_LIBS=static TARGET_CPU=IA64
+# On Windows + mingw, build wx with this:
+#   build\msw\mingw32-make -f makefile.gcc BUILD=release RUNTIME_LIBS=static
+# On Windows + watcom, build wx with this:
+#   build\msw\wmake -f makefile.wat BUILD=release RUNTIME_LIBS=static
+# On Windows + bcc, build wx with this:
+#   build\msw\make -f makefile.bcc BUILD=release RUNTIME_LIBS=static
+# On Linux/Ubuntu, install these packages first:
+#   sudo apt-get install libwxbase2.8-dev libwxgtk2.8-dev
+
+-n1 -es2 -w3
+-hblib
+-inc
+-olib/${hb_arch}/${hb_comp}/wxHarbour
+-nohbc
+
+-i{mingw}${HB_WITH_WX}\lib\gcc_lib\mswu
+-i{msvc}${HB_WITH_WX}\lib\vc_lib\mswu
+-i{msvc64}${HB_WITH_WX}\lib\vc_amd64_lib\mswu
+-i{msvcia64}${HB_WITH_WX}\lib\vc_ia64_lib\mswu
+-i{win&watcom}${HB_WITH_WX}\include
+-i{win&watcom}${HB_WITH_WX}\lib\wat_lib\mswu
+-i{bcc}${HB_WITH_WX}\lib\bcc_lib\mswu
+-i${HB_WITH_WX}\include
+-iinclude/wxHarbour
+
+-cflag={win}-DWIN32
+-cflag={win}-D__WXMSW__
+-cflag={win}-D_WINDOWS
+-cflag={win}-D_UNICODE
+-cflag={win&allmsvc}/MD
+-cflag={win&allmsvc}/GR
+-cflag={win&allmsvc}/EHsc
+-cflag={watcom}-xs
+"-cflag={unix&gcc}`wx-config --cflags`"
+
+{darwin}-DHB_OS_MAC
+{unix}-DHB_OS_UNIX
+{linux}-DHB_OS_LINUX
+{win}-DHB_OS_WINDOWS
+{win}-DHB_OS_WIN_32
+
+-instpath=${hb_lib}/
+
+-instfile=inc:include/wxHarbour/*
+-instfile=inc_wxh:include/wxHarbour/wxh/*
+-instpath=inc:${hb_inc}/wxHarbour/
+-instpath=inc_wxh:${hb_inc}/wxHarbour/wxh/
+
+-instforce
+
+src/common/*.cpp
+src/common/*.prg
+src/hrbcompat/errorsys/*.prg
+src/hrbcompat/misc/*.prg
+src/hrbcompat/misc/*.cpp
+src/hrbcompat/tbcolumn/*.prg
+src/hrbcompat/tbrowse/*.prg
+src/hrbcompat/tbrowse/*.cpp
+src/raddox/*.prg
+src/raddox/*.cpp
+src/wxbase/advctrls/*.prg
+src/wxbase/advctrls/*.cpp
+src/wxbase/app/*.prg
+src/wxbase/app/*.cpp
+src/wxbase/baseclasses/*.prg
+src/wxbase/baseclasses/*.cpp
+src/wxbase/books/*.prg
+src/wxbase/books/*.cpp
+src/wxbase/comdialogs/*.prg
+src/wxbase/comdialogs/*.cpp
+src/wxbase/controls/*.prg
+src/wxbase/controls/*.cpp
+src/wxbase/events/*.prg
+src/wxbase/events/*.cpp
+src/wxbase/image/*.prg
+src/wxbase/image/*.cpp
+src/wxbase/html/*.prg
+src/wxbase/html/*.cpp
+src/wxbase/manwindows/*.prg
+src/wxbase/manwindows/*.cpp
+src/wxbase/menu/*.prg
+src/wxbase/menu/*.cpp
+src/wxbase/miscfuncs/*.cpp
+src/wxbase/networking/*.prg
+src/wxbase/networking/*.cpp
+src/wxbase/pickers/*.prg
+src/wxbase/pickers/*.cpp
+src/wxbase/range/*.prg
+src/wxbase/range/*.cpp
+src/wxbase/sizers/*.prg
+src/wxbase/sizers/*.cpp
+src/wxbase/static/*.prg
+src/wxbase/static/*.cpp
+src/wxbase/system/*.prg
+src/wxbase/system/*.cpp
+src/wxbase/toolbar/*.prg
+src/wxbase/toolbar/*.cpp
+src/wxbase/validators/*.prg
+src/wxbase/validators/*.cpp
+src/wxbase/xmlclasses/*.prg
+src/wxbase/xmlclasses/*.cpp

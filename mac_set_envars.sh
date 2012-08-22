@@ -9,3 +9,6 @@ export HB_COMPILER=gcc
 #HB_USER_CFLAGS="-arch x86_64"
 #HB_USER_LDFLAGS="-arch x86_64"
 
+
+export HB_INC_INSTALL=/opt/harbour/include/harbour
+export HB_LIB_INSTALL=/opt/harbour/lib/harbour

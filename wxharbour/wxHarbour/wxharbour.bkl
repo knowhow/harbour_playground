@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+
+<!-- $Id: wxharbour.bkl 639 2010-06-30 18:09:09Z tfonrouge $ -->
+
+<makefile>
+
+	<include file="config/tmpl_hrb.bkl"/>
+
+	<wxharbour-lib id="wxHarbour">
+		<libname>$(WXHLIBNAME)</libname>
+		<headers>
+			$(fileList("include/wxHarbour/*.ch"))
+			$(fileList("include/wxHarbour/*.h"))
+			$(fileList("include/wxHarbour/wxh/*.ch"))
+		</headers>
+		<sources-at>
+			src/common
+			src/hrbcompat/errorsys
+			src/hrbcompat/misc
+			src/hrbcompat/tbcolumn
+			src/hrbcompat/tbrowse
+			src/raddox
+			src/wxbase/advctrls
+			src/wxbase/app
+			src/wxbase/baseclasses
+			src/wxbase/books
+			src/wxbase/controls
+			src/wxbase/comdialogs
+			src/wxbase/containers
+			src/wxbase/events
+			src/wxbase/html
+			src/wxbase/image
+			src/wxbase/manwindows
+			src/wxbase/menu
+			src/wxbase/miscfuncs
+			src/wxbase/networking
+			src/wxbase/pickers
+			src/wxbase/range
+			src/wxbase/sizers
+			src/wxbase/static
+			src/wxbase/system
+			src/wxbase/toolbar
+			src/wxbase/validators
+			src/wxbase/xmlclasses
+		</sources-at>
+		<install-to>$(LIBDIR)</install-to>
+		<install-headers-to>$(PREFIX)</install-headers-to>
+	</wxharbour-lib>
+
+    <!--
+	<subproject id="demos">
+		<dir>demos</dir>
+		<depends>all</depends>
+		<installable>no</installable>
+	</subproject>
+    -->
+
+	<if cond="TOOLSET=='unix'">
+		<action id="sudoinstall">
+			<depends>all</depends>
+			<command>sudo make install</command>
+		</action>
+	</if>
+
+</makefile>

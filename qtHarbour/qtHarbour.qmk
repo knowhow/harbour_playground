@@ -1,0 +1,49 @@
+#
+# $Id: qtHarbour.qmk 115 2011-04-07 02:45:19Z tfonrouge $
+#
+# * (C) 2011. qtHarbour     http://sourceforge.net/projects/qth/
+# * (C) 2011. Teo Fonrouge  <tfonrouge/at/gmail/dot/com>
+# *
+#
+
+unix:OBJECTS_DIR = .obj/unix
+mac:OBJECTS_DIR = .obj/mac
+win32:OBJECTS_DIR = .obj/win32
+
+mac:HBOS += -d__MAC__
+unix:HBOS += -d__UNIX__
+win32:HBOS += -d__WIN32__
+
+mac:DEFINES += __MAC__
+unix:DEFINES += __UNIX__
+win32:DEFINES += __WIN32__
+
+HBMK2 = hbmk2
+QTHMOC = qthmoc
+
+INCLUDEPATH = include $$system("hbmk2 --hbdirinc")
+
+harbour.output = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}.o
+harbour.input = HBSOURCES
+harbour.variable_out = OBJECTS
+harbour.name = Harbour
+harbour.commands = $${HBMK2} -w3 -es2 $${HBOS} -hbcmp -iinclude -i../../include ${QMAKE_FILE_IN} -o$${OBJECTS_DIR}/${QMAKE_FILE_BASE}.o
+
+QMAKE_EXTRA_COMPILERS += harbour
+
+wip.output = .tmp/${QMAKE_FILE_BASE}.cpp
+wip.input = WIPSOURCES
+wip.variable_out = SOURCES
+wip.name = Wip
+wip.commands = bin/wip wip/${QMAKE_FILE_BASE}.wip  .tmp/${QMAKE_FILE_BASE}.cpp
+
+QMAKE_EXTRA_COMPILERS += wip
+
+#qthmoc.output = .qth/${QMAKE_FILE_BASE}.cpp .qth/${QMAKE_FILE_BASE}.h .qth/${QMAKE_FILE_BASE}.prg
+qthmoc.output = .qth/*
+qthmoc.input = QTHSOURCES
+qthmoc.variable_out = SOURCES
+qthmoc.name = qtH MOC Generates C++ code from .qth files
+qthmoc.commands = $${QTHMOC} ${QMAKE_FILE_BASE}.qth
+
+QMAKE_EXTRA_COMPILERS += qthmoc
