@@ -1,13 +1,23 @@
 REQUEST DBFCDX
 
-procedure main(cImeDbf, polje, value)
+procedure main(cImeDbf, polje, value, polje2, value2, polje3, value3 )
+local _i
 
 ? "F18 setting je set deleted ON, sto znaci ne gledaj brisane zapise"
 
 ? "dbf=", cImeDbf
 
+SET DATE TO german
+
 SET DELETED ON
 USE (cImeDbf) VIA "DBFCDX" NEW
+
+aStruct := DBSTRUCT()
+
+? "Struktura polja: "
+for _i := 1 TO LEN( aStruct )
+    ? PADR(aStruct[ _i, 1 ], 15), aStruct[ _i, 2 ], aStruct[ _i, 3 ], aStruct[ _i, 4 ]
+next
 
 count to nCnt1
 count for deleted() to nDel1
@@ -32,10 +42,38 @@ count for deleted() to nDel2
 ? "broj aktivnih zapisa:", nCnt1
 
 if polje != NIL
-  if VALTYPE(FIELDGET(FIELDPOS(polje))) == "N"
-     value := VAL(value)
-  endif
-
-  count for { || FIELDGET(FIELDPOS(polje)) == value } to nTest1
-  ? polje, value,  nTest1
+    ispitaj( polje, value )  
 endif
+if polje2 != NIL
+    ispitaj( polje2, value2 )  
+endif
+if polje3 != NIL
+    ispitaj( polje3, value3 )  
+endif
+
+return
+
+
+function ispitaj( polje, vrij )
+
+// ako zelimo empty zapis proslijediti navodimo #
+vrij := STRTRAN( vrij, "#", " ")
+  
+if VALTYPE(FIELDGET(FIELDPOS(polje))) == "N"
+     vrij := VAL(vrij)
+endif
+  
+if VALTYPE(FIELDGET(FIELDPOS(polje))) == "D"
+     vrij := CTOD(vrij)
+endif
+
+count for { || FIELDGET(FIELDPOS(polje)) == vrij } to nTest1
+? "polje="
+?? polje, " #" 
+?? vrij
+?? "# "
+?? nTest1
+
+return
+
+
