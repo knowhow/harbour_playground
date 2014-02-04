@@ -1,9 +1,9 @@
 #/bin/bash
-TABLES="RJ RNAL ROBA SAST SIFK SIFV PARTN ARTICLES BANKE CONTACTS CUSTOMS ELEMENTS KONTO OBJECTS"
-TABLES_PREFIX="sif"
-FMKDBPATH="/mnt/data/fmk_data/bout_2011/fmk_data/sigma/SIF1"
+TABLES="KALK KALKS DOKS DOKS2 KONIZ IZVJE ZAGLI KOLIZ LOGK LOGKD RJ UPL FAKT UGOV RUGOV GEN_UG GEN_UG_P DOKS DOKS2 KALPOS"
+TABLES_PREFIX="fakt"
+FMKDBPATH="/mnt/data/fmk_data/rg_2011/sigma/FAKT/KUM1"
 DBF2PG="/mnt/data/harbour/src/harbour-3.0.0/contrib/hbpgsql/tests/dbf2pg"
-PSQLDB="test2"
+PSQLDB="test1"
 PSQLUSER="postgres"
 PSQLPWD="xxxxxxxxx"
 PSQLHOST="localhost"
